@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace Patient - Medical Center Elizabeth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f7fc; color: #1a2c3e; }
+        .header { background: linear-gradient(135deg, #0b6e8f 0%, #2ec4b6 100%); color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .welcome-card { background: white; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .message-container { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .compose-box { flex: 1; background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .inbox-box { flex: 2; background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #0b6e8f; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem; font-family: 'Inter', sans-serif; }
+        .btn-primary { background: #0b6e8f; color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 2rem; cursor: pointer; }
+        .btn-primary:hover { background: #07506b; }
+        .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; }
+        .message-card { border: 1px solid #e0e0e0; border-radius: 0.5rem; margin-bottom: 1rem; padding: 1rem; }
+        .message-card.unread { background: #e8f4f8; border-left: 4px solid #0b6e8f; }
+        .message-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-bottom: 0.5rem; }
+        .message-subject { font-weight: 600; color: #0b6e8f; margin-bottom: 0.5rem; }
+        .badge { background: #f44336; color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.7rem; margin-left: 0.5rem; }
+        @media (max-width: 768px) { .message-container { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2><i class="fas fa-user-circle"></i> <span id="userName">Patient</span></h2>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+</div>
+
+<div class="container">
+    <div class="welcome-card">
+        <h3>📬 Messagerie sécurisée</h3>
+        <p>Échangez avec votre équipe médicale en toute sécurité</p>
+    </div>
+    
+    <div class="message-container">
+        <div class="compose-box">
+            <h3><i class="fas fa-pen-alt"></i> Nouveau message</h3>
+            <form id="composeForm">
+                <div class="form-group">
+                    <label>Destinataire (Professionnel)</label>
+                    <select id="receiverStaff" required>
+                        <option value="">-- Choisir --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Sujet</label>
+                    <input type="text" id="subject" required placeholder="Sujet de votre message">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message" rows="4" required placeholder="Écrivez votre message..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Envoyer</button>
+            </form>
+        </div>
+        
+        <div class="inbox-box">
+            <h3><i class="fas fa-inbox"></i> Mes messages <span id="unreadBadge" class="badge" style="display:none;">0</span></h3>
+            <div id="messagesList">Chargement...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = '/api';
+    let currentUser = null;
+    let staffList = [];
+    
+    function checkAuth() {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        if (!token || !user) {
+            window.location.href = '/login.html';
+            return false;
+        }
+        currentUser = JSON.parse(user);
+        if (currentUser.type !== 'patient') {
+            window.location.href = '/staff-dashboard.html';
+            return false;
+        }
+        document.getElementById('userName').innerText = currentUser.name;
+        return true;
+    }
+    
+    async function loadStaffList() {
+        try {
+            const res = await fetch(`${API_URL}/staff`);
+            const staff = await res.json();
+            staffList = staff;
+            const select = document.getElementById('receiverStaff');
+            select.innerHTML = '<option value="">-- Choisir un professionnel --</option>' + 
+                staff.map(s => `<option value="${s.id}|${s.full_name}">${s.full_name} (${s.profession})</option>`).join('');
+        } catch(err) { console.error(err); }
+    }
+    
+    async function loadMessages() {
+        try {
+            const res = await fetch(`${API_URL}/messages/patient/${currentUser.id}`);
+            const messages = await res.json();
+            displayMessages(messages);
+            
+            const unread = messages.filter(m => m.is_read === 0 && m.receiver_type === 'patient').length;
+            const badge = document.getElementById('unreadBadge');
+            if (unread > 0) {
+                badge.innerText = unread;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    function displayMessages(messages) {
+        const container = document.getElementById('messagesList');
+        if (!messages || messages.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">Aucun message</p>';
+            return;
+        }
+        
+        container.innerHTML = messages.map(msg => `
+            <div class="message-card ${msg.is_read === 0 && msg.receiver_type === 'patient' ? 'unread' : ''}">
+                <div class="message-header">
+                    <span><i class="fas fa-user"></i> ${escapeHtml(msg.sender_name)} (${msg.sender_type === 'patient' ? 'Moi' : msg.sender_type === 'staff' ? 'Docteur' : msg.sender_type})</span>
+                    <span>${new Date(msg.sent_date).toLocaleString('fr-FR')}</span>
+                </div>
+                <div class="message-subject">📌 ${escapeHtml(msg.subject)}</div>
+                <div class="message-content">${escapeHtml(msg.message)}</div>
+            </div>
+        `).join('');
+        
+        // Marquer comme lus
+        messages.forEach(msg => {
+            if (msg.is_read === 0 && msg.receiver_type === 'patient') {
+                fetch(`${API_URL}/messages/${msg.id}/read`, { method: 'PUT' });
+            }
+        });
+    }
+    
+    document.getElementById('composeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const receiverValue = document.getElementById('receiverStaff').value;
+        if (!receiverValue) { alert('Choisissez un destinataire'); return; }
+        
+        const [receiverId, receiverName] = receiverValue.split('|');
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+        
+        const data = {
+            sender_type: 'patient',
+            sender_id: currentUser.id,
+            sender_name: currentUser.name,
+            receiver_type: 'staff',
+            receiver_id: parseInt(receiverId),
+            receiver_name: receiverName,
+            subject: subject,
+            message: message,
+            reply_to_id: null
+        };
+        
+        try {
+            const res = await fetch(`${API_URL}/messages`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                alert('✅ Message envoyé !');
+                document.getElementById('composeForm').reset();
+                loadMessages();
+            } else {
+                alert('❌ Erreur lors de l\'envoi');
+            }
+        } catch(err) { alert('Erreur de connexion'); }
+    });
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login.html';
+    }
+    
+    if (checkAuth()) {
+        loadStaffList();
+        loadMessages();
+        setInterval(loadMessages, 30000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace patient - Medical Center Elizabeth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f4f9fc; }
+        .hero-container { position: relative; text-align: center; color: white; }
+        .hero-img { width: 100%; max-height: 300px; object-fit: cover; display: block; }
+        .hero-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); padding: 20px 40px; border-radius: 16px; }
+        .hero-text h1 { font-size: 2rem; margin: 0; }
+        .hero-text p { margin: 0.5rem 0 0; font-size: 1rem; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
+        .card { background: white; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+        h1, h2 { color: #0b6e8f; }
+        .tabs { display: flex; gap: 1rem; border-bottom: 1px solid #e2e8f0; margin-bottom: 2rem; }
+        .tab-btn { background: none; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; color: #4a5568; transition: 0.2s; }
+        .tab-btn.active { color: #0b6e8f; border-bottom: 3px solid #0b6e8f; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.3rem; color: #2d3748; }
+        input, select { width: 100%; padding: 0.8rem; border: 1px solid #cbd5e0; border-radius: 1rem; font-family: inherit; }
+        button { background: #0b6e8f; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 2rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #07506b; }
+        .logout-btn { background: #dc3545; margin-bottom: 1rem; }
+        .logout-btn:hover { background: #b02a37; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8f0; }
+        th { background: #0b6e8f; color: white; }
+        .teleconsult-link { background: #2ec4b6; color: white; padding: 4px 12px; border-radius: 20px; text-decoration: none; font-size: 0.8rem; }
+        .result-file a { background: #0b6e8f; color: white; padding: 4px 12px; border-radius: 20px; text-decoration: none; }
+        .feedback { margin-top: 1rem; font-size: 0.9rem; }
+        @media (max-width: 768px) { .container { padding: 0 1rem; } th, td { font-size: 0.85rem; } .hero-text { padding: 10px 20px; } .hero-text h1 { font-size: 1.2rem; } .hero-text p { font-size: 0.8rem; } }
+    </style>
+</head>
+<body>
+<div class="hero-container">
+    <img src="/uploads/patient.jpg" alt="Espace patient" class="hero-img" onerror="this.src='https://placehold.co/1200x300?text=Medical+Center+Elizabeth'">
+    <div class="hero-text">
+        <h1>Espace patient en ligne</h1>
+        <p>Accédez à vos résultats, gérez vos rendez-vous et suivez votre parcours de soins en toute sécurité.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div id="authPanel">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="login">Connexion</button>
+                <button class="tab-btn" data-tab="register">Inscription</button>
+            </div>
+            <div id="loginPane" class="tab-pane active">
+                <h2>Connexion</h2>
+                <form id="loginForm">
+                    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" required></div>
+                    <div class="form-group"><label>Mot de passe</label><input type="password" id="loginPassword" required></div>
+                    <button type="submit">Se connecter</button>
+                    <div id="loginFeedback" class="feedback"></div>
+                </form>
+            </div>
+            <div id="registerPane" class="tab-pane">
+                <h2>Inscription</h2>
+                <form id="registerForm">
+                    <div class="form-group"><label>Prénom</label><input type="text" id="regFirstname" required></div>
+                    <div class="form-group"><label>Nom</label><input type="text" id="regLastname" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="regEmail" required></div>
+                    <div class="form-group"><label>Téléphone (optionnel)</label><input type="tel" id="regPhone"></div>
+                    <div class="form-group"><label>Mot de passe</label><input type="password" id="regPassword" required></div>
+                    <button type="submit">Créer mon compte</button>
+                    <div id="registerFeedback" class="feedback"></div>
+                </form>
+            </div>
+        </div>
+
+        <div id="dashboardPanel" style="display:none;">
+            <button id="logoutBtn" class="logout-btn">Déconnexion</button>
+            <h2>Bienvenue, <span id="patientName"></span> 👋</h2>
+            <div class="card" style="margin-top:1rem;">
+                <h3><i class="fas fa-calendar-alt"></i> Mes rendez-vous</h3>
+                <div id="appointmentsList">Chargement...</div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-flask"></i> Mes résultats d'analyses</h3>
+                <div id="resultsList">Chargement...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let token = localStorage.getItem('patientToken');
+    const authPanel = document.getElementById('authPanel');
+    const dashboardPanel = document.getElementById('dashboardPanel');
+
+    function showDashboard() {
+        authPanel.style.display = 'none';
+        dashboardPanel.style.display = 'block';
+        try {
+            const decoded = JSON.parse(atob(token.split('.')[1]));
+            document.getElementById('patientName').innerText = decoded.name || 'Patient';
+        } catch(e) { document.getElementById('patientName').innerText = 'Patient'; }
+        loadAppointments();
+        loadResults();
+    }
+
+    function logout() {
+        localStorage.removeItem('patientToken');
+        token = null;
+        authPanel.style.display = 'block';
+        dashboardPanel.style.display = 'none';
+    }
+
+    async function fetchWithAuth(url, options = {}) {
+        const res = await fetch(url, {
+            ...options,
+            headers: { 'Authorization': `Bearer ${token}`, ...options.headers }
+        });
+        if (res.status === 401 || res.status === 403) { logout(); throw new Error('Session expirée'); }
+        if (!res.ok) throw new Error('Erreur réseau');
+        return res.json();
+    }
+
+    async function loadAppointments() {
+        const container = document.getElementById('appointmentsList');
+        try {
+            const apps = await fetchWithAuth('/api/patient/appointments');
+            if (!apps.length) { container.innerHTML = '<p>Aucun rendez-vous.</p>'; return; }
+            container.innerHTML = `<table><thead><tr><th>Date</th><th>Horaire</th><th>Médecin</th><th>Spécialité</th><th>Téléconsultation</th><tr></thead><tbody>
+                ${apps.map(a => `<tr><td>${a.date}</td><td>${a.time}</td><td>${escapeHtml(a.doctor_name || 'N/A')}</td><td>${escapeHtml(a.specialty || '-')}</td><td>${a.teleconsultation_link ? `<a href="${a.teleconsultation_link}" target="_blank" class="teleconsult-link">🎥 Rejoindre</a>` : 'Présentiel'}</td></tr>`).join('')}
+            </tbody></table>`;
+        } catch(err) { container.innerHTML = '<p>Erreur chargement.</p>'; }
+    }
+
+    async function loadResults() {
+        const container = document.getElementById('resultsList');
+        try {
+            const results = await fetchWithAuth('/api/patient/results');
+            if (!results.length) { container.innerHTML = '<p>Aucun résultat publié.</p>'; return; }
+            container.innerHTML = `<table><thead><tr><th>Type</th><th>Description</th><th>Disponible le</th><th>Document</th></tr></thead><tbody>
+                ${results.map(r => `<tr><td>${escapeHtml(r.type)}</td><td>${escapeHtml(r.description)}</td><td>${new Date(r.published_at).toLocaleDateString()}</td><td class="result-file"><a href="${r.file_url}" target="_blank">📄 Télécharger</a></td></tr>`).join('')}
+            </tbody></table>`;
+        } catch(err) { container.innerHTML = '<p>Erreur chargement.</p>'; }
+    }
+
+    function escapeHtml(str) { return str ? str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]) : ''; }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const feedback = document.getElementById('loginFeedback');
+        feedback.innerHTML = '<span style="color:blue;">Connexion...</span>';
+        try {
+            const res = await fetch('/api/patient/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                localStorage.setItem('patientToken', token);
+                showDashboard();
+            } else {
+                feedback.innerHTML = `<span style="color:red;">${data.error || 'Erreur'}</span>`;
+            }
+        } catch(err) { feedback.innerHTML = '<span style="color:red;">Erreur réseau</span>'; }
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const first_name = document.getElementById('regFirstname').value;
+        const last_name = document.getElementById('regLastname').value;
+        const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
+        const password = document.getElementById('regPassword').value;
+        const feedback = document.getElementById('registerFeedback');
+        feedback.innerHTML = '<span style="color:blue;">Création du compte...</span>';
+        try {
+            const res = await fetch('/api/patient/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ first_name, last_name, email, password, phone })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                localStorage.setItem('patientToken', token);
+                showDashboard();
+            } else {
+                feedback.innerHTML = `<span style="color:red;">${data.error || 'Erreur'}</span>`;
+            }
+        } catch(err) { feedback.innerHTML = '<span style="color:red;">Erreur réseau</span>'; }
+    });
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('loginPane').classList.toggle('active', tab === 'login');
+            document.getElementById('registerPane').classList.toggle('active', tab === 'register');
+        });
+    });
+
+    document.getElementById('logoutBtn')?.addEventListener('click', logout);
+
+    if (token) { showDashboard(); } else { authPanel.style.display = 'block'; dashboardPanel.style.display = 'none'; }
+</script>
+</body>
+</html>

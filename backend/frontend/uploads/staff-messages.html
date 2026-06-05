@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Patient - Messagerie | Medical Center Elizabeth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f7fc; color: #1a2c3e; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        .header { background: linear-gradient(135deg, #0b6e8f 0%, #2ec4b6 100%); color: white; padding: 2rem; text-align: center; }
+        .header h1 { margin-bottom: 0.5rem; }
+        
+        .message-container { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+        .compose-box { flex: 1; background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .inbox-box { flex: 2; background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #0b6e8f; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem; font-family: 'Inter', sans-serif; }
+        
+        .message-card { border: 1px solid #e0e0e0; border-radius: 0.5rem; margin-bottom: 1rem; padding: 1rem; transition: all 0.3s; }
+        .message-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .message-card.unread { background: #e8f4f8; border-left: 4px solid #0b6e8f; }
+        .message-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; color: #666; }
+        .message-subject { font-weight: 600; color: #0b6e8f; margin-bottom: 0.5rem; }
+        .message-content { color: #333; margin: 0.5rem 0; line-height: 1.5; }
+        .reply-area { margin-top: 1rem; display: none; }
+        .reply-area textarea { width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.5rem; margin-top: 0.5rem; }
+        
+        .btn-primary { background: #0b6e8f; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 2rem; cursor: pointer; }
+        .btn-primary:hover { background: #07506b; }
+        .btn-reply { background: #2ec4b6; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 1rem; cursor: pointer; font-size: 0.8rem; }
+        
+        .badge { background: #f44336; color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.7rem; margin-left: 0.5rem; }
+        
+        @media (max-width: 768px) {
+            .message-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1><i class="fas fa-envelope"></i> Espace Patient - Messagerie</h1>
+    <p>Communications sécurisées avec votre équipe médicale</p>
+</div>
+
+<div class="container">
+    <!-- Sélection du patient (simulé pour la démo) -->
+    <div style="background: white; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+        <label style="font-weight: 600;">👤 Sélectionnez votre compte patient :</label>
+        <select id="patientSelect" style="margin-left: 1rem; padding: 0.5rem;">
+            <option value="1">Sophie Martin (ID: 1)</option>
+            <option value="2">Thomas Bernard (ID: 2)</option>
+            <option value="3">Marie Dubois (ID: 3)</option>
+        </select>
+        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+            <i class="fas fa-bell"></i> Messages non lus: <span id="unreadCount">0</span>
+        </div>
+    </div>
+    
+    <div class="message-container">
+        <!-- Formulaire d'envoi -->
+        <div class="compose-box">
+            <h3><i class="fas fa-pen-alt"></i> Nouveau message</h3>
+            <form id="composeForm">
+                <div class="form-group">
+                    <label>Destinataire (Professionnel)</label>
+                    <select id="receiverStaff" required>
+                        <option value="">-- Choisir un professionnel --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Sujet</label>
+                    <input type="text" id="subject" required placeholder="Sujet de votre message">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message" rows="4" required placeholder="Écrivez votre message ici..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Envoyer</button>
+            </form>
+        </div>
+        
+        <!-- Boîte de réception -->
+        <div class="inbox-box">
+            <h3><i class="fas fa-inbox"></i> Mes messages</h3>
+            <div id="messagesList">Chargement...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = '/api';
+    let currentPatientId = 1;
+    let staffList = [];
+    
+    // Charger la liste des professionnels
+    async function loadStaffList() {
+        try {
+            const res = await fetch(`${API_URL}/staff`);
+            const staff = await res.json();
+            staffList = staff;
+            const select = document.getElementById('receiverStaff');
+            select.innerHTML = '<option value="">-- Choisir un professionnel --</option>' + 
+                staff.map(s => `<option value="${s.id}|${s.full_name}|${s.profession}">${s.full_name} (${s.profession}) - ${s.department}</option>`).join('');
+        } catch(err) {
+            console.error('Erreur:', err);
+        }
+    }
+    
+    // Charger les messages du patient
+    async function loadMessages() {
+        try {
+            const res = await fetch(`${API_URL}/messages/patient/${currentPatientId}`);
+            const messages = await res.json();
+            displayMessages(messages);
+            
+            // Charger les non lus
+            const unreadRes = await fetch(`${API_URL}/messages/unread/patient/${currentPatientId}`);
+            const unread = await unreadRes.json();
+            document.getElementById('unreadCount').innerText = unread.unread;
+        } catch(err) {
+            console.error('Erreur:', err);
+            document.getElementById('messagesList').innerHTML = '<p>Erreur chargement des messages</p>';
+        }
+    }
+    
+    // Afficher les messages
+    function displayMessages(messages) {
+        const container = document.getElementById('messagesList');
+        if (!messages || messages.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999;">Aucun message</p>';
+            return;
+        }
+        
+        container.innerHTML = messages.map(msg => `
+            <div class="message-card ${msg.is_read === 0 && msg.receiver_type === 'patient' ? 'unread' : ''}">
+                <div class="message-header">
+                    <span><i class="fas fa-user"></i> ${escapeHtml(msg.sender_name)} (${msg.sender_type === 'patient' ? 'Patient' : 'Professionnel'})</span>
+                    <span><i class="fas fa-clock"></i> ${new Date(msg.sent_date).toLocaleString('fr-FR')}</span>
+                </div>
+                <div class="message-subject">📌 ${escapeHtml(msg.subject)}</div>
+                <div class="message-content">${escapeHtml(msg.message)}</div>
+                ${msg.receiver_type === 'patient' ? `
+                    <button class="btn-reply" onclick="showReply(${msg.id}, '${escapeHtml(msg.sender_name)}')"><i class="fas fa-reply"></i> Répondre</button>
+                    <div id="reply-${msg.id}" class="reply-area">
+                        <textarea id="reply-text-${msg.id}" rows="2" placeholder="Votre réponse..."></textarea>
+                        <button class="btn-primary" style="margin-top: 0.5rem;" onclick="sendReply(${msg.id})">Envoyer la réponse</button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+        
+        // Marquer comme lus
+        messages.forEach(msg => {
+            if (msg.is_read === 0 && msg.receiver_type === 'patient') {
+                fetch(`${API_URL}/messages/${msg.id}/read`, { method: 'PUT' });
+            }
+        });
+    }
+    
+    // Afficher la zone de réponse
+    function showReply(msgId, senderName) {
+        const replyDiv = document.getElementById(`reply-${msgId}`);
+        if (replyDiv.style.display === 'none' || !replyDiv.style.display) {
+            replyDiv.style.display = 'block';
+        } else {
+            replyDiv.style.display = 'none';
+        }
+    }
+    
+    // Envoyer une réponse
+    async function sendReply(msgId) {
+        const replyText = document.getElementById(`reply-text-${msgId}`).value;
+        if (!replyText.trim()) {
+            alert('Veuillez écrire votre réponse');
+            return;
+        }
+        
+        // Récupérer le message original pour connaître l'expéditeur
+        const res = await fetch(`${API_URL}/messages/patient/${currentPatientId}`);
+        const messages = await res.json();
+        const original = messages.find(m => m.id === msgId);
+        
+        if (!original) return;
+        
+        const patient = getPatientInfo();
+        
+        const response = await fetch(`${API_URL}/messages/${msgId}/reply`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: replyText,
+                sender_name: patient.name,
+                sender_id: currentPatientId,
+                sender_type: 'patient'
+            })
+        });
+        
+        if (response.ok) {
+            alert('✅ Réponse envoyée !');
+            document.getElementById(`reply-text-${msgId}`).value = '';
+            document.getElementById(`reply-${msgId}`).style.display = 'none';
+            loadMessages();
+        } else {
+            alert('❌ Erreur lors de l\'envoi');
+        }
+    }
+    
+    // Envoyer un nouveau message
+    document.getElementById('composeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const receiverValue = document.getElementById('receiverStaff').value;
+        if (!receiverValue) {
+            alert('Choisissez un destinataire');
+            return;
+        }
+        
+        const [receiverId, receiverName] = receiverValue.split('|');
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+        const patient = getPatientInfo();
+        
+        const data = {
+            sender_type: 'patient',
+            sender_id: currentPatientId,
+            sender_name: patient.name,
+            receiver_type: 'staff',
+            receiver_id: parseInt(receiverId),
+            receiver_name: receiverName,
+            subject: subject,
+            message: message,
+            reply_to_id: null
+        };
+        
+        try {
+            const res = await fetch(`${API_URL}/messages`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                alert('✅ Message envoyé avec succès !');
+                document.getElementById('composeForm').reset();
+                loadMessages();
+            } else {
+                alert('❌ Erreur lors de l\'envoi');
+            }
+        } catch(err) {
+            console.error('Erreur:', err);
+            alert('Erreur de connexion');
+        }
+    });
+    
+    // Changement de patient
+    document.getElementById('patientSelect').addEventListener('change', (e) => {
+        currentPatientId = parseInt(e.target.value);
+        loadMessages();
+    });
+    
+    function getPatientInfo() {
+        const patients = {
+            1: { name: 'Sophie Martin' },
+            2: { name: 'Thomas Bernard' },
+            3: { name: 'Marie Dubois' }
+        };
+        return patients[currentPatientId] || { name: 'Patient' };
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    
+    // Initialisation
+    loadStaffList();
+    loadMessages();
+</script>
+</body>
+</html>

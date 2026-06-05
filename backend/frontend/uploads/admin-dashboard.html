@@ -1,0 +1,658 @@
+@'
+import { useState, useEffect } from "react";
+
+const API_BASE = "https://mce-backend-fgpg.onrender.com/api";
+
+function AdminDashboard() {
+    const [activeTab, setActiveTab] = useState("rdv");
+    const [selectedPage, setSelectedPage] = useState("home");
+    const [appointments, setAppointments] = useState([]);
+    const [doctors, setDoctors] = useState([]);
+    const [events, setEvents] = useState([]);
+    const [actualites, setActualites] = useState([]);
+    const [specialties, setSpecialties] = useState([]);
+    const [etablissement, setEtablissement] = useState([]);
+    const [partenaires, setPartenaires] = useState([]);
+    const [jobs, setJobs] = useState([]);
+    const [applications, setApplications] = useState([]);
+    const [availabilities, setAvailabilities] = useState([]);
+    const [tarifs, setTarifs] = useState([]);
+    const [paiements, setPaiements] = useState([]);
+    const [pendingResults, setPendingResults] = useState([]);
+    const [patients, setPatients] = useState([]);
+    const [newsletterCount, setNewsletterCount] = useState(0);
+    const [stats, setStats] = useState({ total: { total: 0 }, perDay: [], perDoctor: [] });
+    const [calendarData, setCalendarData] = useState([]);
+    const [siteContent, setSiteContent] = useState({});
+    const [footerContent, setFooterContent] = useState({});
+    const [paymentConfig, setPaymentConfig] = useState({});
+    const [showJobForm, setShowJobForm] = useState(false);
+    const [showEventForm, setShowEventForm] = useState(false);
+    const [showSpecialtyForm, setShowSpecialtyForm] = useState(false);
+    const [showAvailabilityForm, setShowAvailabilityForm] = useState(false);
+    const [showPatientForm, setShowPatientForm] = useState(false);
+    const [showActuForm, setShowActuForm] = useState(false);
+    const [editingActuId, setEditingActuId] = useState(null);
+    const [successMsg, setSuccessMsg] = useState("");
+    const [imagePreview, setImagePreview] = useState("");
+    const [photoPreview, setPhotoPreview] = useState("");
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === "&") return "&amp;";
+            if (m === "<") return "&lt;";
+            return "&gt;";
+        });
+    }
+
+    function showSuccess(message) {
+        setSuccessMsg(message);
+        setTimeout(function() { setSuccessMsg(""); }, 3000);
+    }
+
+    async function loadAppointments() {
+        try {
+            const res = await fetch(API_BASE + "/appointments?_=" + Date.now());
+            const data = await res.json();
+            setAppointments(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadDoctors() {
+        try {
+            const res = await fetch(API_BASE + "/staff");
+            const data = await res.json();
+            setDoctors(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadEvents() {
+        try {
+            const res = await fetch(API_BASE + "/events");
+            const data = await res.json();
+            setEvents(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadActualites() {
+        try {
+            const res = await fetch(API_BASE + "/actualites");
+            const data = await res.json();
+            setActualites(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadSpecialties() {
+        try {
+            const res = await fetch(API_BASE + "/specialties");
+            const data = await res.json();
+            setSpecialties(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadEtablissement() {
+        try {
+            const res = await fetch(API_BASE + "/etablissement");
+            const data = await res.json();
+            setEtablissement(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadPartenaires() {
+        try {
+            const res = await fetch(API_BASE + "/partenaires");
+            const data = await res.json();
+            setPartenaires(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadJobs() {
+        try {
+            const res = await fetch(API_BASE + "/admin/jobs");
+            const data = await res.json();
+            setJobs(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadApplications() {
+        try {
+            const res = await fetch(API_BASE + "/admin/applications");
+            const data = await res.json();
+            setApplications(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadAvailabilities() {
+        try {
+            const res = await fetch(API_BASE + "/availabilities/calendar?_=" + Date.now());
+            const data = await res.json();
+            setAvailabilities(data);
+            var grouped = {};
+            data.forEach(function(item) {
+                if (!grouped[item.date]) grouped[item.date] = [];
+                grouped[item.date].push(item);
+            });
+            var calendarArray = [];
+            Object.keys(grouped).sort().forEach(function(date) {
+                calendarArray.push({ date: date, slots: grouped[date] });
+            });
+            setCalendarData(calendarArray);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadTarifs() {
+        try {
+            const res = await fetch(API_BASE + "/tarifs");
+            const data = await res.json();
+            setTarifs(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadPaiements() {
+        try {
+            const res = await fetch(API_BASE + "/paiements");
+            const data = await res.json();
+            setPaiements(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadPendingResults() {
+        try {
+            const res = await fetch(API_BASE + "/admin/results/pending");
+            const data = await res.json();
+            setPendingResults(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadPatients() {
+        try {
+            const res = await fetch(API_BASE + "/admin/patients");
+            const data = await res.json();
+            setPatients(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadNewsletterStats() {
+        try {
+            const res = await fetch(API_BASE + "/newsletter/count");
+            const data = await res.json();
+            setNewsletterCount(data.count || 0);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadStats() {
+        try {
+            const res = await fetch(API_BASE + "/stats");
+            const data = await res.json();
+            setStats(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadFooterContent() {
+        try {
+            const res = await fetch(API_BASE + "/site-content/footer");
+            const data = await res.json();
+            setFooterContent(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadPaymentConfig() {
+        try {
+            const res = await fetch(API_BASE + "/paiement/config");
+            const data = await res.json();
+            setPaymentConfig(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function loadContent(page) {
+        try {
+            const res = await fetch(API_BASE + "/site-content/" + page);
+            const data = await res.json();
+            setSiteContent(data);
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteAppointment(id) {
+        if (!confirm("Supprimer ce rendez-vous ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/appointments/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Rendez-vous supprimé"); loadAppointments(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteDoctor(id) {
+        if (!confirm("Supprimer ce médecin ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/staff/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Médecin supprimé"); loadDoctors(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteEvent(id) {
+        if (!confirm("Supprimer cet événement ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/events/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Événement supprimé"); loadEvents(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteActualite(id) {
+        if (!confirm("Supprimer cette actualité ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/actualites/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Actualité supprimée"); loadActualites(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteSpecialty(id) {
+        if (!confirm("Supprimer cette spécialité ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/specialties/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Spécialité supprimée"); loadSpecialties(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteJob(id) {
+        if (!confirm("Supprimer cette offre ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/admin/jobs/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Offre supprimée"); loadJobs(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteTarif(id) {
+        if (!confirm("Supprimer ce tarif ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/tarifs/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Tarif supprimé"); loadTarifs(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deleteAvailability(id) {
+        if (!confirm("Supprimer ce créneau ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/availabilities/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Créneau supprimé"); loadAvailabilities(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function deletePatient(id) {
+        if (!confirm("Supprimer ce patient ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/admin/patients/" + id, { method: "DELETE" });
+            if (res.ok) { showSuccess("Patient supprimé"); loadPatients(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function publishResult(id) {
+        if (!confirm("Publier ce résultat ?")) return;
+        try {
+            var res = await fetch(API_BASE + "/admin/results/" + id + "/publish", { method: "PUT" });
+            if (res.ok) { showSuccess("Résultat publié"); loadPendingResults(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function markAppointmentAsViewed(id) {
+        try {
+            var res = await fetch(API_BASE + "/admin/appointments/" + id + "/view", { method: "PUT" });
+            if (res.ok) { showSuccess("Rendez-vous marqué comme vu"); loadAppointments(); }
+        } catch (err) { console.error(err); }
+    }
+
+    async function addJob(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var data = {
+            title: formData.get("title"),
+            department: formData.get("department"),
+            contract_type: formData.get("contract_type"),
+            location: formData.get("location"),
+            description: formData.get("description"),
+            requirements: formData.get("requirements"),
+            salary_range: formData.get("salary_range"),
+            active: formData.get("active") === "on" ? 1 : 0
+        };
+        try {
+            var res = await fetch(API_BASE + "/admin/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            if (res.ok) { showSuccess("Offre ajoutée"); loadJobs(); setShowJobForm(false); e.target.reset(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function addEvent(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var data = { title: formData.get("title"), description: formData.get("description"), active: formData.get("active") === "on" ? 1 : 0 };
+        try {
+            var res = await fetch(API_BASE + "/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            if (res.ok) { showSuccess("Événement ajouté"); loadEvents(); setShowEventForm(false); e.target.reset(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function addSpecialty(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var data = { name: formData.get("name"), description: formData.get("description"), ordre: parseInt(formData.get("ordre")) || 0, active: formData.get("active") === "on" ? 1 : 0 };
+        try {
+            var res = await fetch(API_BASE + "/specialties", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            if (res.ok) { showSuccess("Spécialité ajoutée"); loadSpecialties(); setShowSpecialtyForm(false); e.target.reset(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function addPatient(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var data = { first_name: formData.get("first_name"), last_name: formData.get("last_name"), email: formData.get("email"), phone: formData.get("phone"), password: formData.get("password") };
+        try {
+            var res = await fetch(API_BASE + "/admin/patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            if (res.ok) { showSuccess("Patient ajouté"); loadPatients(); setShowPatientForm(false); e.target.reset(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function addActualite(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var titre = formData.get("titre");
+        var description = formData.get("description");
+        var ordre = parseInt(formData.get("ordre")) || 0;
+        var active = formData.get("active") === "on" ? 1 : 0;
+        var imageFile = formData.get("imageFile");
+        var image_url = null;
+        if (imageFile && imageFile.size > 0) {
+            var fd = new FormData();
+            fd.append("image", imageFile);
+            try {
+                var uploadRes = await fetch(API_BASE + "/upload", { method: "POST", body: fd });
+                var uploadData = await uploadRes.json();
+                if (uploadData.imageUrl) image_url = uploadData.imageUrl;
+                else { alert("Erreur upload"); return; }
+            } catch (err) { alert("Erreur réseau upload"); return; }
+        }
+        var payload = { titre: titre, description: description, image_url: image_url, ordre: ordre, active: active };
+        try {
+            var res = await fetch(API_BASE + "/actualites", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            if (res.ok) { showSuccess("Actualité ajoutée"); loadActualites(); setShowActuForm(false); e.target.reset(); setImagePreview(""); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function addAvailability(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var doctor_id = formData.get("doctor_id");
+        var date = formData.get("date");
+        var time_slot = formData.get("start_time") + "-" + formData.get("end_time");
+        try {
+            var res = await fetch(API_BASE + "/availabilities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ doctor_id: doctor_id, date: date, time_slot: time_slot }) });
+            if (res.ok) { showSuccess("Créneau ajouté"); loadAvailabilities(); setShowAvailabilityForm(false); e.target.reset(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function addTarif(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var data = { service: formData.get("service"), prestation: formData.get("prestation"), prix: formData.get("prix"), description: formData.get("description"), ordre: parseInt(formData.get("ordre")) || 0, active: formData.get("active") === "on" ? 1 : 0 };
+        try {
+            var res = await fetch(API_BASE + "/tarifs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            if (res.ok) { showSuccess("Tarif ajouté"); loadTarifs(); e.target.reset(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function saveContent() {
+        try {
+            var res = await fetch(API_BASE + "/site-content/" + selectedPage, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(siteContent) });
+            if (res.ok) alert("Contenu mis à jour !");
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function saveFooter(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var updates = { etablissement: formData.get("etablissement"), adresse: formData.get("adresse"), telephone: formData.get("telephone"), urgences: formData.get("urgences"), technologies: formData.get("technologies"), liens: formData.get("liens"), copyright: formData.get("copyright"), reseaux: formData.get("reseaux") };
+        try {
+            var res = await fetch(API_BASE + "/site-content/footer", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) });
+            if (res.ok) { showSuccess("Footer mis à jour !"); loadFooterContent(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function savePaymentConfig(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var updates = { iban: formData.get("iban"), bic: formData.get("bic"), titulaire: formData.get("titulaire"), mobile_money_info: formData.get("mobile_money_info"), carte_info: formData.get("carte_info") };
+        try {
+            var res = await fetch(API_BASE + "/paiement/config", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) });
+            if (res.ok) { showSuccess("Configuration mise à jour"); loadPaymentConfig(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function sendNewsletter(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var subject = formData.get("subject");
+        var content = formData.get("content");
+        try {
+            var res = await fetch(API_BASE + "/newsletter/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: subject, content: content }) });
+            var data = await res.json();
+            if (res.ok) alert("Envoi terminé : " + data.successCount + " emails réussis.");
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    async function exportEmails() {
+        try {
+            var res = await fetch(API_BASE + "/newsletter/export");
+            var data = await res.json();
+            var blob = new Blob([data.emails.join("\\n")], { type: "text/csv" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "abonnes_newsletter.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) { console.error(err); }
+    }
+
+    async function addResult(e) {
+        e.preventDefault();
+        var formData = new FormData(e.target);
+        var patient_id = formData.get("patient_id");
+        var type = formData.get("type");
+        var description = formData.get("description");
+        var file_url = formData.get("file_url");
+        if (!patient_id || !type) { alert("Veuillez remplir les champs requis"); return; }
+        try {
+            var res = await fetch(API_BASE + "/admin/results", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patient_id: patient_id, type: type, description: description, file_url: file_url }) });
+            if (res.ok) { showSuccess("Résultat ajouté"); e.target.reset(); loadPendingResults(); }
+            else alert("Erreur");
+        } catch (err) { console.error(err); }
+    }
+
+    var tabs = [
+        { id: "rdv", label: "Rendez-vous" },
+        { id: "calendar", label: "Calendrier" },
+        { id: "applications", label: "Candidatures" },
+        { id: "stats", label: "Statistiques" },
+        { id: "jobs", label: "Offres d'emploi" },
+        { id: "manage", label: "Disponibilités" },
+        { id: "doctors", label: "Médecins" },
+        { id: "events", label: "Événements" },
+        { id: "content", label: "Contenu du site" },
+        { id: "actualites", label: "Actualités" },
+        { id: "specialties", label: "Spécialités" },
+        { id: "etablissement", label: "Établissement" },
+        { id: "partenaires", label: "Partenaires" },
+        { id: "newsletter", label: "Newsletter" },
+        { id: "footer", label: "Footer" },
+        { id: "tarifs", label: "Tarifs" },
+        { id: "caisse", label: "Caisse" },
+        { id: "results", label: "Résultats labo" },
+        { id: "patients", label: "Patients" }
+    ];
+
+    useEffect(function() {
+        loadAppointments();
+        loadDoctors();
+        loadEvents();
+        loadActualites();
+        loadSpecialties();
+        loadEtablissement();
+        loadPartenaires();
+        loadJobs();
+        loadApplications();
+        loadAvailabilities();
+        loadTarifs();
+        loadPaiements();
+        loadPatients();
+        loadStats();
+        loadFooterContent();
+        loadPaymentConfig();
+        loadNewsletterStats();
+        loadPendingResults();
+        loadContent("home");
+    }, []);
+
+    return React.createElement("div", { style: { maxWidth: "1400px", margin: "auto", background: "white", borderRadius: "24px", padding: "20px", boxShadow: "0 8px 20px rgba(0,0,0,0.05)" } },
+        React.createElement("h1", { style: { color: "#0b6e8f", borderLeft: "5px solid #2ec4b6", paddingLeft: "20px", marginTop: 0 } }, "📋 Administration Medical Center Elizabeth"),
+        successMsg && React.createElement("div", { style: { background: "#28a745", color: "white", padding: "10px", borderRadius: "5px", marginBottom: "20px" } }, successMsg),
+        React.createElement("div", { style: { display: "flex", gap: "10px", marginBottom: "20px", borderBottom: "1px solid #ddd", flexWrap: "wrap" } }, tabs.map(function(tab) {
+            return React.createElement("div", { key: tab.id, onClick: function() { setActiveTab(tab.id); if (tab.id === "content") loadContent(selectedPage); }, style: { padding: "10px 20px", cursor: "pointer", background: activeTab === tab.id ? "#0b6e8f" : "#e9ecef", color: activeTab === tab.id ? "white" : "#666", borderRadius: "8px 8px 0 0" } }, tab.label);
+        })),
+        activeTab === "rdv" && React.createElement("div", null, React.createElement("h2", null, "📋 Rendez-vous"), React.createElement("div", { style: { overflowX: "auto" } }, React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+            React.createElement("thead", null, React.createElement("tr", { style: { background: "#0b6e8f", color: "white" } },
+                React.createElement("th", { style: { padding: "8px" } }, "ID"),
+                React.createElement("th", null, "Nom"),
+                React.createElement("th", null, "Email"),
+                React.createElement("th", null, "Date"),
+                React.createElement("th", null, "Heure"),
+                React.createElement("th", null, "Actions"))),
+            React.createElement("tbody", null, appointments.map(function(rdv) {
+                return React.createElement("tr", { key: rdv.id },
+                    React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, rdv.id),
+                    React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(rdv.fullname)),
+                    React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(rdv.email)),
+                    React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, rdv.date),
+                    React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, rdv.time),
+                    React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: function() { deleteAppointment(rdv.id); }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️")));
+            }))))),
+        activeTab === "jobs" && React.createElement("div", null, React.createElement("h2", null, "💼 Offres d'emploi"),
+            React.createElement("button", { onClick: function() { setShowJobForm(!showJobForm); }, style: { background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer", marginBottom: "20px" } }, showJobForm ? "-" : "+", " Ajouter"),
+            showJobForm && React.createElement("form", { onSubmit: addJob, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
+                React.createElement("input", { type: "text", name: "title", placeholder: "Titre", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "text", name: "department", placeholder: "Département", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("select", { name: "contract_type", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }, React.createElement("option", null, "CDI"), React.createElement("option", null, "CDD"), React.createElement("option", null, "Stage")),
+                React.createElement("input", { type: "text", name: "location", placeholder: "Localisation", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("textarea", { name: "description", placeholder: "Description", rows: "3", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("textarea", { name: "requirements", placeholder: "Prérequis", rows: "3", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "text", name: "salary_range", placeholder: "Salaire", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("label", null, React.createElement("input", { type: "checkbox", name: "active", defaultChecked: true }), " Actif"),
+                React.createElement("br", null),
+                React.createElement("button", { type: "submit", style: { marginTop: "10px", background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer" } }, "Ajouter")),
+            React.createElement("div", { style: { overflowX: "auto" } }, React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+                React.createElement("thead", null, React.createElement("tr", { style: { background: "#0b6e8f", color: "white" } }, React.createElement("th", null, "ID"), React.createElement("th", null, "Titre"), React.createElement("th", null, "Département"), React.createElement("th", null, "Contrat"), React.createElement("th", null, "Localisation"), React.createElement("th", null, "Actif"), React.createElement("th", null, "Actions"))),
+                React.createElement("tbody", null, jobs.map(function(job) {
+                    return React.createElement("tr", { key: job.id },
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, job.id),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(job.title)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(job.department)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(job.contract_type)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(job.location)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, job.active ? "✅ Oui" : "❌ Non"),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: function() { deleteJob(job.id); }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️")));
+                }))))),
+        activeTab === "manage" && React.createElement("div", null, React.createElement("h3", null, "Gestion des disponibilités"),
+            React.createElement("button", { onClick: function() { setShowAvailabilityForm(!showAvailabilityForm); }, style: { background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer", marginBottom: "20px" } }, showAvailabilityForm ? "-" : "+", " Ajouter créneau"),
+            showAvailabilityForm && React.createElement("form", { onSubmit: addAvailability, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
+                React.createElement("select", { name: "doctor_id", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }, React.createElement("option", { value: "" }, "Médecin"), doctors.map(function(d) { return React.createElement("option", { key: d.id, value: d.id }, escapeHtml(d.full_name)); })),
+                React.createElement("input", { type: "date", name: "date", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "time", name: "start_time", required: true, style: { width: "48%", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "time", name: "end_time", required: true, style: { width: "48%", padding: "8px", borderRadius: "8px", float: "right" } }),
+                React.createElement("div", { style: { clear: "both" } }),
+                React.createElement("button", { type: "submit", style: { marginTop: "10px", background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer" } }, "Ajouter")),
+            React.createElement("h3", null, "Liste des créneaux"),
+            React.createElement("div", { style: { overflowX: "auto" } }, React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+                React.createElement("thead", null, React.createElement("tr", { style: { background: "#0b6e8f", color: "white" } }, React.createElement("th", null, "Médecin"), React.createElement("th", null, "Date"), React.createElement("th", null, "Créneau"), React.createElement("th", null, "Statut"), React.createElement("th", null, "Action"))),
+                React.createElement("tbody", null, availabilities.map(function(av) {
+                    return React.createElement("tr", { key: av.id },
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(av.doctor_name)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, av.date),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, av.time_slot),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd", color: av.is_booked ? "red" : "green" } }, av.is_booked ? "Réservé" : "Libre"),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, !av.is_booked && React.createElement("button", { onClick: function() { deleteAvailability(av.id); }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️")));
+                }))))),
+        activeTab === "actualites" && React.createElement("div", null, React.createElement("h2", null, "Actualités"),
+            React.createElement("button", { onClick: function() { setShowActuForm(!showActuForm); }, style: { background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer", marginBottom: "20px" } }, showActuForm ? "-" : "+", " Ajouter"),
+            showActuForm && React.createElement("form", { onSubmit: addActualite, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
+                React.createElement("input", { type: "text", name: "titre", placeholder: "Titre", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("textarea", { name: "description", placeholder: "Description", rows: "3", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "file", name: "imageFile", accept: "image/*", onChange: function(e) { if (e.target.files[0]) { var reader = new FileReader(); reader.onload = function(ev) { setImagePreview(ev.target.result); }; reader.readAsDataURL(e.target.files[0]); } }, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                imagePreview && React.createElement("img", { src: imagePreview, style: { maxWidth: "100px", borderRadius: "8px", marginBottom: "8px" }, alt: "Preview" }),
+                React.createElement("input", { type: "number", name: "ordre", placeholder: "Ordre", defaultValue: "0", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("label", null, React.createElement("input", { type: "checkbox", name: "active", defaultChecked: true }), " Actif"),
+                React.createElement("br", null),
+                React.createElement("button", { type: "submit", style: { marginTop: "10px", background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer" } }, "Ajouter")),
+            React.createElement("div", { style: { overflowX: "auto" } }, React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+                React.createElement("thead", null, React.createElement("tr", { style: { background: "#0b6e8f", color: "white" } }, React.createElement("th", null, "ID"), React.createElement("th", null, "Titre"), React.createElement("th", null, "Description"), React.createElement("th", null, "Image"), React.createElement("th", null, "Actif"), React.createElement("th", null, "Actions"))),
+                React.createElement("tbody", null, actualites.map(function(actu) {
+                    return React.createElement("tr", { key: actu.id },
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, actu.id),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(actu.titre)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(actu.description)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, actu.image_url ? React.createElement("img", { src: actu.image_url, style: { width: "40px", height: "40px", objectFit: "cover", borderRadius: "8px" }, alt: "" }) : "-"),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, actu.active ? "✅" : "❌"),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: function() { deleteActualite(actu.id); }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️")));
+                }))))),
+        activeTab === "specialties" && React.createElement("div", null, React.createElement("h2", null, "Spécialités"),
+            React.createElement("button", { onClick: function() { setShowSpecialtyForm(!showSpecialtyForm); }, style: { background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer", marginBottom: "20px" } }, showSpecialtyForm ? "-" : "+", " Ajouter"),
+            showSpecialtyForm && React.createElement("form", { onSubmit: addSpecialty, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
+                React.createElement("input", { type: "text", name: "name", placeholder: "Nom", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("textarea", { name: "description", placeholder: "Description", rows: "2", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "number", name: "ordre", placeholder: "Ordre", defaultValue: "0", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("label", null, React.createElement("input", { type: "checkbox", name: "active", defaultChecked: true }), " Active"),
+                React.createElement("br", null),
+                React.createElement("button", { type: "submit", style: { marginTop: "10px", background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer" } }, "Ajouter")),
+            React.createElement("div", { style: { overflowX: "auto" } }, React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+                React.createElement("thead", null, React.createElement("tr", { style: { background: "#0b6e8f", color: "white" } }, React.createElement("th", null, "ID"), React.createElement("th", null, "Nom"), React.createElement("th", null, "Description"), React.createElement("th", null, "Ordre"), React.createElement("th", null, "Active"), React.createElement("th", null, "Actions"))),
+                React.createElement("tbody", null, specialties.map(function(spec) {
+                    return React.createElement("tr", { key: spec.id },
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, spec.id),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(spec.name)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(spec.description || "")),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, spec.ordre),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, spec.active ? "✅" : "❌"),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: function() { deleteSpecialty(spec.id); }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️")));
+                }))))),
+        activeTab === "patients" && React.createElement("div", null, React.createElement("h2", null, "Patients"),
+            React.createElement("button", { onClick: function() { setShowPatientForm(!showPatientForm); }, style: { background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer", marginBottom: "20px" } }, showPatientForm ? "-" : "+", " Ajouter"),
+            showPatientForm && React.createElement("form", { onSubmit: addPatient, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
+                React.createElement("input", { type: "text", name: "first_name", placeholder: "Prénom", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "text", name: "last_name", placeholder: "Nom", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "email", name: "email", placeholder: "Email", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "tel", name: "phone", placeholder: "Téléphone", style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("input", { type: "password", name: "password", placeholder: "Mot de passe", required: true, style: { width: "100%", marginBottom: "8px", padding: "8px", borderRadius: "8px" } }),
+                React.createElement("button", { type: "submit", style: { marginTop: "10px", background: "#0b6e8f", color: "white", border: "none", padding: "8px 16px", borderRadius: "25px", cursor: "pointer" } }, "Ajouter")),
+            React.createElement("div", { style: { overflowX: "auto" } }, React.createElement("table", { style: { width: "100%", borderCollapse: "collapse" } },
+                React.createElement("thead", null, React.createElement("tr", { style: { background: "#0b6e8f", color: "white" } }, React.createElement("th", null, "ID"), React.createElement("th", null, "Prénom"), React.createElement("th", null, "Nom"), React.createElement("th", null, "Email"), React.createElement("th", null, "Téléphone"), React.createElement("th", null, "Actions"))),
+                React.createElement("tbody", null, patients.map(function(p) {
+                    return React.createElement("tr", { key: p.id },
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, p.id),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(p.first_name)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(p.last_name)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(p.email)),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, escapeHtml(p.phone || "-")),
+                        React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: function() { deletePatient(p.id); }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️")));
+                }))))),
+        React.createElement("div", { className: "footer", style: { marginTop: "20px", textAlign: "center", color: "#6c757d" } }, React.createElement("p", null, "🔒 Accès sécurisé réservé au personnel autorisé"))
+    );
+}
+
+export default AdminDashboard;
+'@ | Out-File -FilePath "src/pages/AdminDashboard.jsx" -Encoding UTF8

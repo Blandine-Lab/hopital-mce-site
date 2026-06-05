@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Santé | Check-up Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: #fbfdff; color: #1a2c3e; scroll-behavior: smooth; }
+    :root { --primary: #0b6e8f; --primary-dark: #07506b; --secondary: #2ec4b6; --accent: #ff9f1c; --light-bg: #f0f7fc; --gray-light: #eef2f6; --shadow-sm: 0 10px 25px -5px rgba(0,0,0,0.05); --shadow-md: 0 20px 25px -12px rgba(0,0,0,0.08); --radius-card: 1.5rem; --transition: all 0.3s ease; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+    /* Top bar & navbar */
+    .top-bar { background: #061e28; color: white; padding: 0.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .top-bar a { color: white; text-decoration: none; font-size: 0.85rem; }
+    .navbar { position: sticky; top: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); box-shadow: 0 1px 2px rgba(0,0,0,0.03); z-index: 1000; padding: 1rem 0; }
+    .nav-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .logo h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .logo span { font-size: 0.8rem; font-weight: 500; color: var(--primary-dark); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-weight: 500; transition: var(--transition); color: #1f3b4c; text-decoration: none; }
+    .nav-links a:hover { color: var(--primary); }
+    .btn-outline-light { background: transparent; border: 1.5px solid var(--primary); padding: 0.5rem 1.2rem; border-radius: 2rem; color: var(--primary); font-weight: 600; }
+    .menu-icon { display: none; font-size: 1.6rem; cursor: pointer; color: var(--primary); }
+    .secondary-nav { background: white; border-bottom: 1px solid #eef2f8; padding: 0.5rem 2rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+    .secondary-nav a { color: #0b6e8f; font-weight: 500; text-decoration: none; font-size: 0.9rem; }
+    .secondary-nav a:hover { color: var(--secondary); }
+    /* Page checkup */
+    .page-header { background: linear-gradient(95deg, #e6f4ff 0%, #ffffff 70%); padding: 4rem 0 2rem; text-align: center; }
+    .page-header h1 { font-size: 2.8rem; color: var(--primary); }
+    .checkup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 3rem 0; }
+    .checkup-card { background: white; border-radius: var(--radius-card); padding: 1.5rem; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid #eef2f8; }
+    .checkup-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .checkup-card h3 { color: var(--primary); margin-bottom: 0.5rem; }
+    .price { font-size: 1.5rem; font-weight: bold; color: var(--secondary); margin: 1rem 0; }
+    .price span { font-size: 0.9rem; font-weight: normal; color: #6c757d; }
+    .checkup-card ul { list-style: none; margin: 1rem 0; }
+    .checkup-card li { margin: 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; }
+    .checkup-card li i { color: var(--secondary); width: 20px; }
+    .btn-checkup { background: var(--primary); color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 2rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .btn-checkup:hover { background: var(--primary-dark); }
+    .form-section { background: var(--light-bg); border-radius: 2rem; padding: 2rem; margin: 2rem 0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { font-weight: 600; display: block; margin-bottom: 0.5rem; color: #0f3a4b; }
+    input, select, textarea { width: 100%; padding: 0.8rem; border-radius: 1rem; border: 1px solid #dce5ec; font-family: inherit; }
+    input:focus, select:focus { outline: none; border-color: var(--secondary); }
+    footer { background: #061e28; color: #cfdfe9; padding: 3rem 0 1.5rem; margin-top: 2rem; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .copyright { text-align: center; border-top: 1px solid #2d4a5a; padding-top: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+    @media (max-width: 900px) {
+      .nav-links { display: none; flex-direction: column; width: 100%; background: white; padding: 1.5rem; border-radius: 1.5rem; margin-top: 1rem; }
+      .nav-links.active { display: flex; }
+      .menu-icon { display: block; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="/"><i class="fas fa-user"></i> Portail patient</a>
+        <a href="/"><i class="fas fa-language"></i> English version</a>
+        <a href="/support.html"><i class="fas fa-heart"></i> Je fais un don</a>
+        <a href="/"><i class="fas fa-stethoscope"></i> Trouver un médecin</a>
+    </div>
+    <div style="font-size: 0.75rem;"><i class="fas fa-phone-alt"></i> Urgences 24/7 : +33 (0)1 88 88 88 88</div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container nav-container">
+    <div class="logo"><a href="/" style="text-decoration: none;"><h1>NEXUS Santé <i class="fas fa-heartbeat"></i></h1><span>Hôpital 5.0 · Soins augmentés</span></a></div>
+    <div class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></div>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Accueil</a>
+      <a href="/#services">Services</a>
+      <a href="/#doctors">Médecins</a>
+      <a href="/#appointment">Rendez-vous</a>
+      <a href="/#contact">Contact</a>
+      <a href="#" class="btn-outline-light">Espace Patient</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Secondary navigation -->
+<div class="secondary-nav">
+    <a href="/">Informations patients & visiteurs</a>
+    <a href="/">Nos spécialités</a>
+    <a href="/checkup.html" style="color: var(--secondary); font-weight: bold;">Check-up Center</a>
+    <a href="/about.html">Nous connaître</a>
+    <a href="/support.html">Nous soutenir</a>
+</div>
+
+<!-- En-tête -->
+<div class="page-header">
+    <div class="container">
+        <h1>Check-up Center</h1>
+        <p style="color: #2c4b62; max-width: 700px; margin: 1rem auto 0;">Prenez soin de votre santé grâce à nos bilans complets, réalisés avec des équipements de dernière génération.</p>
+    </div>
+</div>
+
+<!-- Offres de check-up -->
+<div class="container">
+    <div class="checkup-grid">
+        <div class="checkup-card">
+            <h3>Bilan essentiel</h3>
+            <div class="price">150€ <span>HT</span></div>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Prise de sang complète</li>
+                <li><i class="fas fa-check-circle"></i> Tension artérielle, poids, IMC</li>
+                <li><i class="fas fa-check-circle"></i> ECG de repos</li>
+                <li><i class="fas fa-check-circle"></i> Entretien avec un médecin</li>
+            </ul>
+            <button class="btn-checkup" onclick="selectCheckup('Bilan essentiel')">Réserver</button>
+        </div>
+        <div class="checkup-card">
+            <h3>Bilan confort +</h3>
+            <div class="price">290€ <span>HT</span></div>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Tout le bilan essentiel</li>
+                <li><i class="fas fa-check-circle"></i> Échographie abdominale</li>
+                <li><i class="fas fa-check-circle"></i> Dépistage cardiovasculaire avancé</li>
+                <li><i class="fas fa-check-circle"></i> Bilan nutritionnel</li>
+            </ul>
+            <button class="btn-checkup" onclick="selectCheckup('Bilan confort +')">Réserver</button>
+        </div>
+        <div class="checkup-card">
+            <h3>Bilan premium</h3>
+            <div class="price">590€ <span>HT</span></div>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Tout le bilan confort +</li>
+                <li><i class="fas fa-check-circle"></i> IRM cérébrale ou thoracique</li>
+                <li><i class="fas fa-check-circle"></i> Test d'effort cardiaque</li>
+                <li><i class="fas fa-check-circle"></i> Analyse génétique optionnelle</li>
+            </ul>
+            <button class="btn-checkup" onclick="selectCheckup('Bilan premium')">Réserver</button>
+        </div>
+    </div>
+</div>
+
+<!-- Formulaire de réservation -->
+<div class="container">
+    <div class="form-section" id="reservationForm">
+        <h2 style="color: var(--primary); margin-bottom: 1rem;">Demander un rendez-vous</h2>
+        <form id="checkupForm">
+            <div class="form-row">
+                <div class="form-group"><label>Nom complet</label><input type="text" id="fullname" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="email" required></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Téléphone</label><input type="tel" id="phone" required></div>
+                <div class="form-group"><label>Bilan choisi</label><select id="checkupType"><option>Bilan essentiel</option><option>Bilan confort +</option><option>Bilan premium</option></select></div>
+                <div class="form-group"><label>Date souhaitée</label><input type="date" id="date" required></div>
+                <div class="form-group"><label>Créneau</label><select id="time"><option>Matin (9h-12h)</option><option>Après-midi (14h-17h)</option></select></div>
+            </div>
+            <div class="form-group"><label>Message / remarques</label><textarea rows="2" id="message"></textarea></div>
+            <button type="submit" class="btn-checkup" style="background: var(--secondary);">Envoyer la demande</button>
+        </form>
+        <div id="formFeedback" style="margin-top: 1rem; font-weight: 500; text-align: center;"></div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-col"><h4>NEXUS Santé</h4><p><i class="fas fa-map-marker-alt"></i> 33 Avenue de l'Innovation, Paris 75012</p><p><i class="fas fa-phone-alt"></i> +33 (0)1 88 88 88 88</p><p><i class="fas fa-clock"></i> Urgences 24/7 - Accès permanent</p></div>
+    <div class="footer-col"><h4>Dernières technologies</h4><ul style="list-style: none;"><li>▪ IRM 7T & Photon-counting</li><li>▪ Salle hybride connectée</li><li>▪ Exosquelettes rééducation</li><li>▪ Télémédecine immersive</li></ul></div>
+    <div class="footer-col"><h4>Liens utiles</h4><p><a href="#">Espace patient sécurisé</a></p><p><a href="#">Avis et références</a></p><p><a href="#">Recrutement medical</a></p></div>
+    <div class="footer-col"><h4>Suivez-nous</h4><div style="display:flex; gap:1rem; font-size:1.5rem;"><i class="fab fa-twitter"></i><i class="fab fa-linkedin"></i><i class="fab fa-instagram"></i></div></div>
+  </div>
+  <div class="copyright"><p>© 2026 Nexus Santé — Hôpital de dernière génération. Soins augmentés, éthique et excellence.</p></div>
+</footer>
+
+<script>
+  // Menu mobile
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  if(menuToggle) menuToggle.onclick = () => navLinks.classList.toggle('active');
+
+  // Pré-remplir le select du formulaire si on clique sur un bouton "Réserver"
+  function selectCheckup(type) {
+    document.getElementById('checkupType').value = type;
+    document.getElementById('reservationForm').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Simulation d'envoi du formulaire
+  const form = document.getElementById('checkupForm');
+  const feedback = document.getElementById('formFeedback');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fullname = document.getElementById('fullname').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const checkup = document.getElementById('checkupType').value;
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+
+    if (!fullname || !email || !phone || !date) {
+      feedback.innerHTML = '<span style="color:red;">Veuillez remplir tous les champs obligatoires.</span>';
+      return;
+    }
+    feedback.innerHTML = '<span style="color:green;">✅ Votre demande a été envoyée. Un conseiller vous recontactera sous 24h.</span>';
+    form.reset();
+    setTimeout(() => feedback.innerHTML = '', 4000);
+  });
+</script>
+</body>
+</html>

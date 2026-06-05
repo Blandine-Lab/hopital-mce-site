@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Medical Center Elizabeth</title>
+    <!-- Police locale sans Google Fonts -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f0f7fc; color: #1a2c3e; }
+        .admin-header { background: linear-gradient(135deg, #0b6e8f 0%, #2ec4b6 100%); color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.5rem; }
+        .tab-btn { background: transparent; border: none; padding: 0.8rem 1.5rem; cursor: pointer; font-weight: 600; color: #666; transition: all 0.3s; border-radius: 2rem; }
+        .tab-btn.active { background: #0b6e8f; color: white; }
+        .tab-pane { display: none; background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; }
+        .tab-pane.active { display: block; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f0f7fc; font-weight: 600; }
+        .btn-edit, .btn-delete { background: none; border: none; cursor: pointer; padding: 0.3rem 0.6rem; border-radius: 0.3rem; margin: 0 0.2rem; font-size: 1rem; }
+        .btn-edit { color: #0b6e8f; }
+        .btn-delete { color: #f44336; }
+        .btn-add { background: #0b6e8f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; margin-bottom: 1rem; transition: all 0.3s; }
+        .btn-add:hover { background: #0a5d7a; transform: translateY(-2px); }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 2rem; border-radius: 1rem; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 0.6rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 0.5rem; font-family: inherit; }
+        .modal-content button { margin-top: 1rem; margin-right: 0.5rem; }
+        .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; }
+        .staff-photo { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; background: #f0f0f0; }
+        .photo-preview { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-top: 10px; border: 3px solid #0b6e8f; }
+        .upload-area { border: 2px dashed #ddd; border-radius: 1rem; padding: 1.5rem; text-align: center; margin: 1rem 0; cursor: pointer; transition: all 0.3s; background: #fafafa; }
+        .upload-area:hover { border-color: #0b6e8f; background: #f0f7fc; }
+        .success-message { background: #4caf50; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; display: none; }
+        .icon-preview { display: inline-block; width: 30px; text-align: center; }
+        @media (max-width: 768px) { th, td { display: block; } }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div class="admin-header">
+    <h2><i class="fas fa-user-shield"></i> Panneau d'administration - MCE</h2>
+    <div>
+        <span id="adminName" style="margin-right: 1rem;"></span>
+        <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+    </div>
+</div>
+<div class="container">
+    <div id="successMsg" class="success-message"></div>
+    
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="specialties">Spécialités</button>
+        <button class="tab-btn" data-tab="actualites">Actualités</button>
+        <button class="tab-btn" data-tab="doctors">Médecins</button>
+        <button class="tab-btn" data-tab="staff">Personnel</button>
+        <button class="tab-btn" data-tab="events">📅 Prochaines actions</button>
+        <button class="tab-btn" data-tab="jobs">Offres d'emploi</button>
+        <button class="tab-btn" data-tab="site">Contenu du site</button>
+    </div>
+
+    <div id="specialties" class="tab-pane active">
+        <button class="btn-add" onclick="openForm('specialty')">+ Ajouter une spécialité</button>
+        <table id="specialties-table"><thead><tr><th>Nom</th><th>Description</th><th>Ordre</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div id="actualites" class="tab-pane">
+        <button class="btn-add" onclick="openForm('actualite')">+ Ajouter une actualité</button>
+        <table id="actualites-table"><thead><tr><th>Titre</th><th>Description</th><th>Image</th><th>Ordre</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div id="doctors" class="tab-pane">
+        <button class="btn-add" onclick="openForm('doctor')">+ Ajouter un médecin</button>
+        <table id="doctors-table"><thead><tr><th>Nom</th><th>Spécialité</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div id="staff" class="tab-pane">
+        <button class="btn-add" onclick="openForm('staff')">+ Ajouter un personnel</button>
+        <table id="staff-table"><thead><tr><th>Photo</th><th>Nom</th><th>Profession</th><th>Spécialité</th><th>Département</th><th>Email</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div id="events" class="tab-pane">
+        <button class="btn-add" onclick="openForm('event')">+ Ajouter un événement</button>
+        <table id="events-table">
+            <thead>
+                <tr><th>Icône</th><th>Titre</th><th>Description</th><th>Ordre</th><th>Actif</th><th>Actions</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="jobs" class="tab-pane">
+        <button class="btn-add" onclick="openForm('job')">+ Ajouter une offre</button>
+        <table id="jobs-table"><thead><tr><th>Titre</th><th>Département</th><th>Type</th><th>Localisation</th><th>Actif</th><th>Actions</th></tr></thead><tbody></tbody></table>
+    </div>
+
+    <div id="site" class="tab-pane">
+        <h3>Modifier les textes de la page d'accueil</h3>
+        <div id="site-content-form"></div>
+        <button class="btn-add" onclick="saveSiteContent()">Enregistrer les modifications</button>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'medical_center_db';
+    let currentEditId = null;
+    let currentType = null;
+
+    const availableIcons = [
+        'fas fa-syringe', 'fas fa-heartbeat', 'fas fa-chalkboard-user', 
+        'fas fa-laptop-medical', 'fas fa-calendar-alt', 'fas fa-stethoscope',
+        'fas fa-ambulance', 'fas fa-baby', 'fas fa-brain', 'fas fa-tooth',
+        'fas fa-eye', 'fas fa-bone', 'fas fa-lungs', 'fas fa-virus',
+        'fas fa-vaccine', 'fas fa-hand-holding-heart', 'fas fa-apple-alt'
+    ];
+
+    function showSuccess(message) {
+        const msgDiv = document.getElementById('successMsg');
+        msgDiv.textContent = message;
+        msgDiv.style.display = 'block';
+        setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
+    }
+
+    function getDB() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        // Structure complète avec events
+        return {
+            specialties: [],
+            actualites: [],
+            doctors: [],
+            staff: [],
+            events: [  // Collection events bien définie
+                { id: 1, icon: "fas fa-syringe", title: "Campagne vaccination", description: "grippe saisonnière – à partir du 15 octobre", ordre: 1, active: 1 },
+                { id: 2, icon: "fas fa-heartbeat", title: "Dépistage gratuit", description: "hypertension & diabète – tous les mercredis", ordre: 2, active: 1 },
+                { id: 3, icon: "fas fa-chalkboard-user", title: "Atelier 'Mieux vivre'", description: "gestion du stress & alimentation – samedi 20 mai", ordre: 3, active: 1 },
+                { id: 4, icon: "fas fa-laptop-medical", title: "Téléconsultation 24/7", description: "prise de RDV en ligne immédiate", ordre: 4, active: 1 }
+            ],
+            jobs: [],
+            siteContent: {
+                hero_title: "Bienvenue au Medical Center Elizabeth (MCE)",
+                hero_subtitle: "Soins d'excellence",
+                hero_desc: "Blocs opératoires robotisés, diagnostic augmenté par intelligence artificielle...",
+                stat1_number: "98%", stat1_label: "Satisfaction patient",
+                stat2_number: "24/7", stat2_label: "Urgences & téléconsultation",
+                stat3_number: "+150", stat3_label: "Spécialistes hautement qual."
+            }
+        };
+    }
+
+    function saveDB(db) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            return true;
+        } catch (e) {
+            console.error('Erreur saveDB:', e);
+            alert('Erreur de sauvegarde: ' + e.message);
+            return false;
+        }
+    }
+
+    function getNextId(db, collection) {
+        const items = db[collection] || [];
+        return items.length > 0 ? Math.max(...items.map(item => item.id)) + 1 : 1;
+    }
+
+    function checkAuth() {
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = '/admin-login.html';
+            return false;
+        }
+        document.getElementById('adminName').innerText = 'Administrateur';
+        return true;
+    }
+
+    function logout() {
+        localStorage.removeItem('adminToken');
+        window.location.href = '/';
+    }
+
+    // Onglets
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab;
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            loadTabData(tabId);
+        });
+    });
+
+    function loadTabData(tab) {
+        if (tab === 'specialties') loadSpecialties();
+        else if (tab === 'actualites') loadActualites();
+        else if (tab === 'doctors') loadDoctors();
+        else if (tab === 'staff') loadStaff();
+        else if (tab === 'events') loadEvents();
+        else if (tab === 'jobs') loadJobs();
+        else if (tab === 'site') loadSiteContent();
+    }
+
+    // ============ ÉVÉNEMENTS ============
+    function loadEvents() {
+        const db = getDB();
+        const events = db.events || [];
+        const tbody = document.querySelector('#events-table tbody');
+        if (tbody) {
+            tbody.innerHTML = events.sort((a,b) => a.ordre - b.ordre).map(e => `
+                <tr>
+                    <td class="icon-preview"><i class="${e.icon}" style="color:#2ec4b6; font-size:1.3rem;"></i></td>
+                    <td><strong>${escapeHtml(e.title)}</strong></td>
+                    <td>${escapeHtml(e.description)}</td>
+                    <td>${e.ordre}</td>
+                    <td>${e.active === 1 ? '✅ Oui' : '❌ Non'}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn-delete" onclick="deleteEvent(${e.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function deleteEvent(id) { 
+        if(confirm('Supprimer cet événement ?')) {
+            const db = getDB();
+            db.events = db.events.filter(e => e.id !== id);
+            saveDB(db);
+            loadEvents();
+            showSuccess('Événement supprimé');
+        }
+    }
+    function editEvent(id) { openForm('event', id); }
+
+    // ============ AUTRES FONCTIONS ============
+    function loadSpecialties() {
+        const db = getDB();
+        const tbody = document.querySelector('#specialties-table tbody');
+        tbody.innerHTML = (db.specialties || []).map(s => `
+            <tr>
+                <td>${escapeHtml(s.name)}</td>
+                <td>${escapeHtml(s.description || '')}</td>
+                <td>${s.ordre}</td>
+                <td><button class="btn-edit" onclick="editSpecialty(${s.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-delete" onclick="deleteSpecialty(${s.id})"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    function deleteSpecialty(id) { 
+        if(confirm('Supprimer ?')) {
+            const db = getDB();
+            db.specialties = db.specialties.filter(s => s.id !== id);
+            saveDB(db);
+            loadSpecialties();
+            showSuccess('Spécialité supprimée');
+        }
+    }
+    function editSpecialty(id) { openForm('specialty', id); }
+
+    function loadActualites() {
+        const db = getDB();
+        const tbody = document.querySelector('#actualites-table tbody');
+        tbody.innerHTML = (db.actualites || []).map(a => `
+            <tr>
+                <td>${escapeHtml(a.titre)}</td>
+                <td>${escapeHtml(a.description)}</td>
+                <td>${a.image_url ? '<img src="'+escapeHtml(a.image_url)+'" style="width:50px;height:50px;object-fit:cover;border-radius:8px;">' : 'Aucune'}</td>
+                <td>${a.ordre}</td>
+                <td><button class="btn-edit" onclick="editActualite(${a.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-delete" onclick="deleteActualite(${a.id})"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    function deleteActualite(id) { 
+        if(confirm('Supprimer ?')) {
+            const db = getDB();
+            db.actualites = db.actualites.filter(a => a.id !== id);
+            saveDB(db);
+            loadActualites();
+            showSuccess('Actualité supprimée');
+        }
+    }
+    function editActualite(id) { openForm('actualite', id); }
+
+    function loadDoctors() {
+        const db = getDB();
+        const tbody = document.querySelector('#doctors-table tbody');
+        tbody.innerHTML = (db.doctors || []).map(d => `
+            <tr>
+                <td>${escapeHtml(d.name)}</td>
+                <td>${escapeHtml(d.specialty)}</td>
+                <td><button class="btn-edit" onclick="editDoctor(${d.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-delete" onclick="deleteDoctor(${d.id})"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    function deleteDoctor(id) { 
+        if(confirm('Supprimer ?')) {
+            const db = getDB();
+            db.doctors = db.doctors.filter(d => d.id !== id);
+            saveDB(db);
+            loadDoctors();
+            showSuccess('Médecin supprimé');
+        }
+    }
+    function editDoctor(id) { openForm('doctor', id); }
+
+    function loadStaff() {
+        const db = getDB();
+        const tbody = document.querySelector('#staff-table tbody');
+        tbody.innerHTML = (db.staff || []).map(s => `
+            <tr>
+                <td>${s.photo_url ? `<img src="${escapeHtml(s.photo_url)}" class="staff-photo">` : '<i class="fas fa-user-circle fa-2x" style="color:#0b6e8f"></i>'}</td>
+                <td>${escapeHtml(s.full_name)}</td>
+                <td>${escapeHtml(s.profession)}</td>
+                <td>${escapeHtml(s.specialty || '')}</td>
+                <td>${escapeHtml(s.department)}</td>
+                <td>${escapeHtml(s.email)}</td>
+                <td><button class="btn-edit" onclick="editStaff(${s.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-delete" onclick="deleteStaff(${s.id})"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    function deleteStaff(id) { 
+        if(confirm('Supprimer ?')) {
+            const db = getDB();
+            db.staff = db.staff.filter(s => s.id !== id);
+            saveDB(db);
+            loadStaff();
+            showSuccess('Personnel supprimé');
+        }
+    }
+    function editStaff(id) { openForm('staff', id); }
+
+    function loadJobs() {
+        const db = getDB();
+        const tbody = document.querySelector('#jobs-table tbody');
+        tbody.innerHTML = (db.jobs || []).map(j => `
+            <tr>
+                <td>${escapeHtml(j.title)}</td>
+                <td>${escapeHtml(j.department)}</td>
+                <td>${escapeHtml(j.contract_type)}</td>
+                <td>${escapeHtml(j.location)}</td>
+                <td>${j.active === 1 ? '✅ Actif' : '❌ Inactif'}</td>
+                <td><button class="btn-edit" onclick="editJob(${j.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-delete" onclick="deleteJob(${j.id})"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+    }
+
+    function deleteJob(id) { 
+        if(confirm('Supprimer ?')) {
+            const db = getDB();
+            db.jobs = db.jobs.filter(j => j.id !== id);
+            saveDB(db);
+            loadJobs();
+            showSuccess('Offre supprimée');
+        }
+    }
+    function editJob(id) { openForm('job', id); }
+
+    function loadSiteContent() {
+        const db = getDB();
+        const content = db.siteContent || {};
+        const container = document.getElementById('site-content-form');
+        container.innerHTML = `
+            <div><label>Titre principal :</label><input type="text" id="hero_title" value="${escapeHtml(content.hero_title || '')}" style="width:100%"></div>
+            <div><label>Sous-titre :</label><input type="text" id="hero_subtitle" value="${escapeHtml(content.hero_subtitle || '')}" style="width:100%"></div>
+            <div><label>Description :</label><textarea id="hero_desc" rows="3" style="width:100%">${escapeHtml(content.hero_desc || '')}</textarea></div>
+            <div><label>Stat 1 nombre :</label><input type="text" id="stat1_number" value="${escapeHtml(content.stat1_number || '')}"></div>
+            <div><label>Stat 1 label :</label><input type="text" id="stat1_label" value="${escapeHtml(content.stat1_label || '')}"></div>
+            <div><label>Stat 2 nombre :</label><input type="text" id="stat2_number" value="${escapeHtml(content.stat2_number || '')}"></div>
+            <div><label>Stat 2 label :</label><input type="text" id="stat2_label" value="${escapeHtml(content.stat2_label || '')}"></div>
+            <div><label>Stat 3 nombre :</label><input type="text" id="stat3_number" value="${escapeHtml(content.stat3_number || '')}"></div>
+            <div><label>Stat 3 label :</label><input type="text" id="stat3_label" value="${escapeHtml(content.stat3_label || '')}"></div>
+        `;
+    }
+
+    function saveSiteContent() {
+        const db = getDB();
+        db.siteContent = {
+            hero_title: document.getElementById('hero_title').value,
+            hero_subtitle: document.getElementById('hero_subtitle').value,
+            hero_desc: document.getElementById('hero_desc').value,
+            stat1_number: document.getElementById('stat1_number').value,
+            stat1_label: document.getElementById('stat1_label').value,
+            stat2_number: document.getElementById('stat2_number').value,
+            stat2_label: document.getElementById('stat2_label').value,
+            stat3_number: document.getElementById('stat3_number').value,
+            stat3_label: document.getElementById('stat3_label').value
+        };
+        saveDB(db);
+        showSuccess('Contenu du site mis à jour');
+    }
+
+    function openForm(type, id = null) {
+        currentType = type;
+        currentEditId = id;
+        
+        let title = '';
+        let fields = '';
+
+        if (type === 'specialty') {
+            title = id ? 'Modifier la spécialité' : 'Ajouter une spécialité';
+            fields = `
+                <label>Nom :</label><input type="text" id="name" required>
+                <label>Description :</label><textarea id="description"></textarea>
+                <label>Ordre :</label><input type="number" id="ordre" value="0">
+                <label>Actif :</label><select id="active"><option value="1">Oui</option><option value="0">Non</option></select>
+            `;
+        } else if (type === 'actualite') {
+            title = id ? 'Modifier l\'actualité' : 'Ajouter une actualité';
+            fields = `
+                <label>Titre :</label><input type="text" id="titre" required>
+                <label>Description :</label><textarea id="description" required></textarea>
+                <label>Ordre :</label><input type="number" id="ordre" value="0">
+                <label>Actif :</label><select id="active"><option value="1">Oui</option><option value="0">Non</option></select>
+            `;
+        } else if (type === 'doctor') {
+            title = id ? 'Modifier le médecin' : 'Ajouter un médecin';
+            fields = `
+                <label>Nom :</label><input type="text" id="name" required>
+                <label>Spécialité :</label><input type="text" id="specialty" required>
+            `;
+        } else if (type === 'staff') {
+            title = id ? 'Modifier le personnel' : 'Ajouter un personnel';
+            fields = `
+                <label>Nom complet :</label><input type="text" id="full_name" required>
+                <label>Profession :</label><input type="text" id="profession" required>
+                <label>Spécialité :</label><input type="text" id="specialty">
+                <label>Département :</label><input type="text" id="department" required>
+                <label>Email :</label><input type="email" id="email" required>
+                <label>Téléphone :</label><input type="text" id="phone">
+                <label>Mot de passe :</label><input type="password" id="password" ${id ? '' : 'required'}>
+            `;
+        } else if (type === 'event') {
+            title = id ? 'Modifier l\'événement' : 'Ajouter un événement';
+            const iconOptions = availableIcons.map(icon => 
+                `<option value="${icon}">${icon.replace('fas fa-', '')}</option>`
+            ).join('');
+            
+            fields = `
+                <label>Icône :</label>
+                <select id="icon" required>
+                    <option value="">-- Choisir une icône --</option>
+                    ${iconOptions}
+                </select>
+                <div id="iconPreview" style="margin: 10px 0; padding: 10px; background: #f0f7fc; border-radius: 8px; text-align: center;">
+                    <i class="fas fa-calendar-alt" style="font-size: 24px; color: #2ec4b6;"></i> Aperçu
+                </div>
+                <label>Titre :</label><input type="text" id="title" required>
+                <label>Description :</label><textarea id="description" rows="2" required></textarea>
+                <label>Ordre :</label><input type="number" id="ordre" value="0">
+                <label>Actif :</label>
+                <select id="active">
+                    <option value="1">✅ Oui (visible)</option>
+                    <option value="0">❌ Non (caché)</option>
+                </select>
+            `;
+        } else if (type === 'job') {
+            title = id ? 'Modifier l\'offre' : 'Ajouter une offre';
+            fields = `
+                <label>Titre :</label><input type="text" id="title" required>
+                <label>Département :</label><input type="text" id="department" required>
+                <label>Type de contrat :</label>
+                <select id="contract_type">
+                    <option>CDI</option><option>CDD</option><option>Stage</option>
+                    <option>Freelance</option><option>Temps partiel</option>
+                </select>
+                <label>Localisation :</label><input type="text" id="location" required>
+                <label>Description :</label><textarea id="description" rows="3" required></textarea>
+                <label>Prérequis :</label><textarea id="requirements" rows="3" required></textarea>
+                <label>Salaire :</label><input type="text" id="salary_range">
+                <label>Actif :</label>
+                <select id="active">
+                    <option value="1">✅ Oui (visible)</option>
+                    <option value="0">❌ Non (caché)</option>
+                </select>
+            `;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>${title}</h3>
+                <form id="modalForm">
+                    ${fields}
+                    <div style="margin-top: 1rem;">
+                        <button type="submit" class="btn-add">Enregistrer</button>
+                        <button type="button" onclick="closeModal()" class="btn-add" style="background:#ccc;">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        if (type === 'event') {
+            const iconSelect = document.getElementById('icon');
+            const iconPreview = document.getElementById('iconPreview');
+            if (iconSelect) {
+                iconSelect.addEventListener('change', () => {
+                    const selectedIcon = iconSelect.value;
+                    if (selectedIcon) {
+                        iconPreview.innerHTML = `<i class="${selectedIcon}" style="font-size: 24px; color: #2ec4b6;"></i> Aperçu`;
+                    }
+                });
+            }
+        }
+        
+        if (id) loadExistingData(type, id);
+        document.getElementById('modalForm').addEventListener('submit', submitForm);
+    }
+
+    function loadExistingData(type, id) {
+        const db = getDB();
+        let item = null;
+        if (type === 'specialty') item = db.specialties?.find(s => s.id === id);
+        else if (type === 'actualite') item = db.actualites?.find(a => a.id === id);
+        else if (type === 'doctor') item = db.doctors?.find(d => d.id === id);
+        else if (type === 'staff') item = db.staff?.find(s => s.id === id);
+        else if (type === 'event') item = db.events?.find(e => e.id === id);
+        else if (type === 'job') item = db.jobs?.find(j => j.id === id);
+        
+        if (item) {
+            for (let key in item) {
+                const input = document.getElementById(key);
+                if (input) input.value = item[key];
+            }
+            if (type === 'event' && item.icon) {
+                const iconPreview = document.getElementById('iconPreview');
+                if (iconPreview) {
+                    iconPreview.innerHTML = `<i class="${item.icon}" style="font-size: 24px; color: #2ec4b6;"></i> Aperçu`;
+                }
+            }
+        }
+    }
+
+    function submitForm(e) {
+        e.preventDefault();
+        const db = getDB();
+        
+        try {
+            if (currentType === 'specialty') {
+                const newItem = {
+                    id: currentEditId || getNextId(db, 'specialties'),
+                    name: document.getElementById('name').value,
+                    description: document.getElementById('description').value,
+                    ordre: parseInt(document.getElementById('ordre').value) || 0,
+                    active: parseInt(document.getElementById('active').value)
+                };
+                if (currentEditId) {
+                    const index = db.specialties.findIndex(s => s.id === currentEditId);
+                    if (index !== -1) db.specialties[index] = newItem;
+                } else {
+                    if (!db.specialties) db.specialties = [];
+                    db.specialties.push(newItem);
+                }
+                
+            } else if (currentType === 'actualite') {
+                const newItem = {
+                    id: currentEditId || getNextId(db, 'actualites'),
+                    titre: document.getElementById('titre').value,
+                    description: document.getElementById('description').value,
+                    image_url: '',
+                    ordre: parseInt(document.getElementById('ordre').value) || 0,
+                    active: parseInt(document.getElementById('active').value)
+                };
+                if (currentEditId) {
+                    const index = db.actualites.findIndex(a => a.id === currentEditId);
+                    if (index !== -1) db.actualites[index] = newItem;
+                } else {
+                    if (!db.actualites) db.actualites = [];
+                    db.actualites.push(newItem);
+                }
+                
+            } else if (currentType === 'doctor') {
+                const newItem = {
+                    id: currentEditId || getNextId(db, 'doctors'),
+                    name: document.getElementById('name').value,
+                    specialty: document.getElementById('specialty').value
+                };
+                if (currentEditId) {
+                    const index = db.doctors.findIndex(d => d.id === currentEditId);
+                    if (index !== -1) db.doctors[index] = newItem;
+                } else {
+                    if (!db.doctors) db.doctors = [];
+                    db.doctors.push(newItem);
+                }
+                
+            } else if (currentType === 'staff') {
+                const newItem = {
+                    id: currentEditId || getNextId(db, 'staff'),
+                    full_name: document.getElementById('full_name').value,
+                    profession: document.getElementById('profession').value,
+                    specialty: document.getElementById('specialty').value,
+                    department: document.getElementById('department').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    photo_url: '',
+                    password: document.getElementById('password').value
+                };
+                if (currentEditId) {
+                    const index = db.staff.findIndex(s => s.id === currentEditId);
+                    if (index !== -1) db.staff[index] = newItem;
+                } else {
+                    if (!db.staff) db.staff = [];
+                    db.staff.push(newItem);
+                }
+                
+            } else if (currentType === 'event') {
+                const newItem = {
+                    id: currentEditId || getNextId(db, 'events'),
+                    icon: document.getElementById('icon').value,
+                    title: document.getElementById('title').value,
+                    description: document.getElementById('description').value,
+                    ordre: parseInt(document.getElementById('ordre').value) || 0,
+                    active: parseInt(document.getElementById('active').value)
+                };
+                if (currentEditId) {
+                    const index = db.events.findIndex(e => e.id === currentEditId);
+                    if (index !== -1) db.events[index] = newItem;
+                } else {
+                    if (!db.events) db.events = [];
+                    db.events.push(newItem);
+                }
+                
+            } else if (currentType === 'job') {
+                const newItem = {
+                    id: currentEditId || getNextId(db, 'jobs'),
+                    title: document.getElementById('title').value,
+                    department: document.getElementById('department').value,
+                    contract_type: document.getElementById('contract_type').value,
+                    location: document.getElementById('location').value,
+                    description: document.getElementById('description').value,
+                    requirements: document.getElementById('requirements').value,
+                    salary_range: document.getElementById('salary_range').value,
+                    active: parseInt(document.getElementById('active').value)
+                };
+                if (currentEditId) {
+                    const index = db.jobs.findIndex(j => j.id === currentEditId);
+                    if (index !== -1) db.jobs[index] = newItem;
+                } else {
+                    if (!db.jobs) db.jobs = [];
+                    db.jobs.push(newItem);
+                }
+            }
+            
+            saveDB(db);
+            showSuccess(currentEditId ? 'Modification enregistrée' : 'Ajout effectué');
+            closeModal();
+            
+            const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+            loadTabData(activeTab);
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Erreur: ' + error.message);
+        }
+    }
+
+    function closeModal() {
+        const modal = document.querySelector('.modal');
+        if (modal) modal.remove();
+        currentEditId = null;
+    }
+
+    function escapeHtml(str) { 
+        if (!str) return ''; 
+        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
+    }
+
+    // Initialisation - Corriger l'ancienne structure si nécessaire
+    if (checkAuth()) {
+        let db = getDB();
+        // Vérifier et corriger la structure
+        let needSave = false;
+        if (!db.events) {
+            db.events = [
+                { id: 1, icon: "fas fa-syringe", title: "Campagne vaccination", description: "grippe saisonnière – à partir du 15 octobre", ordre: 1, active: 1 },
+                { id: 2, icon: "fas fa-heartbeat", title: "Dépistage gratuit", description: "hypertension & diabète – tous les mercredis", ordre: 2, active: 1 },
+                { id: 3, icon: "fas fa-chalkboard-user", title: "Atelier 'Mieux vivre'", description: "gestion du stress & alimentation – samedi 20 mai", ordre: 3, active: 1 },
+                { id: 4, icon: "fas fa-laptop-medical", title: "Téléconsultation 24/7", description: "prise de RDV en ligne immédiate", ordre: 4, active: 1 }
+            ];
+            needSave = true;
+        }
+        if (!db.specialties) { db.specialties = []; needSave = true; }
+        if (!db.actualites) { db.actualites = []; needSave = true; }
+        if (!db.doctors) { db.doctors = []; needSave = true; }
+        if (!db.staff) { db.staff = []; needSave = true; }
+        if (!db.jobs) { db.jobs = []; needSave = true; }
+        if (!db.siteContent) {
+            db.siteContent = {
+                hero_title: "Bienvenue au Medical Center Elizabeth (MCE)",
+                hero_subtitle: "Soins d'excellence",
+                hero_desc: "Blocs opératoires robotisés...",
+                stat1_number: "98%", stat1_label: "Satisfaction patient",
+                stat2_number: "24/7", stat2_label: "Urgences & téléconsultation",
+                stat3_number: "+150", stat3_label: "Spécialistes"
+            };
+            needSave = true;
+        }
+        
+        if (needSave) saveDB(db);
+        loadSpecialties();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Medical Center Elizabeth | MCE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ========== TOUS VOS STYLES EXISTANTS (conservez-les) ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: #fbfdff; color: #1a2c3e; scroll-behavior: smooth; }
+    :root { --primary: #0b6e8f; --primary-dark: #07506b; --secondary: #2ec4b6; --accent: #ff9f1c; --light-bg: #f0f7fc; --gray-light: #eef2f6; --gray-mid: #cbd5e1; --text-dark: #0f2b3d; --shadow-sm: 0 10px 25px -5px rgba(0,0,0,0.05); --shadow-md: 0 20px 25px -12px rgba(0,0,0,0.08); --radius-card: 1.5rem; --transition: all 0.3s ease; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
+    .top-bar { background: #061e28; color: white; padding: 0.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .top-bar a { color: white; text-decoration: none; font-size: 0.85rem; transition: opacity 0.2s; }
+    .top-bar a:hover { opacity: 0.8; }
+    .navbar { position: sticky; top: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); box-shadow: 0 1px 2px rgba(0,0,0,0.03); z-index: 1000; padding: 1rem 0; }
+    .nav-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo img { height: 55px; width: auto; border-radius: 12px; object-fit: cover; }
+    .logo-text h1 { font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); background-clip: text; -webkit-background-clip: text; color: transparent; margin: 0; }
+    .logo-text span { font-size: 0.7rem; font-weight: 500; color: var(--primary-dark); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+    .nav-links a { font-weight: 500; transition: var(--transition); color: #1f3b4c; text-decoration: none; }
+    .nav-links a:hover { color: var(--primary); }
+    .btn-outline-light { background: transparent; border: 1.5px solid var(--primary); padding: 0.5rem 1.2rem; border-radius: 2rem; color: var(--primary); font-weight: 600; transition: var(--transition); }
+    .btn-outline-light:hover { background: var(--primary); color: white; }
+    .menu-icon { display: none; font-size: 1.6rem; cursor: pointer; color: var(--primary); }
+    .secondary-nav { background: white; border-bottom: 1px solid #eef2f8; padding: 0.5rem 2rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+    .secondary-nav a { color: #0b6e8f; font-weight: 500; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .secondary-nav a:hover { color: var(--secondary); }
+    
+    .hero { position: relative; padding: 4rem 0 3rem; color: white; overflow: hidden; min-height: 600px; display: flex; align-items: center; }
+    .hero-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .hero .container { position: relative; z-index: 2; }
+    .hero .hero-badge, .hero .hero-content h1, .hero .hero-desc, .hero .btn-group, .hero .hero-stats { color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+    .hero .hero-badge { background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); display: inline-block; padding: 0.3rem 1rem; border-radius: 3rem; }
+    .hero .btn-secondary { background: rgba(255,255,255,0.9); border-color: white; color: #1a2c3e; text-shadow: none; }
+    .hero .btn-secondary:hover { background: white; }
+    .hero .stat-item h3 { color: var(--secondary); text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .hero-stats p { color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+    .hero-grid { display: flex; align-items: center; gap: 3rem; flex-wrap: wrap; }
+    .hero-content { flex: 1; }
+    .hero-badge { margin-bottom: 1.2rem; font-weight: 600; font-size: 0.85rem; width: fit-content; }
+    .hero-content h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+    .hero-desc { font-size: 1.1rem; margin-bottom: 2rem; max-width: 90%; }
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary { background: linear-gradient(95deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 0.85rem 2rem; border-radius: 3rem; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; display: inline-block; box-shadow: 0 8px 14px -6px rgba(11,110,143,0.3); text-decoration: none; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 25px -12px rgba(11,110,143,0.4); }
+    .btn-secondary { background: white; border: 1px solid var(--gray-mid); padding: 0.85rem 2rem; border-radius: 3rem; font-weight: 600; transition: var(--transition); text-decoration: none; color: #1a2c3e; }
+    .btn-secondary:hover { border-color: var(--primary); color: var(--primary); background: #f5fafd; }
+    .hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; }
+    .stat-item h3 { font-size: 1.8rem; font-weight: 800; }
+    .hero-visual { flex: 1; background: rgba(255,255,255,0.95); border-radius: 2rem; padding: 1.5rem; box-shadow: var(--shadow-md); backdrop-filter: blur(2px); color: #1a2c3e; }
+    .hero-visual * { color: #1a2c3e; text-shadow: none; }
+    .hero-visual a.btn-primary { color: white !important; text-shadow: none; }
+    
+    .services-section { position: relative; overflow: hidden; }
+    .video-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .overlay-dark { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1; }
+    .services-section .container { position: relative; z-index: 2; }
+    .services-section .section-title, .services-section .section-sub { color: white; text-shadow: 0 1px 2px black; }
+    .services-section .service-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(2px); }
+    
+    section { padding: 5rem 0; position: relative; }
+    .section-title { text-align: center; font-size: 2.3rem; font-weight: 700; margin-bottom: 1rem; color: #062c3b; }
+    .section-sub { text-align: center; max-width: 680px; margin: 0 auto 3rem auto; color: #4a6b80; font-size: 1.1rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
+    .service-card { background: white; border-radius: var(--radius-card); padding: 2rem 1.5rem; text-align: center; box-shadow: var(--shadow-sm); transition: var(--transition); border: 1px solid #eef2f8; }
+    .service-card:hover { transform: translateY(-8px); border-color: var(--secondary); }
+    .service-icon { font-size: 2.8rem; color: var(--primary); margin-bottom: 1.2rem; }
+    .service-card h3 { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .doctors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
+    .doctor-card { background: white; border-radius: 2rem; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.02); transition: var(--transition); text-align: center; border: 1px solid var(--gray-light); padding: 1.5rem; }
+    .doc-img { width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: #f0f7fc; display: flex; align-items: center; justify-content: center; }
+    .doc-img img { width: 100%; height: 100%; object-fit: cover; }
+    .doc-img i { font-size: 4rem; color: var(--primary); }
+    .doctor-card h4 { margin: 0.5rem 0 0.2rem; }
+    .specialty { color: var(--primary-dark); font-weight: 500; }
+    .appointment-form { background: var(--light-bg); border-radius: 2rem; padding: 2.5rem; max-width: 900px; margin: 0 auto; box-shadow: var(--shadow-sm); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { font-weight: 600; margin-bottom: 0.5rem; display: block; color: #0f3a4b; }
+    input, select, textarea { width: 100%; padding: 0.9rem 1rem; border-radius: 1.2rem; border: 1px solid #dce5ec; font-family: 'Inter', sans-serif; transition: 0.2s; background: white; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(46,196,182,0.2); }
+    .btn-submit { background: var(--primary); color: white; border: none; padding: 0.9rem 2rem; border-radius: 3rem; font-weight: bold; width: 100%; cursor: pointer; font-size: 1rem; }
+    .btn-submit:hover { background: var(--primary-dark); }
+    .announcement-bar { background-color: #ffc107; color: #1a2c3e; padding: 0.8rem; text-align: center; font-weight: 600; }
+    .quick-links { background: #ffffff; padding: 2rem 0; border-bottom: 1px solid #eef2f8; }
+    .quick-link { flex: 1; min-width: 180px; background: #f0f7fc; padding: 0.8rem; border-radius: 2rem; text-align: center; font-weight: 600; transition: all 0.2s ease; display: inline-block; text-decoration: none; color: #1a2c3e; }
+    .quick-link:hover { background: #e2f0f5; transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+    .news-grid { display: flex; flex-direction: column; gap: 2rem; }
+    .news-item { display: flex; gap: 1.5rem; align-items: center; background: white; border-radius: 1.5rem; padding: 1rem; box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .news-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .news-img { width: 120px; height: 120px; object-fit: cover; border-radius: 1rem; }
+    .news-content h3 { color: var(--primary); margin-bottom: 0.5rem; }
+    .news-content p { color: #4a6b80; }
+    
+    .etablissement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+    .etablissement-card {
+      background: white;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .etablissement-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .etablissement-card .content {
+      padding: 1rem;
+      text-align: center;
+    }
+    .etablissement-card h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .partenaires-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      justify-items: center;
+    }
+    .partenaire-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      width: 100%;
+      max-width: 220px;
+    }
+    .partenaire-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+    }
+    .partenaire-card h4 {
+      margin: 0.5rem 0;
+    }
+    .partenaire-card .commentaire {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+    
+    /* Animation d'ombre */
+    @keyframes ombreDynamique {
+      0% { box-shadow: 0 10px 20px -8px rgba(0,0,0,0.15), 0 0 0 0 rgba(46,196,182,0); }
+      25% { box-shadow: 5px 12px 22px -6px rgba(0,0,0,0.25), 0 0 0 2px rgba(46,196,182,0.2); }
+      50% { box-shadow: 0 18px 28px -5px rgba(0,0,0,0.3), 0 0 0 5px rgba(46,196,182,0.25); }
+      75% { box-shadow: -5px 12px 22px -6px rgba(0,0,0,0.25), 0 0 0 2px rgba(46,196,182,0.2); }
+      100% { box-shadow: 0 10px 20px -8px rgba(0,0,0,0.15), 0 0 0 0 rgba(46,196,182,0); }
+    }
+    .service-card, .doctor-card, .news-item, .etablissement-card, .partenaire-card, .info-card, .appointment-form, .hero-visual, .quick-link, .stat-item {
+      animation: ombreDynamique 3.2s ease-in-out infinite;
+      will-change: box-shadow;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .service-card:hover, .doctor-card:hover, .news-item:hover, .etablissement-card:hover, .partenaire-card:hover, .info-card:hover, .hero-visual:hover, .quick-link:hover {
+      animation-duration: 1.8s;
+      transform: translateY(-4px);
+    }
+    
+    @media (max-width: 768px) {
+      .news-item { flex-direction: column; text-align: center; }
+      .news-img { width: 100%; height: auto; }
+      .etablissement-card img { height: 160px; }
+    }
+    
+    footer { background: #061e28; color: #cfdfe9; padding: 3rem 0 1.5rem; margin-top: 2rem; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .footer-col h4 { color: white; margin-bottom: 1.2rem; font-size: 1.1rem; }
+    .footer-col a { color: #acd5e5; text-decoration: none; }
+    .copyright { text-align: center; border-top: 1px solid #2d4a5a; padding-top: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+    
+    .floating-chat {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: linear-gradient(145deg, #0b6e8f, #07506b);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    .floating-chat:hover { transform: scale(1.1); background: linear-gradient(145deg, #2ec4b6, #0b6e8f); }
+    .floating-chat .chat-tooltip {
+      position: absolute;
+      right: 70px;
+      background: #1a2c3e;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .floating-chat:hover .chat-tooltip { opacity: 1; }
+    
+    .chat-modal {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 350px;
+      max-width: calc(100% - 40px);
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+      z-index: 1001;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .chat-modal.active { display: block; }
+    .chat-header {
+      background: linear-gradient(135deg, #0b6e8f, #07506b);
+      color: white;
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header h3 { font-size: 1.1rem; margin: 0; }
+    .chat-header .close-chat { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
+    .chat-body { padding: 1rem; }
+    .chat-body input, .chat-body textarea {
+      width: 100%;
+      margin-bottom: 0.8rem;
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 0.8rem;
+      font-family: inherit;
+    }
+    .chat-body button {
+      width: 100%;
+      background: #0b6e8f;
+      color: white;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .chat-body button:hover { background: #07506b; }
+    .chat-message { font-size: 0.85rem; margin-top: 0.5rem; text-align: center; color: green; }
+    
+    .job-link { background: #2ec4b6; color: white !important; padding: 0.3rem 0.8rem; border-radius: 20px; }
+    .job-link:hover { background: #0b6e8f; color: white !important; }
+    
+    @media (max-width: 900px) {
+      .nav-links { display: none; flex-direction: column; width: 100%; background: white; padding: 1.5rem; border-radius: 1.5rem; margin-top: 1rem; gap: 1.2rem; }
+      .nav-links.active { display: flex; }
+      .menu-icon { display: block; }
+      .hero-content h1 { font-size: 2.4rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .container { padding: 0 1.5rem; }
+      section { padding: 3rem 0; }
+      .top-bar { flex-direction: column; text-align: center; }
+      .secondary-nav { gap: 1rem; }
+      .logo img { height: 40px; }
+      .logo-text h1 { font-size: 1.2rem; }
+      .hero { min-height: 500px; }
+      .chat-modal { width: 300px; right: 10px; bottom: 80px; }
+    }
+    .info-card { transition: var(--transition); cursor: pointer; }
+    .info-card:hover { transform: translateY(-5px); }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white;
+      max-width: 800px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 1rem;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+    }
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+      transition: 0.2s;
+    }
+    .close-modal:hover { color: #000; }
+    #doctors {
+      background-image: url('/uploads/MCE.jpg'), url('/uploads/MCE.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: #f0f7fc;
+    }
+    #doctors .doctor-card { background: white; backdrop-filter: none; }
+    #doctors .section-title, #doctors .section-sub {
+      color: #062c3b;
+      text-shadow: none;
+      background-color: rgba(255,255,255,0.6);
+      display: inline-block;
+      padding: 0.2rem 1rem;
+      border-radius: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      width: fit-content;
+      backdrop-filter: none;
+    }
+    #doctors .section-sub { background-color: rgba(255,255,255,0.5); }
+    .payment-layout { display: flex; flex-wrap: wrap; gap: 2rem; align-items: stretch; }
+    .payment-left { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 1.5rem; }
+    .payment-right { flex: 1.5; min-width: 280px; background: white; border-radius: 1.5rem; padding: 2rem; box-shadow: var(--shadow-sm); }
+    @media (max-width: 768px) {
+      .payment-layout { flex-direction: column; }
+      .payment-left, .payment-right { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<!-- Top bar -->
+<div class="top-bar">
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="/espace-patient.html"><i class="fas fa-user"></i> Portail patient</a>
+        <a href="#"><i class="fas fa-language"></i> English version</a>
+        <a href="/support.html"><i class="fas fa-heart"></i> Je fais un don</a>
+        <a href="#"><i class="fas fa-stethoscope"></i> Trouver un médecin</a>
+    </div>
+    <div style="font-size: 0.75rem;"><i class="fas fa-phone-alt"></i> Urgences 24/7 : +33 (0)1 88 88 88 88</div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container nav-container">
+    <div class="logo">
+      <img src="logo.jpeg" alt="Logo" onerror="this.src='pth1.jpg'">
+      <div class="logo-text">
+        <h1>Medical Center Elizabeth <i class="fas fa-heartbeat"></i></h1>
+        <span>MCE · Soins d'excellence · Technologies avancées</span>
+      </div>
+    </div>
+    <div class="menu-icon" id="menuToggle">
+      <i class="fas fa-bars"></i>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#home">Accueil</a>
+      <a href="#services">Services</a>
+      <a href="#doctors">Médecins</a>
+      <a href="#appointment">Rendez-vous</a>
+      <a href="jobs.html" class="job-link">💼 Offres d'emploi</a>
+      <a href="#contact">Contact</a>
+      <a href="/espace-patient.html" class="btn-outline-light">Espace Patient</a>
+      <a href="search-staff.html">👨‍⚕️ Trouver un professionnel</a>
+      <a href="patient-messages.html">💬 Espace Messagerie</a>
+      <a href="login.html" class="btn-outline-light"><i class="fas fa-sign-in-alt"></i> Connexion</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Secondary navigation -->
+<div class="secondary-nav">
+    <a href="/info-patients.html">Informations patients & visiteurs</a>
+    <a href="/specialties.html">Nos spécialités</a>
+    <a href="/checkup.html">Check-up Center</a>
+    <a href="/about.html">Nous connaître</a>
+    <a href="/support.html">Nous soutenir</a>
+    <a href="/jobs.html" style="color: #2ec4b6; font-weight: bold;">💼 Offres d'emploi</a>
+    <a href="/search-staff.html" style="color: #2ec4b6; font-weight: bold;">👨‍⚕️ Trouver un professionnel</a>
+</div>
+
+<!-- Bandeau annonces -->
+<div class="announcement-bar">
+  <i class="fas fa-info-circle"></i> Prochaine fermeture technique : vendredi 29 mai de 12h à 16h. 
+  <a href="#" style="color: #0b6e8f; text-decoration: underline;">Voir toutes les annonces</a>
+</div>
+
+<!-- Hero -->
+<section id="home" class="hero">
+  <video autoplay muted loop playsinline class="hero-video-bg">
+    <source src="/video2.mp4" type="video/mp4">
+  </video>
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-microchip"></i> <span>Médecine de précision · MCE Excellence</span></div>
+      <h1>Bienvenue au Medical Center Elizabeth (MCE)</h1>
+      <p class="hero-desc">Bloc opératoire conventionnel – sécurité, hygiène, compétence.</p>
+      <div class="btn-group">
+        <a href="#appointment" class="btn-primary">Prendre rendez-vous <i class="fas fa-calendar-check"></i></a>
+        <a href="#services" class="btn-secondary">Découvrir nos expertises</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><h3>98%</h3><p>Satisfaction patient</p></div>
+        <div class="stat-item"><h3>24/7</h3><p>Urgences & téléconsultation</p></div>
+        <div class="stat-item"><h3>+150</h3><p>Spécialistes hautement qual.</p></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <h3 style="color: var(--primary);"><i class="fas fa-calendar-alt"></i> Prochaines actions</h3>
+      <div id="eventsList" style="list-style: none; padding: 0;">
+        <p>Chargement des événements...</p>
+      </div>
+      <a href="#appointment" class="btn-primary" style="display: inline-block; margin-top: 0.5rem; font-size: 0.8rem; padding: 0.5rem 1rem;">Voir tous les événements</a>
+    </div>
+  </div>
+</section>
+
+<!-- Quick links -->
+<section class="quick-links"><div class="container"><div style="display: flex; flex-wrap: wrap; gap: 0.8rem;">
+  <a href="#appointment" class="quick-link">Prendre RDV</a>
+  <a href="#" class="quick-link">Téléconsultation</a>
+  <a href="#" class="quick-link">Mes résultats</a>
+  <a href="#" class="quick-link">Trouver un médecin</a>
+</div></div></section>
+
+<!-- Services -->
+<section id="services" class="services-section">
+  <video autoplay muted loop playsinline class="video-background"><source src="/video1.mp4" type="video/mp4"></video>
+  <div class="overlay-dark"></div>
+  <div class="container">
+    <h2 class="section-title">Soins d'excellence au MCE</h2>
+    <p class="section-sub">Innovations médicales, équipements de pointe et approche personnalisée.</p>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon"><i class="fas fa-robot"></i></div><h3>Blocs opératoires standards</h3><p>Da Vinci XI & nouvelles générations.</p></div>
+      <div class="service-card"><div class="service-icon"><i class="fas fa-brain"></i></div><h3>diagnostic précis par imagerie</h3><p>Algorithmes prédictifs pour imagerie médicale.</p></div>
+      <div class="service-card"><div class="service-icon"><i class="fas fa-vr-cardboard"></i></div><h3>Des chirurgiens qualifiés</h3><p>Planification chirurgicale immersive.</p></div>
+      <div class="service-card"><div class="service-icon"><i class="fas fa-microphone-alt"></i></div><h3>Télésuivi connecté</h3><p>Objets connectés & monitoring 24/7.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Médecins -->
+<section id="doctors">
+  <div class="container">
+    <h2 class="section-title">Corps médical d'excellence MCE</h2>
+    <p class="section-sub">Des leaders internationaux formés aux technologies de rupture.</p>
+    <div class="doctors-grid" id="doctorsContainer"><p>Chargement des médecins...</p></div>
+  </div>
+</section>
+
+<!-- Actualités -->
+<section style="padding: 3rem 0; background: #f9fcfd;">
+  <div class="container">
+    <h2 class="section-title" style="text-align: left;">📰 Actualités & communiqués MCE</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 2rem;">
+      <div style="flex: 2; min-width: 260px;">
+        <div id="actualitesContainer" class="news-grid"><p>Chargement des actualités...</p></div>
+      </div>
+      <div style="flex: 1; background: white; border-radius: 1.5rem; padding: 1.5rem;">
+        <h3>Restez informé</h3>
+        <form id="newsletterForm">
+          <input type="email" id="newsEmail" placeholder="Votre email" required>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem;">S'inscrire</button>
+          <div id="newsletterFeedback" style="margin-top: 0.5rem; font-size: 0.8rem;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Établissement -->
+<section style="padding: 4rem 0; background: #f0f7fc;">
+  <div class="container">
+    <h2 class="section-title">🏥 Notre établissement</h2>
+    <p class="section-sub">Découvrez nos infrastructures de pointe</p>
+    <div id="etablissementContainer" class="etablissement-grid"><p>Chargement des photos...</p></div>
+  </div>
+</section>
+
+<!-- Partenaires -->
+<section style="padding: 4rem 0;">
+  <div class="container">
+    <h2 class="section-title">🤝 Nos partenaires</h2>
+    <p class="section-sub">Ils nous font confiance et contribuent à notre excellence</p>
+    <div id="partenairesContainer" class="partenaires-grid"><p>Chargement des partenaires...</p></div>
+  </div>
+</section>
+
+<!-- Rendez-vous -->
+<section id="appointment">
+  <div class="container">
+    <h2 class="section-title">Prenez rendez-vous au MCE en un clic</h2>
+    <div class="appointment-form">
+      <form id="appointmentForm">
+        <div class="form-row">
+          <div class="form-group"><label>Nom complet</label><input type="text" name="fullname" required></div>
+          <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Téléphone</label><input type="tel" name="phone"></div>
+          <div class="form-group"><label>Spécialité (facultatif)</label><input type="text" name="specialty"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Médecin</label><select id="doctorSelect" name="doctorId" required></select></div>
+          <div class="form-group"><label>Date</label><input type="date" id="dateInput" name="date" required></div>
+          <div class="form-group"><label>Créneau horaire</label><select id="timeSelect" name="time" required></select></div>
+        </div>
+        <div class="form-group"><label>Message</label><textarea name="message" rows="2"></textarea></div>
+        <button type="submit" class="btn-submit">Confirmer</button>
+      </form>
+      <div id="formFeedback"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Paiement -->
+<section style="padding: 4rem 0; background: url('/payer.jpg') center/cover no-repeat; position: relative;">
+  <div class="container" style="position: relative; z-index: 2;">
+    <h2 class="section-title">💳 Payer des soins hospitaliers</h2>
+    <p class="section-sub">Réglez vos prestations en ligne par Mobile Money ou Carte bancaire</p>
+    <div class="payment-layout">
+      <div class="payment-left">
+        <div class="info-card" id="openTarifsBtn" style="background: white; border-radius: 1rem; padding: 1.5rem; cursor: pointer; box-shadow: var(--shadow-sm);">
+          <i class="fas fa-file-invoice-dollar" style="font-size: 2rem; color: var(--primary);"></i>
+          <h3 style="margin: 0.5rem 0;">Comprendre les frais hospitaliers</h3>
+          <p>Consultez les tarifs des prestations</p>
+          <span class="btn-secondary" style="display: inline-block; margin-top: 0.5rem;">En savoir plus →</span>
+        </div>
+        <div class="info-card" id="openPaiementFactureBtn" style="background: white; border-radius: 1rem; padding: 1.5rem; cursor: pointer; box-shadow: var(--shadow-sm);">
+          <i class="fas fa-receipt" style="font-size: 2rem; color: var(--primary);"></i>
+          <h3 style="margin: 0.5rem 0;">Payer une facture</h3>
+          <p>Réglez votre facture en ligne</p>
+          <span class="btn-secondary" style="display: inline-block; margin-top: 0.5rem;">En savoir plus →</span>
+        </div>
+      </div>
+      <div class="payment-right">
+        <div id="paymentConfig" style="margin-bottom: 1rem; font-size:0.9rem; background:#f0f7fc; border-radius:0.8rem; padding:0.5rem;"></div>
+        <form id="paymentForm">
+          <div class="form-group"><label>Nom complet</label><input type="text" id="payNom" required></div>
+          <div class="form-group"><label>Email</label><input type="email" id="payEmail" required></div>
+          <div class="form-group"><label>Montant (€)</label><input type="number" id="payMontant" step="0.01" min="1" required></div>
+          <div class="form-group">
+            <label>Mode de paiement</label>
+            <select id="payMethode" required>
+              <option value="mobile_money">📱 Mobile Money (Orange Money, MTN)</option>
+              <option value="carte">💳 Carte bancaire (Visa/Mastercard)</option>
+            </select>
+          </div>
+          <div class="form-group" id="telephoneGroup" style="display:none;">
+            <label>Téléphone (Mobile Money)</label>
+            <input type="tel" id="payTelephone" placeholder="+225 XX XX XX XX">
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%;">Payer maintenant</button>
+          <div id="paymentFeedback" style="margin-top:1rem; font-size:0.9rem;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOUS SOUTENIR -->
+<section style="background: url('/uploads/soutenir.jpg') center/cover no-repeat; padding: 5rem 0; position: relative; cursor: pointer;" onclick="window.location.href='/support.html'">
+  <div class="container" style="text-align: center; background: rgba(0,0,0,0.65); color: white; border-radius: 2rem; padding: 3rem 2rem; backdrop-filter: blur(2px);">
+    <i class="fas fa-heart" style="font-size: 3rem; color: #ff9f1c; margin-bottom: 1rem; display: inline-block;"></i>
+    <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Soutenez Medical Center Elizabeth</h2>
+    <p style="font-size: 1.2rem; max-width: 700px; margin: 0 auto 2rem auto; line-height: 1.5;">
+      Votre générosité nous aide à innover, à équiper nos services de technologies de pointe et à offrir des soins d’excellence à tous.
+    </p>
+    <div class="btn-group" style="justify-content: center;">
+      <span class="btn-primary" style="background: #ff9f1c; border-color: #ff9f1c; color: #1e2a3a; font-weight: bold; box-shadow: none;">🤝 Je fais un don</span>
+      <span class="btn-secondary" style="background: rgba(255,255,255,0.9); color: #1e2a3a;">En savoir plus</span>
+    </div>
+    <p style="margin-top: 2rem; font-size: 0.9rem;"><i class="fas fa-lock"></i> Paiement 100% sécurisé – Reçu fiscal</p>
+  </div>
+</section>
+
+<!-- Modales -->
+<div id="tarifsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <div id="tarifsContent">Chargement...</div>
+  </div>
+</div>
+<div id="paiementFactureModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <div id="paiementFactureContent">Chargement...</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer id="contact">
+  <div class="container footer-grid" id="footerContainer">
+    <p>Chargement des informations...</p>
+  </div>
+  <div class="copyright" id="copyrightContainer"></div>
+</footer>
+
+<!-- Chat -->
+<div class="floating-chat" id="chatBtn">
+  <i class="fas fa-comment-dots"></i>
+  <span class="chat-tooltip">Chat en direct</span>
+</div>
+<div class="chat-modal" id="chatModal">
+  <div class="chat-header">
+    <h3>💬 Envoyez-nous un message</h3>
+    <button class="close-chat" id="closeChatBtn">&times;</button>
+  </div>
+  <div class="chat-body">
+    <form id="chatForm">
+      <input type="text" id="chatName" placeholder="Votre nom" required>
+      <input type="email" id="chatEmail" placeholder="Votre email" required>
+      <input type="text" id="chatSubject" placeholder="Sujet" required>
+      <textarea id="chatMessage" rows="3" placeholder="Votre message..." required></textarea>
+      <button type="submit">Envoyer le message</button>
+      <div id="chatFeedback" class="chat-message"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // ========== CONFIGURATION API ==========
+  const API_BASE = 'https://mce-backend-fgpg.onrender.com/api';
+  
+  function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+
+  // ========== TARIFS ==========
+  async function loadTarifsContent() {
+    const container = document.getElementById('tarifsContent');
+    try {
+      const res = await fetch(`${API_BASE}/tarifs`);
+      if (!res.ok) throw new Error();
+      const tarifs = await res.json();
+      const actifs = tarifs.filter(t => t.active === 1).sort((a,b) => a.ordre - b.ordre);
+      if (actifs.length === 0) {
+        container.innerHTML = '<p>Aucun tarif disponible pour le moment.</p>';
+        return;
+      }
+      const grouped = {};
+      actifs.forEach(t => {
+        if (!grouped[t.service]) grouped[t.service] = [];
+        grouped[t.service].push(t);
+      });
+      let html = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse;">';
+      for (const [service, items] of Object.entries(grouped)) {
+        html += `<thead><tr style="background:#0b6e8f; color:white;"><th colspan="3">${escapeHtml(service)}</th>比
+                 <tr style="background:#eef2f6;"><th>Prestation</th><th>Prix</th><th>Description</th>比</thead><tbody>`;
+        items.forEach(item => {
+          html += `<tr>
+                    <td style="border-bottom:1px solid #ddd; padding:8px;">${escapeHtml(item.prestation)}</td>
+                    <td style="border-bottom:1px solid #ddd; padding:8px;">${escapeHtml(item.prix)}</td>
+                    <td style="border-bottom:1px solid #ddd; padding:8px;">${escapeHtml(item.description || '')}</td>
+                  </tr>`;
+        });
+        html += `</tbody>`;
+      }
+      html += `</table></div><p style="margin-top:1rem; font-size:0.8rem;">*Tarifs indicatifs, hors dépassements éventuels.</p>`;
+      container.innerHTML = html;
+    } catch(err) {
+      console.error(err);
+      container.innerHTML = '<p>Erreur de chargement des tarifs.</p>';
+    }
+  }
+
+  // ========== ACTUALITÉS ==========
+  async function loadActualitesFront() {
+    const container = document.getElementById('actualitesContainer');
+    if (!container) return;
+    try {
+      const res = await fetch(`${API_BASE}/actualites`);
+      if (!res.ok) throw new Error();
+      const actualites = await res.json();
+      if (!actualites.length) { container.innerHTML = '<p>Aucune actualité.</p>'; return; }
+      const active = actualites.filter(a => a.active !== 0).sort((a,b)=>(a.ordre||0)-(b.ordre||0));
+      container.innerHTML = active.map(a => `
+        <div class="news-item">
+          ${a.image_url ? `<img src="${a.image_url}" class="news-img" onerror="this.style.display='none'">` : '<div class="news-img"><i class="fas fa-newspaper"></i></div>'}
+          <div class="news-content"><h3>${escapeHtml(a.titre)}</h3><p>${escapeHtml(a.description)}</p></div>
+        </div>
+      `).join('');
+    } catch(err) { container.innerHTML = '<p>Erreur chargement actualités.</p>'; }
+  }
+
+  // ========== MÉDECINS ==========
+  async function loadDoctors() {
+    const container = document.getElementById('doctorsContainer');
+    if (!container) return;
+    try {
+      const res = await fetch(`${API_BASE}/staff`);
+      if (!res.ok) throw new Error();
+      const staff = await res.json();
+      if (!staff.length) { container.innerHTML = '<p>Aucun membre du personnel.</p>'; return; }
+      container.innerHTML = staff.map(m => `
+        <div class="doctor-card">
+          <div class="doc-img">${m.photo_url ? `<img src="${m.photo_url}">` : '<i class="fas fa-user-md"></i>'}</div>
+          <h4>${escapeHtml(m.full_name)}</h4>
+          <p class="specialty">${escapeHtml(m.profession)}${m.specialty ? ' - '+escapeHtml(m.specialty) : ''}</p>
+          <p>${escapeHtml(m.department || '')}</p>
+        </div>
+      `).join('');
+    } catch(err) { container.innerHTML = '<p>Erreur chargement médecins.</p>'; }
+  }
+
+  // ========== ÉVÉNEMENTS ==========
+  async function loadEvents() {
+    const container = document.getElementById('eventsList');
+    if (!container) return;
+    try {
+      const res = await fetch(`${API_BASE}/events`);
+      if (!res.ok) throw new Error();
+      const events = await res.json();
+      const activeEvents = events.filter(e => e.active === 1);
+      if (activeEvents.length === 0) {
+        container.innerHTML = '<p>Aucun événement programmé.</p>';
+        return;
+      }
+      container.innerHTML = activeEvents.map(e => `
+        <div style="margin-bottom: 1rem; display: flex; gap: 0.8rem; align-items: center;">
+          <i class="fas fa-calendar-day" style="color: #2ec4b6; width: 24px;"></i>
+          <span><strong>${escapeHtml(e.title)}</strong><br><small>${escapeHtml(e.description || '')}</small></span>
+        </div>
+      `).join('');
+    } catch(err) {
+      console.error('Erreur chargement événements:', err);
+      container.innerHTML = '<p>Erreur de chargement.</p>';
+    }
+  }
+
+  // ========== ÉTABLISSEMENT ==========
+  async function loadEtablissement() {
+    const container = document.getElementById('etablissementContainer');
+    if (!container) return;
+    try {
+      const res = await fetch(`${API_BASE}/etablissement`);
+      if (!res.ok) throw new Error();
+      const photos = await res.json();
+      const activePhotos = photos.filter(p => p.active === 1).sort((a,b) => a.ordre - b.ordre);
+      if (activePhotos.length === 0) {
+        container.innerHTML = '<p>Aucune photo de l\'établissement pour le moment.</p>';
+        return;
+      }
+      container.innerHTML = activePhotos.map(p => `
+        <div class="etablissement-card">
+          <img src="${p.image_url}" alt="${escapeHtml(p.titre)}">
+          <div class="content">
+            <h3>${escapeHtml(p.titre)}</h3>
+            <p>${escapeHtml(p.description || '')}</p>
+          </div>
+        </div>
+      `).join('');
+    } catch(err) {
+      console.error(err);
+      container.innerHTML = '<p>Erreur chargement des photos.</p>';
+    }
+  }
+
+  // ========== PARTENAIRES ==========
+  async function loadPartenaires() {
+    const container = document.getElementById('partenairesContainer');
+    if (!container) return;
+    try {
+      const res = await fetch(`${API_BASE}/partenaires`);
+      if (!res.ok) throw new Error();
+      const partenaires = await res.json();
+      const activePartenaires = partenaires.filter(p => p.active === 1).sort((a,b) => a.ordre - b.ordre);
+      if (activePartenaires.length === 0) {
+        container.innerHTML = '<p>Aucun partenaire pour le moment.</p>';
+        return;
+      }
+      container.innerHTML = activePartenaires.map(p => `
+        <div class="partenaire-card">
+          <img src="${p.image_url}" alt="${escapeHtml(p.nom)}">
+          <h4>${escapeHtml(p.nom)}</h4>
+          <p>${escapeHtml(p.description || '')}</p>
+          <div class="commentaire">💬 ${escapeHtml(p.commentaire || '')}</div>
+        </div>
+      `).join('');
+    } catch(err) {
+      console.error(err);
+      container.innerHTML = '<p>Erreur chargement des partenaires.</p>';
+    }
+  }
+
+  // ========== FOOTER ==========
+  async function loadFooter() {
+    try {
+      const res = await fetch(`${API_BASE}/site-content/footer`);
+      const data = await res.json();
+      const technologies = (data.technologies || '').split('\n').filter(t => t.trim()).map(t => `<li>${escapeHtml(t.trim())}</li>`).join('');
+      const liens = (data.liens || '').split('\n').filter(l => l.trim()).map(ligne => {
+        const [texte, url] = ligne.split('|');
+        return `<p><a href="${escapeHtml(url || '#')}">${escapeHtml(texte)}</a></p>`;
+      }).join('');
+      const reseaux = (data.reseaux || '').split(',').map(icon => `<i class="${icon.trim()}"></i>`).join('');
+
+      const footerHtml = `
+        <div class="footer-col">
+          <h4>${escapeHtml(data.etablissement || 'Medical Center Elizabeth')}</h4>
+          <p><i class="fas fa-map-marker-alt"></i> ${escapeHtml(data.adresse || '')}</p>
+          <p><i class="fas fa-phone-alt"></i> ${escapeHtml(data.telephone || '')}</p>
+          <p><i class="fas fa-clock"></i> ${escapeHtml(data.urgences || '')}</p>
+        </div>
+        <div class="footer-col">
+          <h4>Dernières technologies MCE</h4>
+          <ul>${technologies}</ul>
+        </div>
+        <div class="footer-col">
+          <h4>Liens utiles</h4>
+          ${liens}
+        </div>
+        <div class="footer-col">
+          <h4>Suivez-nous</h4>
+          <div style="display:flex; gap:1rem; font-size:1.5rem;">${reseaux}</div>
+        </div>
+      `;
+      document.getElementById('footerContainer').innerHTML = footerHtml;
+      document.getElementById('copyrightContainer').innerHTML = `<p>${escapeHtml(data.copyright || '© 2026 Medical Center Elizabeth')}</p>`;
+    } catch(err) {
+      console.error(err);
+      document.getElementById('footerContainer').innerHTML = '<p>Erreur de chargement du pied de page.</p>';
+    }
+  }
+
+  // ========== SPÉCIALITÉS ==========
+  async function loadSpecialties() {
+    const select = document.getElementById('specialty');
+    if (!select) return;
+    try {
+      const res = await fetch(`${API_BASE}/specialties`);
+      const specialties = await res.json();
+      const activeSpecialties = specialties.filter(s => s.active === 1);
+      if (activeSpecialties.length === 0) {
+        select.innerHTML = '<option>Aucune spécialité disponible</option>';
+        return;
+      }
+      select.innerHTML = activeSpecialties.map(s => `<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`).join('');
+    } catch(err) {
+      console.error('Erreur chargement spécialités:', err);
+      select.innerHTML = '<option>Erreur de chargement</option>';
+    }
+  }
+
+  // ========== PAIEMENT ==========
+  const methodeSelect = document.getElementById('payMethode');
+  const telephoneGroup = document.getElementById('telephoneGroup');
+  if (methodeSelect && telephoneGroup) {
+    methodeSelect.addEventListener('change', () => {
+      telephoneGroup.style.display = methodeSelect.value === 'mobile_money' ? 'block' : 'none';
+    });
+  }
+
+  async function loadPaymentConfig() {
+    try {
+      const res = await fetch(`${API_BASE}/paiement/config`);
+      const config = await res.json();
+      const container = document.getElementById('paymentConfig');
+      if (container) {
+        container.innerHTML = `
+          <p><strong>🏦 Coordonnées bancaires :</strong><br>${escapeHtml(config.titulaire || '')}<br>IBAN: ${escapeHtml(config.iban || '')}<br>BIC: ${escapeHtml(config.bic || '')}</p>
+          <p><strong>📱 Mobile Money :</strong> ${escapeHtml(config.mobile_money_info || '')}</p>
+          <p><strong>💳 Carte :</strong> ${escapeHtml(config.carte_info || '')}</p>
+        `;
+      }
+    } catch(err) { console.error(err); }
+  }
+
+  document.getElementById('paymentForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nom = document.getElementById('payNom').value;
+    const email = document.getElementById('payEmail').value;
+    const montant = parseFloat(document.getElementById('payMontant').value);
+    const methode = document.getElementById('payMethode').value;
+    const telephone = document.getElementById('payTelephone').value;
+    const feedback = document.getElementById('paymentFeedback');
+
+    if (isNaN(montant) || montant <= 0) { feedback.innerHTML = '<span style="color:red;">Montant invalide</span>'; return; }
+    if (methode === 'mobile_money' && !telephone) { feedback.innerHTML = '<span style="color:red;">Téléphone requis pour Mobile Money</span>'; return; }
+
+    feedback.innerHTML = '<span style="color:blue;">Initialisation du paiement...</span>';
+    try {
+      const res = await fetch(`${API_BASE}/paiement/initier`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ montant, methode, telephone, email, nom })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        feedback.innerHTML = `<span style="color:green;">✅ Paiement initié. Code de confirmation : <strong>${data.code}</strong><br>Veuillez confirmer le paiement (simulation).</span>`;
+        const confirmer = confirm(`Confirmer le paiement avec le code ${data.code} ? (Simulation)`);
+        if (confirmer) {
+          const confirmRes = await fetch(`${API_BASE}/paiement/confirmer/${data.id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: data.code })
+          });
+          const confirmData = await confirmRes.json();
+          if (confirmRes.ok) {
+            feedback.innerHTML = `<span style="color:green;">✅ Paiement confirmé ! <a href="${confirmData.facture_url}" target="_blank">📄 Télécharger la facture</a><br>Code reçu : ${confirmData.code}</span>`;
+            document.getElementById('paymentForm').reset();
+            if (telephoneGroup) telephoneGroup.style.display = 'none';
+          } else {
+            feedback.innerHTML = `<span style="color:red;">❌ Erreur confirmation : ${confirmData.error}</span>`;
+          }
+        }
+      } else {
+        feedback.innerHTML = `<span style="color:red;">❌ ${data.error}</span>`;
+      }
+    } catch(err) {
+      feedback.innerHTML = '<span style="color:red;">Erreur réseau</span>';
+    }
+  });
+
+  // ========== MODALES ==========
+  const tarifsModal = document.getElementById('tarifsModal');
+  const paiementFactureModal = document.getElementById('paiementFactureModal');
+
+  async function loadPaiementFactureContent() {
+    const container = document.getElementById('paiementFactureContent');
+    try {
+      const res = await fetch(`${API_BASE}/site-content/paiement_facture`);
+      const data = await res.json();
+      container.innerHTML = data.contenu || '<p>Pour payer votre facture, utilisez le formulaire ci-dessus ou contactez notre service financier.</p>';
+    } catch(err) {
+      container.innerHTML = '<p>Erreur de chargement.</p>';
+    }
+  }
+
+  document.getElementById('openTarifsBtn')?.addEventListener('click', () => {
+    loadTarifsContent();
+    tarifsModal.classList.add('active');
+    tarifsModal.style.display = 'flex';
+  });
+  document.getElementById('openPaiementFactureBtn')?.addEventListener('click', () => {
+    loadPaiementFactureContent();
+    paiementFactureModal.classList.add('active');
+    paiementFactureModal.style.display = 'flex';
+  });
+
+  document.querySelectorAll('.close-modal').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tarifsModal.classList.remove('active');
+      paiementFactureModal.classList.remove('active');
+      tarifsModal.style.display = 'none';
+      paiementFactureModal.style.display = 'none';
+    });
+  });
+  window.addEventListener('click', (e) => {
+    if (e.target === tarifsModal) {
+      tarifsModal.classList.remove('active');
+      tarifsModal.style.display = 'none';
+    }
+    if (e.target === paiementFactureModal) {
+      paiementFactureModal.classList.remove('active');
+      paiementFactureModal.style.display = 'none';
+    }
+  });
+
+  // ========== FORMULAIRE RDV DYNAMIQUE ==========
+  (function() {
+    fetch(`${API_BASE}/staff`)
+        .then(r => r.json())
+        .then(staff => {
+            const medecins = staff.filter(m => m.profession === 'Médecin');
+            const select = document.getElementById('doctorSelect');
+            if (select && medecins.length) {
+                select.innerHTML = medecins.map(d => `<option value="${d.id}">${d.full_name} (${d.specialty || d.profession})</option>`).join('');
+            } else if (select) {
+                select.innerHTML = '<option>Aucun médecin trouvé</option>';
+            }
+        })
+        .catch(err => console.error('Erreur chargement médecins :', err));
+
+    function loadSlots() {
+        const doctorId = document.getElementById('doctorSelect')?.value;
+        const date = document.getElementById('dateInput')?.value;
+        const timeSelect = document.getElementById('timeSelect');
+        if (!doctorId || !date) {
+            if (timeSelect) timeSelect.innerHTML = '<option>Sélectionnez médecin et date</option>';
+            return;
+        }
+        fetch(`${API_BASE}/availability/${doctorId}/${date}`)
+            .then(r => r.json())
+            .then(slots => {
+                if (timeSelect) {
+                    if (slots.length === 0) {
+                        timeSelect.innerHTML = '<option>Aucun créneau disponible</option>';
+                    } else {
+                        timeSelect.innerHTML = slots.map(slot => `<option value="${slot}">${slot}</option>`).join('');
+                    }
+                }
+            })
+            .catch(err => console.error('Erreur chargement créneaux :', err));
+    }
+
+    const doctorSelect = document.getElementById('doctorSelect');
+    const dateInput = document.getElementById('dateInput');
+    if (doctorSelect) doctorSelect.addEventListener('change', loadSlots);
+    if (dateInput) dateInput.addEventListener('change', loadSlots);
+
+    const form = document.getElementById('appointmentForm');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = {
+                fullname: formData.get('fullname'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                date: formData.get('date'),
+                time: formData.get('time'),
+                doctorId: parseInt(formData.get('doctorId')),
+                specialty: formData.get('specialty'),
+                message: formData.get('message')
+            };
+            const feedbackDiv = document.getElementById('formFeedback');
+            feedbackDiv.innerHTML = '<span style="color:blue;">Envoi en cours...</span>';
+            try {
+                const res = await fetch(`${API_BASE}/appointments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    feedbackDiv.innerHTML = '<span style="color:green;">✅ Rendez-vous enregistré avec succès !</span>';
+                    form.reset();
+                    const timeSelect = document.getElementById('timeSelect');
+                    if (timeSelect) timeSelect.innerHTML = '<option>Sélectionnez médecin et date</option>';
+                    setTimeout(() => feedbackDiv.innerHTML = '', 5000);
+                } else {
+                    feedbackDiv.innerHTML = `<span style="color:red;">❌ Erreur : ${result.error}</span>`;
+                }
+            } catch (err) {
+                console.error(err);
+                feedbackDiv.innerHTML = '<span style="color:red;">❌ Erreur réseau. Veuillez réessayer.</span>';
+            }
+        });
+    }
+  })();
+
+  // ========== NEWSLETTER ==========
+  document.getElementById('newsletterForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('newsEmail').value.trim();
+    const feedback = document.getElementById('newsletterFeedback');
+    if (!email) {
+      feedback.innerHTML = '<span style="color:red;">Veuillez saisir un email</span>';
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/newsletter/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        feedback.innerHTML = '<span style="color:green;">✅ Inscription réussie !</span>';
+        document.getElementById('newsEmail').value = '';
+        setTimeout(() => feedback.innerHTML = '', 3000);
+      } else {
+        feedback.innerHTML = `<span style="color:red;">❌ ${data.error || 'Erreur'}</span>`;
+      }
+    } catch (err) {
+      feedback.innerHTML = '<span style="color:red;">❌ Erreur réseau</span>';
+    }
+  });
+
+  // ========== CHAT MODAL ==========
+  const chatBtn = document.getElementById('chatBtn');
+  const chatModal = document.getElementById('chatModal');
+  const closeChatBtn = document.getElementById('closeChatBtn');
+  chatBtn?.addEventListener('click', () => chatModal.classList.toggle('active'));
+  closeChatBtn?.addEventListener('click', () => chatModal.classList.remove('active'));
+
+  document.getElementById('chatForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('chatName').value;
+    const email = document.getElementById('chatEmail').value;
+    const subject = document.getElementById('chatSubject').value;
+    const message = document.getElementById('chatMessage').value;
+    const feedback = document.getElementById('chatFeedback');
+    if (!name || !email || !subject || !message) {
+      feedback.innerHTML = '<span style="color:red;">Tous les champs sont requis.</span>';
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_type: 'patient',
+          sender_id: 0,
+          sender_name: name,
+          receiver_type: 'staff',
+          receiver_id: 1,
+          receiver_name: 'Administration',
+          subject: subject,
+          message: message,
+          reply_to_id: null
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        feedback.innerHTML = '<span style="color:green;">✅ Message envoyé ! Nous vous répondrons rapidement.</span>';
+        document.getElementById('chatForm').reset();
+        setTimeout(() => {
+          chatModal.classList.remove('active');
+          feedback.innerHTML = '';
+        }, 3000);
+      } else {
+        console.error('Erreur serveur:', data);
+        feedback.innerHTML = `<span style="color:red;">Erreur : ${data.error || 'Envoi impossible'}</span>`;
+      }
+    } catch (err) {
+      console.error('Erreur réseau:', err);
+      feedback.innerHTML = '<span style="color:red;">Erreur réseau. Veuillez réessayer.</span>';
+    }
+  });
+
+  // ========== ADMIN 5 CLICS ==========
+  let clicks = 0, timer;
+  const el = document.querySelector('.hero-visual h3');
+  if (el) {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => {
+      clicks++;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => clicks = 0, 2000);
+      if (clicks >= 5) { clicks = 0; window.location.href = '/admin/'; }
+    });
+  }
+
+  // ========== CHARGEMENT INITIAL ==========
+  loadDoctors();
+  loadActualitesFront();
+  loadEvents();
+  loadEtablissement();
+  loadPartenaires();
+  loadFooter();
+  loadSpecialties();
+  loadPaymentConfig();
+
+  setInterval(() => {
+    loadDoctors();
+    loadActualitesFront();
+    loadEvents();
+    loadEtablissement();
+    loadPartenaires();
+    loadFooter();
+    loadSpecialties();
+  }, 30000);
+</script>
+</body>
+</html>

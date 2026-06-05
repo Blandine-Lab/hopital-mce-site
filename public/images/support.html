@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Center Elizabeth | Nous soutenir</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: #fbfdff; color: #1a2c3e; scroll-behavior: smooth; }
+    :root { --primary: #0b6e8f; --primary-dark: #07506b; --secondary: #2ec4b6; --accent: #ff9f1c; --light-bg: #f0f7fc; --gray-light: #eef2f6; --shadow-sm: 0 10px 25px -5px rgba(0,0,0,0.05); --shadow-md: 0 20px 25px -12px rgba(0,0,0,0.08); --radius-card: 1.5rem; --transition: all 0.3s ease; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+    /* Top bar & navbar */
+    .top-bar { background: #061e28; color: white; padding: 0.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .top-bar a { color: white; text-decoration: none; font-size: 0.85rem; }
+    .navbar { position: sticky; top: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); box-shadow: 0 1px 2px rgba(0,0,0,0.03); z-index: 1000; padding: 1rem 0; }
+    .nav-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .logo h1 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .logo span { font-size: 0.8rem; font-weight: 500; color: var(--primary-dark); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; }
+    .nav-links a { font-weight: 500; transition: var(--transition); color: #1f3b4c; text-decoration: none; }
+    .nav-links a:hover { color: var(--primary); }
+    .btn-outline-light { background: transparent; border: 1.5px solid var(--primary); padding: 0.5rem 1.2rem; border-radius: 2rem; color: var(--primary); font-weight: 600; }
+    .menu-icon { display: none; font-size: 1.6rem; cursor: pointer; color: var(--primary); }
+    .secondary-nav { background: white; border-bottom: 1px solid #eef2f8; padding: 0.5rem 2rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+    .secondary-nav a { color: #0b6e8f; font-weight: 500; text-decoration: none; font-size: 0.9rem; }
+    .secondary-nav a:hover { color: var(--secondary); }
+    /* Page support */
+    .page-header { background: linear-gradient(95deg, #e6f4ff 0%, #ffffff 70%); padding: 4rem 0 2rem; text-align: center; }
+    .page-header h1 { font-size: 2.8rem; color: var(--primary); }
+    .support-section { padding: 3rem 0; }
+    .support-grid { display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem; }
+    .support-card { flex: 1; background: white; border-radius: var(--radius-card); padding: 2rem; text-align: center; box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .support-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .support-card i { font-size: 2.5rem; color: var(--secondary); margin-bottom: 1rem; }
+    .support-card h3 { margin-bottom: 1rem; color: var(--primary); }
+    .support-card p { color: #4a6b80; line-height: 1.5; margin-bottom: 1.5rem; }
+    .btn-don { background: var(--primary); color: white; padding: 0.8rem 1.5rem; border-radius: 2rem; text-decoration: none; font-weight: 600; display: inline-block; transition: var(--transition); }
+    .btn-don:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .don-form { background: var(--light-bg); border-radius: 2rem; padding: 2rem; margin-top: 2rem; }
+    .don-form h3 { color: var(--primary); margin-bottom: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group input, .form-group select { width: 100%; padding: 0.8rem; border-radius: 1rem; border: 1px solid #ccc; font-family: 'Inter', sans-serif; }
+    footer { background: #061e28; color: #cfdfe9; padding: 3rem 0 1.5rem; margin-top: 2rem; }
+    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+    .copyright { text-align: center; border-top: 1px solid #2d4a5a; padding-top: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+    @media (max-width: 900px) {
+      .nav-links { display: none; flex-direction: column; width: 100%; background: white; padding: 1.5rem; border-radius: 1.5rem; margin-top: 1rem; }
+      .nav-links.active { display: flex; }
+      .menu-icon { display: block; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="/espace-patient.html"><i class="fas fa-user"></i> Portail patient</a>
+        <a href="#"><i class="fas fa-language"></i> English version</a>
+        <a href="/support.html" style="color: var(--secondary);"><i class="fas fa-heart"></i> Je fais un don</a>
+        <a href="/search-staff.html"><i class="fas fa-stethoscope"></i> Trouver un médecin</a>
+    </div>
+    <div style="font-size: 0.75rem;"><i class="fas fa-phone-alt"></i> Urgences 24/7 : +33 (0)1 88 88 88 88</div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="container nav-container">
+    <div class="logo"><a href="/" style="text-decoration: none;"><h1>Medical Center Elizabeth <i class="fas fa-heartbeat"></i></h1><span>MCE · Soins d'excellence</span></a></div>
+    <div class="menu-icon" id="menuToggle"><i class="fas fa-bars"></i></div>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Accueil</a>
+      <a href="/#services">Services</a>
+      <a href="/#doctors">Médecins</a>
+      <a href="/#appointment">Rendez-vous</a>
+      <a href="jobs.html">💼 Offres d'emploi</a>
+      <a href="#contact">Contact</a>
+      <a href="/espace-patient.html" class="btn-outline-light">Espace Patient</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Secondary navigation -->
+<div class="secondary-nav">
+    <a href="/info-patients.html">Informations patients & visiteurs</a>
+    <a href="/specialties.html">Nos spécialités</a>
+    <a href="/checkup.html">Check-up Center</a>
+    <a href="/about.html">Nous connaître</a>
+    <a href="/support.html" style="color: var(--secondary); font-weight: bold;">Nous soutenir</a>
+    <a href="/jobs.html" style="color: #2ec4b6; font-weight: bold;">💼 Offres d'emploi</a>
+    <a href="/search-staff.html" style="color: #2ec4b6; font-weight: bold;">👨‍⚕️ Trouver un professionnel</a>
+</div>
+
+<!-- En-tête -->
+<div class="page-header">
+    <div class="container">
+        <h1>Nous soutenir</h1>
+        <p style="color: #2c4b62; max-width: 700px; margin: 1rem auto 0;">Votre générosité contribue à l’innovation médicale et à l’amélioration des soins pour tous.</p>
+    </div>
+</div>
+
+<!-- Options de soutien -->
+<section class="support-section">
+    <div class="container">
+        <div class="support-grid">
+            <div class="support-card">
+                <i class="fas fa-hand-holding-heart"></i>
+                <h3>Faire un don</h3>
+                <p>Soutenez la recherche, les équipements de pointe et l’accès aux soins pour les plus démunis.</p>
+                <a href="#don" class="btn-don">Je donne maintenant</a>
+            </div>
+            <div class="support-card">
+                <i class="fas fa-building"></i>
+                <h3>Mécénat d’entreprise</h3>
+                <p>Devenez partenaire de l’hôpital et bénéficiez d’une visibilité auprès de nos équipes et patients.</p>
+                <a href="#contact" class="btn-don" style="background: var(--secondary);">Nous contacter</a>
+            </div>
+            <div class="support-card">
+                <i class="fas fa-users"></i>
+                <h3>Bénévolat</h3>
+                <p>Rejoignez notre équipe de bénévoles pour accompagner les patients et animer la vie de l’hôpital.</p>
+                <a href="#contact" class="btn-don" style="background: var(--secondary);">Devenir bénévole</a>
+            </div>
+        </div>
+
+        <!-- Formulaire de don avec API paiement -->
+        <div id="don" class="don-form">
+            <h3><i class="fas fa-credit-card"></i> Formulaire de don en ligne</h3>
+            <form id="donForm">
+                <div class="form-row">
+                    <div class="form-group"><input type="text" id="donNom" placeholder="Nom complet" required></div>
+                    <div class="form-group"><input type="email" id="donEmail" placeholder="Email" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><input type="tel" id="donTel" placeholder="Téléphone"></div>
+                    <div class="form-group">
+                        <select id="donMontant">
+                            <option value="20">20 €</option>
+                            <option value="50">50 €</option>
+                            <option value="100">100 €</option>
+                            <option value="autre">Autre montant</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><input type="text" id="donAutre" placeholder="Montant personnalisé (€)" style="display:none;"></div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="donRecu"> Envoyer un reçu fiscal</label>
+                </div>
+                <button type="submit" class="btn-don" style="width: 100%; margin-top: 1rem;">Faire un don sécurisé</button>
+            </form>
+            <div id="donFeedback" style="margin-top: 1rem; text-align: center;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer-grid">
+    <div class="footer-col"><h4>Medical Center Elizabeth</h4><p><i class="fas fa-map-marker-alt"></i> 33 Avenue de l'Innovation, Paris 75012</p><p><i class="fas fa-phone-alt"></i> +33 (0)1 88 88 88 88</p><p><i class="fas fa-clock"></i> Urgences 24/7 - Accès permanent</p></div>
+    <div class="footer-col"><h4>Dernières technologies</h4><ul style="list-style: none;"><li>▪ IRM 7T & Photon-counting</li><li>▪ Salle hybride connectée</li><li>▪ Exosquelettes rééducation</li><li>▪ Télémédecine immersive</li></ul></div>
+    <div class="footer-col"><h4>Liens utiles</h4><p><a href="/espace-patient.html">Espace patient sécurisé</a></p><p><a href="#">Avis et références</a></p><p><a href="/jobs.html">Recrutement medical</a></p></div>
+    <div class="footer-col"><h4>Suivez-nous</h4><div style="display:flex; gap:1rem; font-size:1.5rem;"><i class="fab fa-twitter"></i><i class="fab fa-linkedin"></i><i class="fab fa-instagram"></i></div></div>
+  </div>
+  <div class="copyright"><p>© 2026 Medical Center Elizabeth — Soins d'excellence, éthique et innovations médicales.</p></div>
+</footer>
+
+<script>
+    // ========== CONFIGURATION API ==========
+    const API_BASE = 'https://mce-backend-fgpg.onrender.com/api';
+
+    // Menu mobile
+    const toggle = document.getElementById('menuToggle');
+    const links = document.getElementById('navLinks');
+    if(toggle) toggle.onclick = () => links.classList.toggle('active');
+
+    // Gestion du montant personnalisé
+    const montantSelect = document.getElementById('donMontant');
+    const autreInput = document.getElementById('donAutre');
+    if(montantSelect) {
+        montantSelect.addEventListener('change', () => {
+            autreInput.style.display = montantSelect.value === 'autre' ? 'block' : 'none';
+        });
+    }
+
+    // Soumission du don via l'API paiement
+    const donForm = document.getElementById('donForm');
+    const donFeedback = document.getElementById('donFeedback');
+
+    if(donForm) {
+        donForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nom = document.getElementById('donNom').value;
+            const email = document.getElementById('donEmail').value;
+            const telephone = document.getElementById('donTel').value;
+            
+            let montant = montantSelect.value;
+            if(montant === 'autre') {
+                montant = document.getElementById('donAutre').value;
+            }
+            
+            if(!montant || parseFloat(montant) <= 0) {
+                donFeedback.innerHTML = '<span style="color:red;">Veuillez saisir un montant valide</span>';
+                return;
+            }
+            
+            // Désactiver le bouton pendant l'envoi
+            const submitBtn = donForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Traitement en cours...';
+            donFeedback.innerHTML = '<span style="color:blue;">Initialisation du paiement...</span>';
+            
+            try {
+                // Appel à l'API d'initiation de paiement
+                const res = await fetch(`${API_BASE}/paiement/initier`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        montant: parseFloat(montant),
+                        methode: 'carte',
+                        telephone: telephone,
+                        email: email,
+                        nom: nom
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if(res.ok) {
+                    donFeedback.innerHTML = `<span style="color:green;">✅ Paiement initié ! Code de confirmation : <strong>${data.code}</strong><br>Veuillez confirmer le paiement (simulation).</span>`;
+                    
+                    // Simulation de confirmation
+                    const confirmer = confirm(`Confirmer le don de ${montant}€ avec le code ${data.code} ? (Simulation)`);
+                    if(confirmer) {
+                        const confirmRes = await fetch(`${API_BASE}/paiement/confirmer/${data.id}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ code: data.code })
+                        });
+                        const confirmData = await confirmRes.json();
+                        
+                        if(confirmRes.ok) {
+                            donFeedback.innerHTML = `<span style="color:green;">✅ Merci ${nom} pour votre don de ${montant} € !<br>
+                                <a href="${confirmData.facture_url}" target="_blank">📄 Télécharger votre reçu fiscal</a><br>
+                                Un email de confirmation a été envoyé à ${email}.</span>`;
+                            donForm.reset();
+                            autreInput.style.display = 'none';
+                        } else {
+                            donFeedback.innerHTML = `<span style="color:red;">❌ Erreur lors de la confirmation : ${confirmData.error}</span>`;
+                        }
+                    } else {
+                        donFeedback.innerHTML = '<span style="color:orange;">Paiement annulé.</span>';
+                    }
+                } else {
+                    donFeedback.innerHTML = `<span style="color:red;">❌ ${data.error || 'Erreur lors de l\'initialisation du paiement'}</span>`;
+                }
+            } catch(err) {
+                console.error(err);
+                donFeedback.innerHTML = '<span style="color:red;">❌ Erreur réseau. Veuillez réessayer.</span>';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Faire un don sécurisé';
+                setTimeout(() => {
+                    if(donFeedback.innerHTML.includes('Merci') || donFeedback.innerHTML.includes('Erreur')) {
+                        setTimeout(() => donFeedback.innerHTML = '', 8000);
+                    }
+                }, 5000);
+            }
+        });
+    }
+</script>
+</body>
+</html>

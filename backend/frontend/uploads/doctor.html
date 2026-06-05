@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Médecin - Medical Center Elizabeth</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        /* En-tête avec photo centrée et notifications */
+        .header {
+            background: #0b6e8f;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .header-left h1 { margin: 0; font-size: 1.6rem; }
+        .header-center {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .doctor-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .doctor-photo:hover {
+            opacity: 0.85;
+        }
+        .photo-edit-icon {
+            position: absolute;
+            bottom: 0;
+            right: 10px;
+            background: #fff3e0;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1px solid #0b6e8f;
+            color: #0b6e8f;
+            font-weight: bold;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .doctor-info {
+            background: #fff3e0;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: #0b6e8f;
+            font-weight: bold;
+        }
+        .logout-btn {
+            background: #dc3545;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        /* Système de notifications */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.8rem;
+            color: white;
+            transition: 0.2s;
+        }
+        .notification-bell:hover { opacity: 0.8; }
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+            line-height: 1;
+        }
+        .notification-panel {
+            position: absolute;
+            top: 70px;
+            right: 30px;
+            width: 350px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            color: #333;
+        }
+        .notification-panel.show {
+            display: flex;
+        }
+        .notification-header {
+            padding: 12px 16px;
+            background: #0b6e8f;
+            color: white;
+            border-radius: 16px 16px 0 0;
+            font-weight: bold;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.1s;
+            cursor: pointer;
+        }
+        .notification-item:hover { background: #f1f9ff; }
+        .notification-item.unread {
+            background: #e8f4f8;
+            border-left: 4px solid #0b6e8f;
+        }
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .notification-desc {
+            font-size: 0.85rem;
+            color: #555;
+        }
+        .notification-date {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 4px;
+        }
+        .empty-notifications {
+            padding: 20px;
+            text-align: center;
+            color: #777;
+        }
+        .login-container { max-width: 500px; margin: 80px auto; background: white; padding: 30px; border-radius: 24px; text-align: center; }
+        .login-container input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 30px; border: 1px solid #ccc; }
+        .login-container button { background: #0b6e8f; color: white; border: none; padding: 12px; border-radius: 30px; width: 100%; cursor: pointer; }
+        .dashboard { padding: 20px 30px; }
+        .stats-bar { background: #f8f9fa; padding: 15px; border-radius: 16px; margin-bottom: 20px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .stat-card { background: white; border-radius: 16px; padding: 10px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex: 1; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #0b6e8f; }
+        table { width: 100%; border-collapse: collapse; overflow-x: auto; display: block; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #0b6e8f; color: white; }
+        .btn-view { background: #0b6e8f; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-secondary { background: #e2e3e5; color: #383d41; }
+        .teleconsult-link { background: #2ec4b6; color: white; padding: 4px 8px; border-radius: 20px; text-decoration: none; }
+        footer { text-align: center; padding: 15px; font-size: 0.8rem; color: #6c757d; border-top: 1px solid #eee; }
+        hr { margin: 30px 0; }
+        .form-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 10px; }
+        .form-group { flex: 1; min-width: 150px; }
+        #addAvailabilityForm { background: #f0f7fc; padding: 15px; border-radius: 16px; margin-bottom: 20px; }
+        .message-container { display: flex; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .compose-box { flex: 1; background: #f9f9f9; border-radius: 1rem; padding: 1.5rem; }
+        .inbox-box { flex: 2; background: #f9f9f9; border-radius: 1rem; padding: 1.5rem; }
+        .message-card { border: 1px solid #e0e0e0; border-radius: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: white; transition: 0.2s; }
+        .message-card.unread { background: #e8f4f8; border-left: 4px solid #0b6e8f; }
+        .message-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; color: #666; }
+        .message-subject { font-weight: 700; color: #0b6e8f; margin: 0.5rem 0; }
+        .reply-area { margin-top: 1rem; display: none; }
+        .reply-area textarea { width: 100%; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #ccc; }
+        .btn-reply { background: #2ec4b6; color: white; border: none; padding: 4px 12px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
+        .btn-primary { background: #0b6e8f; color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; }
+        .btn-primary:hover { background: #07506b; }
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; }
+            .header-right { justify-content: center; }
+            .notification-panel { right: 10px; left: 10px; width: auto; }
+            th, td { font-size: 12px; padding: 6px; }
+            .message-container { flex-direction: column; }
+        }
+        .error-msg { color: #dc3545; margin-top: 10px; }
+        #photoUploadInput { display: none; }
+    </style>
+</head>
+<body>
+<div id="loginSection" class="login-container">
+    <h2>👨‍⚕️ Espace Médecin</h2>
+    <input type="email" id="loginEmail" placeholder="Email professionnel">
+    <input type="password" id="loginPassword" placeholder="Mot de passe">
+    <button id="loginBtn">Se connecter</button>
+    <div id="loginError" class="error-msg"></div>
+</div>
+
+<div id="dashboardSection" style="display: none;">
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🏥 Medical Center Elizabeth</h1>
+            </div>
+            <div class="header-center">
+                <img id="doctorPhoto" class="doctor-photo" alt="Photo du docteur">
+                <div class="photo-edit-icon" id="photoEditBtn">📷</div>
+                <input type="file" id="photoUploadInput" accept="image/jpeg,image/png,image/jpg,image/webp">
+            </div>
+            <div class="header-right">
+                <div class="notification-bell" id="notificationBell">
+                    🔔
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </div>
+                <div><span class="doctor-info" id="doctorNameDisplay"></span> <button id="logoutBtn" class="logout-btn">Déconnexion</button></div>
+            </div>
+        </div>
+        <!-- Panneau de notifications -->
+        <div id="notificationPanel" class="notification-panel">
+            <div class="notification-header">📢 Notifications</div>
+            <div id="notificationList">Chargement...</div>
+        </div>
+
+        <div class="dashboard">
+            <div class="stats-bar" id="statsBar"></div>
+
+            <h2>📅 Mes rendez-vous</h2>
+            <div style="overflow-x: auto;">
+                <table id="appointmentsTable">
+                    <thead><tr><th>ID</th><th>Patient</th><th>Email</th><th>Téléphone</th><th>Date</th><th>Créneau</th><th>Spécialité</th><th>Message</th><th>Visio</th><th>Vu admin</th><th>Vu moi</th><th>Action</th></tr></thead>
+                    <tbody id="tableBody"><tr><td colspan="12">Chargement...</td></tr></tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <h2>📅 Gérer mes disponibilités</h2>
+            <form id="addAvailabilityForm">
+                <div class="form-row">
+                    <div class="form-group"><label>Date début</label><input type="date" id="availDateStart" required></div>
+                    <div class="form-group"><label>Date fin (option)</label><input type="date" id="availDateEnd"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Heure début</label><input type="time" id="availTimeStart" required step="900"></div>
+                    <div class="form-group"><label>Heure fin</label><input type="time" id="availTimeEnd" required step="900"></div>
+                    <div class="form-group"><label>Pas (min)</label>
+                        <select id="availStep"><option value="30">30 min</option><option value="60">1 heure</option><option value="120">2 heures</option></select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Répéter</label>
+                        <select id="availRepeat">
+                            <option value="none">Aucune</option>
+                            <option value="daily">Tous les jours (plage)</option>
+                            <option value="weekly">Chaque semaine (même jour)</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Jours (si hebdo)</label>
+                        <select id="availWeekDays" multiple size="3">
+                            <option value="1">Lundi</option><option value="2">Mardi</option><option value="3">Mercredi</option>
+                            <option value="4">Jeudi</option><option value="5">Vendredi</option><option value="6">Samedi</option>
+                            <option value="0">Dimanche</option>
+                        </select><small>Ctrl+clic</small>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary">➕ Générer les créneaux</button>
+                <div id="availFeedback" style="margin-top:10px;"></div>
+            </form>
+            <h3>📋 Liste de mes créneaux</h3>
+            <div style="overflow-x: auto;">
+                <table id="myAvailTable">
+                    <thead><tr><th>Date</th><th>Créneau</th><th>Statut</th><th>Action</th></tr></thead>
+                    <tbody id="availTableBody"> hilab<td colspan="4">Chargement...</td></tr></tbody>
+                </table>
+            </div>
+
+            <hr>
+
+            <h2><i class="fas fa-envelope"></i> Messagerie avec les patients</h2>
+            <div class="message-container">
+                <div class="compose-box">
+                    <h3>✏️ Nouveau message</h3>
+                    <form id="composeMessageForm">
+                        <div class="form-group">
+                            <label>Destinataire (Patient)</label>
+                            <select id="receiverPatient" required>
+                                <option value="">-- Choisir un patient --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sujet</label>
+                            <input type="text" id="msgSubject" required placeholder="Sujet">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea id="msgContent" rows="4" required placeholder="Votre message..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Envoyer</button>
+                    </form>
+                </div>
+                <div class="inbox-box">
+                    <h3>📬 Messages échangés</h3>
+                    <div id="messagesList">Chargement...</div>
+                </div>
+            </div>
+        </div>
+        <footer>🔒 Accès sécurisé – Réservé au corps médical</footer>
+    </div>
+</div>
+
+<script>
+    let authToken = localStorage.getItem('doctorToken');
+    let currentDoctor = null;
+    const loginSection = document.getElementById('loginSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const loginError = document.getElementById('loginError');
+    const doctorNameSpan = document.getElementById('doctorNameDisplay');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const tableBody = document.getElementById('tableBody');
+    const statsBar = document.getElementById('statsBar');
+    const availTableBody = document.getElementById('availTableBody');
+    const doctorPhoto = document.getElementById('doctorPhoto');
+    const photoUploadInput = document.getElementById('photoUploadInput');
+    const photoEditBtn = document.getElementById('photoEditBtn');
+
+    // Notifications DOM
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationPanel = document.getElementById('notificationPanel');
+    const notificationBadge = document.getElementById('notificationBadge');
+    const notificationListDiv = document.getElementById('notificationList');
+
+    let unreadCount = 0;
+    let currentNotifications = [];
+
+    if (authToken) {
+        showDashboard();
+        fetchAppointments();
+        loadMyAvailabilities();
+        loadMessages();
+        loadPatientsList();
+        updateNotifications();
+    }
+
+    loginBtn.addEventListener('click', doLogin);
+    logoutBtn.addEventListener('click', doLogout);
+    notificationBell.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notificationPanel.classList.toggle('show');
+    });
+    document.addEventListener('click', function(e) {
+        if (!notificationPanel.contains(e.target) && e.target !== notificationBell) {
+            notificationPanel.classList.remove('show');
+        }
+    });
+
+    // Gestion du téléchargement de photo
+    photoEditBtn.addEventListener('click', () => {
+        photoUploadInput.click();
+    });
+    doctorPhoto.addEventListener('click', () => {
+        photoUploadInput.click();
+    });
+    photoUploadInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        // Vérifier que c'est une image
+        if (!file.type.startsWith('image/')) {
+            alert('Veuillez sélectionner une image (JPEG, PNG, GIF, WEBP)');
+            return;
+        }
+        // Limiter la taille à 2 Mo
+        if (file.size > 2 * 1024 * 1024) {
+            alert('L\'image ne doit pas dépasser 2 Mo');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const base64 = ev.target.result;
+            // Afficher la photo
+            doctorPhoto.src = base64;
+            // Stocker dans localStorage
+            localStorage.setItem('doctorPhoto_' + (currentDoctor?.id || 'default'), base64);
+            // Optionnel : mettre à jour l'objet currentDoctor
+            if (currentDoctor) {
+                currentDoctor.photo_url = base64;
+                localStorage.setItem('doctorInfo', JSON.stringify(currentDoctor));
+            }
+            // Optionnel : envoyer au backend via API (si souhaité)
+            // uploadPhotoToServer(base64);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    async function doLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) { loginError.innerText = 'Veuillez remplir tous les champs'; return; }
+        loginError.innerText = '';
+        try {
+            const res = await fetch('/api/doctor/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                loginError.innerText = data.error || 'Identifiants incorrects';
+                return;
+            }
+            authToken = data.token;
+            currentDoctor = data.doctor;
+            localStorage.setItem('doctorToken', authToken);
+            localStorage.setItem('doctorInfo', JSON.stringify(currentDoctor));
+            showDashboard();
+            fetchAppointments();
+            loadMyAvailabilities();
+            loadMessages();
+            loadPatientsList();
+            updateNotifications();
+            startNotificationPolling();
+        } catch(err) {
+            loginError.innerText = 'Erreur de connexion';
+        }
+    }
+
+    function doLogout() {
+        localStorage.removeItem('doctorToken');
+        localStorage.removeItem('doctorInfo');
+        authToken = null;
+        currentDoctor = null;
+        loginSection.style.display = 'block';
+        dashboardSection.style.display = 'none';
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        loginError.innerText = '';
+        if (window.notifInterval) clearInterval(window.notifInterval);
+    }
+
+    function showDashboard() {
+        loginSection.style.display = 'none';
+        dashboardSection.style.display = 'block';
+        const stored = localStorage.getItem('doctorInfo');
+        if (stored) currentDoctor = JSON.parse(stored);
+        if (currentDoctor) {
+            doctorNameSpan.innerText = `Dr. ${currentDoctor.name} (${currentDoctor.specialty || 'Médecin'})`;
+            // Charger la photo depuis localStorage ou depuis l'API
+            const savedPhoto = localStorage.getItem('doctorPhoto_' + currentDoctor.id);
+            if (savedPhoto) {
+                doctorPhoto.src = savedPhoto;
+            } else {
+                // Fallback: avatar avec initiales
+                doctorPhoto.src = currentDoctor.photo_url || `https://ui-avatars.com/api/?background=0b6e8f&color=fff&rounded=true&size=70&bold=true&name=${encodeURIComponent(currentDoctor.name.charAt(0))}`;
+            }
+        }
+    }
+
+    // ========== RENDEZ-VOUS ==========
+    async function fetchAppointments(silent = false) {
+        if (!authToken) return;
+        if (!silent) tableBody.innerHTML = '<tr><td colspan="12">Chargement...</td></tr>';
+        try {
+            const res = await fetch('/api/doctor/appointments', {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (res.status === 401 || res.status === 403) { doLogout(); return; }
+            if (!res.ok) throw new Error();
+            const appointments = await res.json();
+            renderAppointments(appointments);
+            updateStats(appointments);
+            return appointments;
+        } catch(err) {
+            if (!silent) tableBody.innerHTML = '<tr><td colspan="12">Erreur de chargement</td></tr>';
+            return [];
+        }
+    }
+
+    function renderAppointments(appointments) {
+        if (!appointments.length) {
+            tableBody.innerHTML = '<tr><td colspan="12">Aucun rendez-vous</td></tr>';
+            return;
+        }
+        tableBody.innerHTML = appointments.map(rdv => `
+            <tr>
+                <td>${rdv.id}</td><td>${escapeHtml(rdv.fullname)}</td><td>${escapeHtml(rdv.email)}</td>
+                <td>${escapeHtml(rdv.phone || '-')}</td><td>${rdv.date}</td><td>${rdv.time}</td>
+                <td>${escapeHtml(rdv.specialty || '-')}</td><td>${escapeHtml(rdv.message || '-')}</td>
+                <td>${rdv.teleconsultation_link ? `<a href="${rdv.teleconsultation_link}" target="_blank" class="teleconsult-link">🎥 Rejoindre</a>` : '—'}</td>
+                <td class="badge ${rdv.admin_viewed ? 'badge-success' : 'badge-secondary'}">${rdv.admin_viewed ? '✅ Vu' : '⏳ En attente'}</td>
+                <td class="badge ${rdv.doctor_viewed ? 'badge-success' : 'badge-secondary'}">${rdv.doctor_viewed ? '✅ Vu' : '⏳ Non vu'}</td>
+                <td>${!rdv.doctor_viewed ? `<button class="btn-view" onclick="markAsViewed(${rdv.id})">👁️ Marquer vu</button>` : '✔️'}</td>
+            </tr>
+        `).join('');
+    }
+
+    function updateStats(appointments) {
+        const total = appointments.length;
+        const viewed = appointments.filter(a => a.doctor_viewed).length;
+        statsBar.innerHTML = `
+            <div class="stat-card"><div class="stat-number">${total}</div><div>Total RDV</div></div>
+            <div class="stat-card"><div class="stat-number">${viewed}</div><div>Consultés</div></div>
+            <div class="stat-card"><div class="stat-number">${total - viewed}</div><div>Non vus</div></div>
+        `;
+    }
+
+    window.markAsViewed = async function(id) {
+        if (!authToken) return;
+        try {
+            const res = await fetch(`/api/doctor/appointments/${id}/view`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (res.ok) {
+                fetchAppointments();
+                updateNotifications();
+            } else alert("Erreur lors du marquage");
+        } catch(err) { alert("Erreur réseau"); }
+    };
+
+    // ========== DISPONIBILITÉS ==========
+    async function loadMyAvailabilities() {
+        if (!currentDoctor) return;
+        try {
+            const res = await fetch('/api/availabilities/calendar');
+            const all = await res.json();
+            const myAvail = all.filter(a => a.doctor_id == currentDoctor.id);
+            if (!myAvail.length) { availTableBody.innerHTML = '<tr><td colspan="4">Aucun créneau</td></tr>'; return; }
+            availTableBody.innerHTML = myAvail.map(av => `
+                <tr><td>${av.date}</td><td>${av.time_slot}</td><td>${av.is_booked ? '🔴 Réservé' : '🟢 Libre'}</td>
+                <td>${!av.is_booked ? `<button onclick="deleteAvailability(${av.id})" style="background:#dc3545; color:white; border:none; border-radius:20px; padding:4px 12px;">🗑️ Supprimer</button>` : '—'}</td></tr>
+            `).join('');
+        } catch(err) { availTableBody.innerHTML = '<tr><td colspan="4">Erreur de chargement</td></tr>'; }
+    }
+
+    window.deleteAvailability = async function(id) {
+        if (!confirm("Supprimer ce créneau (s’il n’est pas réservé) ?")) return;
+        try {
+            const res = await fetch(`/api/availabilities/${id}`, { method: 'DELETE' });
+            if (res.ok) loadMyAvailabilities();
+            else alert("Impossible de supprimer (peut-être réservé)");
+        } catch(err) { alert("Erreur réseau"); }
+    };
+
+    document.getElementById('addAvailabilityForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentDoctor) return;
+        const doctor_id = currentDoctor.id;
+        const startDate = document.getElementById('availDateStart').value;
+        const endDate = document.getElementById('availDateEnd').value || startDate;
+        const timeStart = document.getElementById('availTimeStart').value;
+        const timeEnd = document.getElementById('availTimeEnd').value;
+        const stepMinutes = parseInt(document.getElementById('availStep').value);
+        const repeat = document.getElementById('availRepeat').value;
+        const weekDaysSelect = document.getElementById('availWeekDays');
+        const selectedWeekDays = Array.from(weekDaysSelect.selectedOptions).map(opt => parseInt(opt.value));
+        const feedback = document.getElementById('availFeedback');
+        if (!startDate || !timeStart || !timeEnd) { feedback.innerHTML = '<span style="color:red;">Date et heures requises</span>'; return; }
+
+        const slots = [];
+        let current = new Date(`2000-01-01T${timeStart}:00`);
+        const end = new Date(`2000-01-01T${timeEnd}:00`);
+        while (current < end) {
+            const hh = current.getHours().toString().padStart(2,'0');
+            const mm = current.getMinutes().toString().padStart(2,'0');
+            const next = new Date(current.getTime() + stepMinutes * 60000);
+            const nextHH = next.getHours().toString().padStart(2,'0');
+            const nextMM = next.getMinutes().toString().padStart(2,'0');
+            if (next <= end) slots.push(`${hh}:${mm}-${nextHH}:${nextMM}`);
+            current = next;
+        }
+        if (slots.length === 0) { feedback.innerHTML = '<span style="color:red;">Plage horaire invalide ou trop courte</span>'; return; }
+
+        const dates = [];
+        let currentDate = new Date(startDate);
+        const lastDate = new Date(endDate);
+        while (currentDate <= lastDate) {
+            const dow = currentDate.getDay();
+            if (repeat !== 'weekly' || selectedWeekDays.includes(dow)) dates.push(currentDate.toISOString().split('T')[0]);
+            if (repeat === 'none') break;
+            currentDate.setDate(currentDate.getDate() + 1);
+            if (repeat === 'weekly' && dates.length > 0 && currentDate > lastDate) break;
+        }
+        if (dates.length === 0) { feedback.innerHTML = '<span style="color:red;">Aucune date générée</span>'; return; }
+
+        feedback.innerHTML = '<span style="color:blue;">Génération en cours...</span>';
+        let added = 0, errors = 0;
+        for (const date of dates) {
+            for (const slot of slots) {
+                try {
+                    const res = await fetch('/api/availabilities', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ doctor_id, date, time_slot: slot })
+                    });
+                    if (res.ok) added++; else errors++;
+                } catch(e) { errors++; }
+            }
+        }
+        if (added > 0) {
+            feedback.innerHTML = `<span style="color:green;">✅ ${added} créneaux ajoutés (${errors} échecs)</span>`;
+            loadMyAvailabilities();
+            document.getElementById('addAvailabilityForm').reset();
+        } else {
+            feedback.innerHTML = `<span style="color:red;">❌ Aucun créneau ajouté (peut-être déjà existants)</span>`;
+        }
+    });
+
+    // ========== MESSAGERIE ==========
+    async function loadPatientsList() {
+        try {
+            const res = await fetch('/api/patients', {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (res.status === 401) return;
+            const patients = await res.json();
+            const select = document.getElementById('receiverPatient');
+            select.innerHTML = '<option value="">-- Choisir un patient --</option>' +
+                patients.map(p => `<option value="${p.id}|${p.first_name} ${p.last_name}">${p.first_name} ${p.last_name} (${p.email})</option>`).join('');
+        } catch(err) { console.error('Erreur chargement patients:', err); }
+    }
+
+    async function loadMessages() {
+        if (!currentDoctor) return;
+        try {
+            const res = await fetch(`/api/messages/staff/${currentDoctor.id}`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            if (res.status === 401) { doLogout(); return; }
+            const messages = await res.json();
+            displayMessages(messages);
+            return messages;
+        } catch(err) {
+            console.error('Erreur chargement messages:', err);
+            document.getElementById('messagesList').innerHTML = '<p>Erreur chargement des messages</p>';
+            return [];
+        }
+    }
+
+    function displayMessages(messages) {
+        const container = document.getElementById('messagesList');
+        if (!messages || messages.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #999;">Aucun message</p>';
+            return;
+        }
+        container.innerHTML = messages.map(msg => {
+            const isUnread = (msg.is_read === 0 && msg.receiver_type === 'staff');
+            return `
+                <div class="message-card ${isUnread ? 'unread' : ''}" data-msg-id="${msg.id}">
+                    <div class="message-header">
+                        <span><i class="fas fa-user"></i> ${escapeHtml(msg.sender_name)} (${msg.sender_type === 'patient' ? 'Patient' : 'Médecin'})</span>
+                        <span><i class="fas fa-clock"></i> ${new Date(msg.sent_date).toLocaleString('fr-FR')}</span>
+                    </div>
+                    <div class="message-subject">📌 ${escapeHtml(msg.subject)}</div>
+                    <div class="message-content">${escapeHtml(msg.message)}</div>
+                    ${msg.sender_type === 'patient' ? `
+                        <button class="btn-reply" onclick="showReply(${msg.id})"><i class="fas fa-reply"></i> Répondre</button>
+                        <div id="reply-${msg.id}" class="reply-area">
+                            <textarea id="reply-text-${msg.id}" rows="2" placeholder="Votre réponse..."></textarea>
+                            <button class="btn-primary" style="margin-top: 0.5rem;" onclick="sendReply(${msg.id})">Envoyer la réponse</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+        messages.forEach(msg => {
+            if (msg.is_read === 0 && msg.receiver_type === 'staff') {
+                fetch(`/api/messages/${msg.id}/read`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                }).catch(console.error);
+            }
+        });
+    }
+
+    window.showReply = function(msgId) {
+        const replyDiv = document.getElementById(`reply-${msgId}`);
+        if (replyDiv.style.display === 'none' || !replyDiv.style.display) {
+            replyDiv.style.display = 'block';
+        } else {
+            replyDiv.style.display = 'none';
+        }
+    };
+
+    window.sendReply = async function(msgId) {
+        const replyText = document.getElementById(`reply-text-${msgId}`).value;
+        if (!replyText.trim()) {
+            alert('Veuillez écrire votre réponse');
+            return;
+        }
+        try {
+            const res = await fetch(`/api/messages/${msgId}/reply`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({
+                    message: replyText,
+                    sender_name: currentDoctor.name,
+                    sender_id: currentDoctor.id,
+                    sender_type: 'staff'
+                })
+            });
+            if (res.ok) {
+                alert('✅ Réponse envoyée !');
+                document.getElementById(`reply-text-${msgId}`).value = '';
+                document.getElementById(`reply-${msgId}`).style.display = 'none';
+                loadMessages();
+                updateNotifications();
+            } else {
+                alert('❌ Erreur lors de l\'envoi');
+            }
+        } catch(err) {
+            alert('Erreur réseau');
+        }
+    };
+
+    document.getElementById('composeMessageForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const receiverValue = document.getElementById('receiverPatient').value;
+        if (!receiverValue) {
+            alert('Choisissez un patient destinataire');
+            return;
+        }
+        const [receiverId, receiverName] = receiverValue.split('|');
+        const subject = document.getElementById('msgSubject').value;
+        const message = document.getElementById('msgContent').value;
+        const data = {
+            sender_type: 'staff',
+            sender_id: currentDoctor.id,
+            sender_name: currentDoctor.name,
+            receiver_type: 'patient',
+            receiver_id: parseInt(receiverId),
+            receiver_name: receiverName,
+            subject: subject,
+            message: message,
+            reply_to_id: null
+        };
+        try {
+            const res = await fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                alert('✅ Message envoyé avec succès !');
+                document.getElementById('composeMessageForm').reset();
+                loadMessages();
+            } else {
+                alert('❌ Erreur lors de l\'envoi');
+            }
+        } catch(err) {
+            alert('Erreur de connexion');
+        }
+    });
+
+    // ========== SYSTÈME DE NOTIFICATIONS ==========
+    async function updateNotifications() {
+        if (!currentDoctor || !authToken) return;
+        try {
+            const appointments = await fetchAppointments(true);
+            const unviewedAppointments = appointments.filter(apt => !apt.doctor_viewed);
+            
+            const messagesRes = await fetch(`/api/messages/staff/${currentDoctor.id}`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+            let unreadMessages = [];
+            if (messagesRes.ok) {
+                const allMessages = await messagesRes.json();
+                unreadMessages = allMessages.filter(msg => msg.is_read === 0 && msg.receiver_type === 'staff');
+            }
+            
+            const notifs = [];
+            unviewedAppointments.forEach(apt => {
+                notifs.push({
+                    id: `apt-${apt.id}`,
+                    type: 'appointment',
+                    title: 'Nouveau rendez-vous',
+                    description: `${apt.fullname} le ${apt.date} à ${apt.time}`,
+                    date: apt.created_at || new Date().toISOString(),
+                    unread: true,
+                    action: () => { document.getElementById('appointmentsTable').scrollIntoView({ behavior: 'smooth' }); }
+                });
+            });
+            unreadMessages.forEach(msg => {
+                notifs.push({
+                    id: `msg-${msg.id}`,
+                    type: 'message',
+                    title: `Message de ${msg.sender_name}`,
+                    description: msg.subject,
+                    date: msg.sent_date,
+                    unread: true,
+                    action: () => { document.querySelector('.inbox-box').scrollIntoView({ behavior: 'smooth' }); loadMessages(); }
+                });
+            });
+            
+            notifs.sort((a,b) => new Date(b.date) - new Date(a.date));
+            currentNotifications = notifs;
+            unreadCount = notifs.length;
+            
+            if (unreadCount > 0) {
+                notificationBadge.style.display = 'inline-block';
+                notificationBadge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+            } else {
+                notificationBadge.style.display = 'none';
+            }
+            
+            if (notificationListDiv) {
+                if (notifs.length === 0) {
+                    notificationListDiv.innerHTML = '<div class="empty-notifications">Aucune nouvelle notification</div>';
+                } else {
+                    notificationListDiv.innerHTML = notifs.map(n => `
+                        <div class="notification-item ${n.unread ? 'unread' : ''}" data-notif-id="${n.id}">
+                            <div class="notification-title">${escapeHtml(n.title)}</div>
+                            <div class="notification-desc">${escapeHtml(n.description)}</div>
+                            <div class="notification-date">${new Date(n.date).toLocaleString('fr-FR')}</div>
+                        </div>
+                    `).join('');
+                    document.querySelectorAll('.notification-item').forEach(item => {
+                        const notifId = item.getAttribute('data-notif-id');
+                        const notif = notifs.find(n => n.id === notifId);
+                        if (notif && notif.action) {
+                            item.addEventListener('click', (e) => {
+                                notif.action();
+                                notificationPanel.classList.remove('show');
+                                updateNotifications();
+                            });
+                        }
+                    });
+                }
+            }
+        } catch(err) {
+            console.error("Erreur mise à jour notifications:", err);
+        }
+    }
+
+    function startNotificationPolling() {
+        if (window.notifInterval) clearInterval(window.notifInterval);
+        window.notifInterval = setInterval(() => {
+            if (authToken && dashboardSection.style.display === 'block') {
+                updateNotifications();
+                fetchAppointments(true);
+                loadMessages();
+                loadMyAvailabilities();
+            }
+        }, 15000);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]);
+    }
+
+    if (authToken) {
+        startNotificationPolling();
+    }
+</script>
+</body>
+</html>

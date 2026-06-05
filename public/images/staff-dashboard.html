@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Personnel - Medical Center Elizabeth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f7fc; color: #1a2c3e; }
+        .header { background: linear-gradient(135deg, #0b6e8f 0%, #2ec4b6 100%); color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .welcome-card { background: white; border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stats { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .stat-card { background: white; border-radius: 1rem; padding: 1rem; flex: 1; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .messages-list { background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .message-card { border: 1px solid #e0e0e0; border-radius: 0.5rem; margin-bottom: 1rem; padding: 1rem; transition: all 0.3s; }
+        .message-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .message-card.unread { background: #e8f4f8; border-left: 4px solid #0b6e8f; }
+        .message-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem; }
+        .message-subject { font-weight: 600; color: #0b6e8f; margin-bottom: 0.5rem; }
+        .reply-area { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; display: none; }
+        .reply-area textarea { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem; margin-top: 0.5rem; font-family: 'Inter', sans-serif; }
+        .btn-reply { background: #2ec4b6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; margin-top: 0.5rem; transition: background 0.3s; }
+        .btn-reply:hover { background: #1a9a8e; }
+        .btn-primary { background: #0b6e8f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; margin-right: 0.5rem; transition: background 0.3s; }
+        .btn-primary:hover { background: #07506b; }
+        .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; transition: background 0.3s; }
+        .btn-logout:hover { background: rgba(255,255,255,0.3); }
+        .badge { background: #f44336; color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.7rem; margin-left: 0.5rem; }
+        @media (max-width: 768px) { .stats { flex-direction: column; } .header { flex-direction: column; gap: 1rem; text-align: center; } }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div>
+        <h2><i class="fas fa-user-md"></i> <span id="userName">Staff</span></h2>
+        <p id="userProfession" style="font-size: 0.9rem; opacity: 0.9;"></p>
+    </div>
+    <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+</div>
+
+<div class="container">
+    <div class="welcome-card">
+        <h3>📬 Messages des patients</h3>
+        <p>Consultez et répondez aux messages de vos patients</p>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-card"><i class="fas fa-envelope" style="font-size: 2rem; color: #0b6e8f;"></i><h3 id="totalMessages">0</h3><p>Messages reçus</p></div>
+        <div class="stat-card"><i class="fas fa-bell" style="font-size: 2rem; color: #2ec4b6;"></i><h3 id="unreadMessages">0</h3><p>Non lus</p></div>
+    </div>
+    
+    <div class="messages-list">
+        <h3><i class="fas fa-inbox"></i> Messages des patients</h3>
+        <div id="messagesList">Chargement...</div>
+    </div>
+</div>
+
+<script>
+    const API_URL = '/api';
+    let currentUser = null;
+    
+    function checkAuth() {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        if (!token || !user) {
+            window.location.href = '/login.html';
+            return false;
+        }
+        currentUser = JSON.parse(user);
+        if (currentUser.type !== 'staff') {
+            window.location.href = '/patient-dashboard.html';
+            return false;
+        }
+        document.getElementById('userName').innerText = currentUser.name;
+        document.getElementById('userProfession').innerText = currentUser.profession || 'Personnel médical';
+        return true;
+    }
+    
+    async function loadMessages() {
+        try {
+            const res = await fetch(`${API_URL}/messages/staff/${currentUser.id}`);
+            const messages = await res.json();
+            displayMessages(messages);
+            
+            const patientMessages = messages.filter(m => m.sender_type === 'patient');
+            const unread = patientMessages.filter(m => m.is_read === 0).length;
+            document.getElementById('totalMessages').innerText = patientMessages.length;
+            document.getElementById('unreadMessages').innerText = unread;
+        } catch(err) { console.error(err); }
+    }
+    
+    function displayMessages(messages) {
+        const container = document.getElementById('messagesList');
+        const patientMessages = messages.filter(m => m.sender_type === 'patient');
+        
+        if (patientMessages.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;">Aucun message de patient</p>';
+            return;
+        }
+        
+        container.innerHTML = patientMessages.map(msg => `
+            <div class="message-card ${msg.is_read === 0 ? 'unread' : ''}">
+                <div class="message-header">
+                    <span><i class="fas fa-user"></i> ${escapeHtml(msg.sender_name)}</span>
+                    <span>${new Date(msg.sent_date).toLocaleString('fr-FR')}</span>
+                </div>
+                <div class="message-subject">📌 ${escapeHtml(msg.subject)}</div>
+                <div class="message-content">${escapeHtml(msg.message)}</div>
+                <button class="btn-primary" onclick="toggleReply(${msg.id})">✏️ Répondre</button>
+                <div id="reply-${msg.id}" class="reply-area">
+                    <textarea id="reply-text-${msg.id}" rows="3" placeholder="Votre réponse..."></textarea>
+                    <button class="btn-reply" onclick="sendReply(${msg.id})">📤 Envoyer la réponse</button>
+                </div>
+            </div>
+        `).join('');
+        
+        // Marquer comme lus
+        patientMessages.forEach(msg => {
+            if (msg.is_read === 0) {
+                fetch(`${API_URL}/messages/${msg.id}/read`, { method: 'PUT' });
+            }
+        });
+    }
+    
+    function toggleReply(msgId) {
+        const replyDiv = document.getElementById(`reply-${msgId}`);
+        replyDiv.style.display = replyDiv.style.display === 'block' ? 'none' : 'block';
+    }
+    
+    async function sendReply(msgId) {
+        const replyText = document.getElementById(`reply-text-${msgId}`).value;
+        if (!replyText.trim()) { alert('Veuillez écrire votre réponse'); return; }
+        
+        try {
+            const res = await fetch(`${API_URL}/messages/${msgId}/reply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: replyText,
+                    sender_name: currentUser.name,
+                    sender_id: currentUser.id,
+                    sender_type: 'staff'
+                })
+            });
+            if (res.ok) {
+                alert('✅ Réponse envoyée au patient !');
+                document.getElementById(`reply-text-${msgId}`).value = '';
+                document.getElementById(`reply-${msgId}`).style.display = 'none';
+                loadMessages(); // Recharge la liste des messages
+            } else {
+                alert('❌ Erreur lors de l\'envoi');
+            }
+        } catch(err) { alert('Erreur de connexion'); }
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login.html';
+    }
+    
+    if (checkAuth()) {
+        loadMessages();
+        setInterval(loadMessages, 30000);
+    }
+</script>
+</body>
+</html>

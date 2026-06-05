@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rechercher un professionnel de santé - Medical Center Elizabeth (MCE)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ... vos styles existants ... */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f7fc; color: #1a2c3e; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .top-bar { background: #061e28; color: white; padding: 0.5rem 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .navbar { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { height: 50px; border-radius: 10px; }
+        .nav-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: #1a2c3e; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #0b6e8f; }
+        .search-header { background: linear-gradient(135deg, #0b6e8f 0%, #2ec4b6 100%); color: white; padding: 3rem 0; text-align: center; }
+        .search-header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .search-box { max-width: 600px; margin: 0 auto; }
+        .search-input-group { display: flex; gap: 10px; background: white; border-radius: 50px; padding: 5px; }
+        .search-input-group input { flex: 1; padding: 15px 20px; border: none; border-radius: 50px; font-size: 1rem; outline: none; }
+        .search-input-group button { background: #0b6e8f; border: none; padding: 15px 30px; border-radius: 50px; color: white; cursor: pointer; transition: background 0.3s; }
+        .search-input-group button:hover { background: #07506b; }
+        .filters { background: white; padding: 1.5rem; border-radius: 1rem; margin: -2rem 0 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .filter-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .filter-group select, .filter-group input { padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem; flex: 1; min-width: 150px; font-family: 'Inter', sans-serif; }
+        .results-stats { margin: 1rem 0; padding: 0.5rem; background: #e8f4f8; border-radius: 0.5rem; text-align: center; }
+        .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .staff-card { background: white; border-radius: 1rem; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.3s; display: flex; flex-direction: column; }
+        .staff-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .card-header { background: linear-gradient(135deg, #0b6e8f, #2ec4b6); color: white; padding: 1rem; text-align: center; }
+        .card-header h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .card-header .profession { font-size: 0.9rem; opacity: 0.9; }
+        .card-body { padding: 1.2rem; flex: 1; }
+        .info-item { margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; color: #555; }
+        .info-item i { width: 20px; color: #0b6e8f; }
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-doctor { background: #e3f2fd; color: #1565c0; }
+        .badge-nurse { background: #f3e5f5; color: #7b1fa2; }
+        .badge-other { background: #e8f5e9; color: #2e7d32; }
+        .card-footer { padding: 1rem; border-top: 1px solid #eee; display: flex; gap: 1rem; justify-content: center; }
+        .btn-contact { background: #0b6e8f; color: white; border: none; padding: 0.5rem 1rem; border-radius: 2rem; cursor: pointer; text-decoration: none; font-size: 0.85rem; }
+        .btn-contact:hover { background: #07506b; }
+        .no-results { text-align: center; padding: 3rem; background: white; border-radius: 1rem; }
+        footer { background: #061e28; color: white; padding: 3rem 0 1.5rem; margin-top: 3rem; }
+        .copyright { text-align: center; padding-top: 2rem; border-top: 1px solid #2d4a5a; }
+        @media (max-width: 768px) {
+            .staff-grid { grid-template-columns: 1fr; }
+            .filter-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div><i class="fas fa-phone-alt"></i> Urgences 24/7 : +33 (0)1 88 88 88 88</div>
+    <div><i class="fas fa-envelope"></i> contact@mce-hospital.fr</div>
+</div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <img src="logo.jpeg" alt="MCE" onerror="this.src='pth.jpg'">
+            <div><strong>Medical Center Elizabeth</strong></div>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Accueil</a>
+            <a href="jobs.html">Offres d'emploi</a>
+            <a href="search-staff.html" class="active">👨‍⚕️ Trouver un professionnel</a>
+            <a href="espace-patient.html">Espace Patient</a>
+        </div>
+    </div>
+</nav>
+
+<section class="search-header">
+    <div class="container">
+        <h1><i class="fas fa-stethoscope"></i> Trouver un professionnel de santé</h1>
+        <p>Recherchez par nom, spécialité, ou département</p>
+        <div class="search-box">
+            <div class="search-input-group">
+                <input type="text" id="searchInput" placeholder="Nom, profession, spécialité...">
+                <button id="searchBtn"><i class="fas fa-search"></i> Rechercher</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="filters">
+        <div class="filter-group">
+            <select id="professionFilter">
+                <option value="">Toutes les professions</option>
+            </select>
+            <select id="departmentFilter">
+                <option value="">Tous les départements</option>
+            </select>
+        </div>
+    </div>
+    
+    <div id="resultsStats" class="results-stats"></div>
+    <div id="staffResults" class="staff-grid">
+        <div style="text-align: center; padding: 2rem;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #0b6e8f;"></i>
+            <p>Chargement du personnel...</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="copyright">
+            <p>© 2026 Medical Center Elizabeth (MCE) — Une équipe dévouée à votre santé</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const API_URL = '/api';
+    let currentResults = [];
+    
+    async function loadFilters() {
+        try {
+            const [professionsRes, departmentsRes] = await Promise.all([
+                fetch(`${API_URL}/staff/professions`),
+                fetch(`${API_URL}/staff/departments`)
+            ]);
+            
+            const professions = await professionsRes.json();
+            const departments = await departmentsRes.json();
+            
+            const professionSelect = document.getElementById('professionFilter');
+            professionSelect.innerHTML = '<option value="">Toutes les professions</option>' + 
+                professions.map(p => `<option value="${p}">${p}</option>`).join('');
+            
+            const departmentSelect = document.getElementById('departmentFilter');
+            departmentSelect.innerHTML = '<option value="">Tous les départements</option>' + 
+                departments.map(d => `<option value="${d}">${d}</option>`).join('');
+        } catch(err) {
+            console.error('Erreur chargement filtres:', err);
+        }
+    }
+    
+    async function searchStaff() {
+        const search = document.getElementById('searchInput').value;
+        const profession = document.getElementById('professionFilter').value;
+        const department = document.getElementById('departmentFilter').value;
+        
+        let url = `${API_URL}/staff?`;
+        if (search) url += `search=${encodeURIComponent(search)}&`;
+        if (profession) url += `profession=${encodeURIComponent(profession)}&`;
+        if (department) url += `department=${encodeURIComponent(department)}&`;
+        
+        try {
+            const response = await fetch(url);
+            const staff = await response.json();
+            currentResults = staff;
+            displayResults(staff);
+        } catch(err) {
+            console.error('Erreur recherche:', err);
+            document.getElementById('staffResults').innerHTML = '<div class="no-results"><i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #f44336;"></i><p>Erreur lors de la recherche</p></div>';
+        }
+    }
+    
+    function displayResults(staff) {
+        const container = document.getElementById('staffResults');
+        const stats = document.getElementById('resultsStats');
+        
+        if (staff.length === 0) {
+            stats.innerHTML = '<span style="color: #f44336;">⚠️ Aucun professionnel trouvé</span>';
+            container.innerHTML = '<div class="no-results"><i class="fas fa-search" style="font-size: 3rem; color: #ccc;"></i><p>Aucun résultat ne correspond à votre recherche</p><p style="color: #666;">Essayez d\'autres termes</p></div>';
+            return;
+        }
+        
+        stats.innerHTML = `<span style="color: #0b6e8f;">👨‍⚕️ ${staff.length} professionnel(s) trouvé(s)</span>`;
+        
+        container.innerHTML = staff.map(person => {
+            let badgeClass = 'badge-other';
+            if (person.profession === 'Médecin') badgeClass = 'badge-doctor';
+            else if (person.profession === 'Infirmier') badgeClass = 'badge-nurse';
+            
+            return `
+                <div class="staff-card">
+                    <div class="card-header">
+                        <h3>${escapeHtml(person.full_name)}</h3>
+                        <div class="profession"><span class="badge ${badgeClass}">${escapeHtml(person.profession)}</span></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item"><i class="fas fa-star"></i> <strong>${escapeHtml(person.specialty || 'Généraliste')}</strong></div>
+                        <div class="info-item"><i class="fas fa-building"></i> Service: ${escapeHtml(person.department)}</div>
+                        <div class="info-item"><i class="fas fa-clock"></i> Jours de consultation: ${escapeHtml(person.consultation_days || 'Sur rendez-vous')}</div>
+                        <div class="info-item"><i class="fas fa-map-marker-alt"></i> Cabinet: ${escapeHtml(person.cabinet_number || 'Consultation')}</div>
+                        <div class="info-item"><i class="fas fa-calendar-alt"></i> ${person.experience_years || '0'} ans d'expérience</div>
+                        ${person.languages ? `<div class="info-item"><i class="fas fa-language"></i> Langues: ${escapeHtml(person.languages)}</div>` : ''}
+                        <div class="info-item"><i class="fas fa-info-circle"></i> <small>${escapeHtml(person.biography || 'Professionnel dédié à votre santé')}</small></div>
+                    </div>
+                    <div class="card-footer">
+                        <button onclick="prendreRDV(${person.id}, '${escapeHtml(person.full_name)}')" class="btn-contact"><i class="fas fa-calendar-check"></i> Prendre RDV</button>
+                        ${person.phone ? `<button onclick="callStaff('${person.phone}')" class="btn-contact" style="background: #2ec4b6;"><i class="fas fa-phone"></i> Appeler</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    // Nouvelle fonction : redirection vers le formulaire de rendez-vous
+    function prendreRDV(doctorId, doctorName) {
+        window.location.href = `index.html?doctor=${doctorId}&doctorName=${encodeURIComponent(doctorName)}#appointment`;
+    }
+    
+    function callStaff(phone) {
+        window.location.href = `tel:${phone}`;
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    
+    // Initialisation
+    document.getElementById('searchBtn').addEventListener('click', searchStaff);
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchStaff();
+    });
+    document.getElementById('professionFilter').addEventListener('change', searchStaff);
+    document.getElementById('departmentFilter').addEventListener('change', searchStaff);
+    
+    loadFilters();
+    searchStaff();
+</script>
+</body>
+</html>

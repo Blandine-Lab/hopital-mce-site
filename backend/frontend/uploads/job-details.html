@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de l'offre - MCE</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f4f7fa; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #0b6e8f; margin-bottom: 20px; border-left: 4px solid #2ec4b6; padding-left: 15px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #0b6e8f; text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+        .detail-section { margin-bottom: 20px; }
+        .label { font-weight: bold; color: #0b6e8f; width: 180px; display: inline-block; }
+        .value { display: inline-block; }
+        .btn-apply {
+            background: #0b6e8f;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-apply:hover { background: #065a74; }
+        hr { margin: 20px 0; border-color: #e0e0e0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="javascript:history.back()" class="back-link">← Retour aux offres</a>
+    <div id="jobDetail">Chargement...</div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobId = urlParams.get('id');
+
+    if (!jobId) {
+        document.getElementById('jobDetail').innerHTML = '<p style="color:red;">Offre non spécifiée.</p>';
+    } else {
+        fetch(`/api/jobs/${jobId}`)
+            .then(res => {
+                if (!res.ok) throw new Error('Offre introuvable');
+                return res.json();
+            })
+            .then(job => {
+                const deadlineHtml = job.deadline ? `<div class="detail-section"><span class="label">📅 Date limite de candidature :</span> <span class="value">${new Date(job.deadline).toLocaleDateString()}</span></div>` : '';
+                document.getElementById('jobDetail').innerHTML = `
+                    <h1>${escapeHtml(job.title)}</h1>
+                    <div class="detail-section"><span class="label">🏢 Département :</span> <span class="value">${escapeHtml(job.department)}</span></div>
+                    <div class="detail-section"><span class="label">📄 Type de contrat :</span> <span class="value">${escapeHtml(job.contract_type)}</span></div>
+                    <div class="detail-section"><span class="label">📍 Localisation :</span> <span class="value">${escapeHtml(job.location)}</span></div>
+                    ${job.salary_range ? `<div class="detail-section"><span class="label">💰 Salaire :</span> <span class="value">${escapeHtml(job.salary_range)}</span></div>` : ''}
+                    ${deadlineHtml}
+                    <hr>
+                    <div class="detail-section"><span class="label">📝 Description :</span><br> <div class="value" style="margin-top:5px;">${escapeHtml(job.description)}</div></div>
+                    <div class="detail-section"><span class="label">📋 Prérequis :</span><br> <div class="value" style="margin-top:5px;">${escapeHtml(job.requirements)}</div></div>
+                    <div style="text-align:center;">
+                        <button class="btn-apply" onclick="window.location.href='jobs.html?apply=${job.id}'">📩 Postuler à cette offre</button>
+                    </div>
+                `;
+            })
+            .catch(err => {
+                document.getElementById('jobDetail').innerHTML = `<p style="color:red;">Erreur : ${err.message}</p>`;
+            });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+</script>
+</body>
+</html>
