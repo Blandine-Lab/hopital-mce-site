@@ -1,9 +1,12 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+// backend/database.js
+const { Pool } = require('pg');
 
-// Choisissez un emplacement pour la base de données SQLite
-// Par exemple, à la racine du backend
-const dbPath = path.join(__dirname, 'mce.db');
-const db = new sqlite3.Database(dbPath);
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
-module.exports = db;
+module.exports = {
+    query: (text, params) => pool.query(text, params),
+    getClient: () => pool.connect()
+};
