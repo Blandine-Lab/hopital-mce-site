@@ -1,7 +1,7 @@
 // src/pages/InfoPatients.jsx
 import { useState, useEffect } from 'react';
 
-const API_BASE = '/api';
+const API_BASE = 'https://hopital-mce-site.onrender.com';
 
 function InfoPatients() {
   const [footer, setFooter] = useState({});

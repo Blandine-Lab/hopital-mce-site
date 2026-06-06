@@ -15,7 +15,7 @@ function Sidebar() {
     { path: '/espace-patient', label: '👤 Espace Patient', icon: 'fas fa-user-circle' },
     { path: '/espace-medecin', label: '⚕️ Espace Médecin', icon: 'fas fa-user-md' },
     { path: '/messages-patient', label: '💬 Messagerie', icon: 'fas fa-comments' },
-    { path: '/admin', label: '🔧 Administration', icon: 'fas fa-lock' },
+    { path: 'https://hopital-mce-site.onrender.com/admin', label: '🔧 Administration', icon: 'fas fa-lock' },
   ];
 
   return (

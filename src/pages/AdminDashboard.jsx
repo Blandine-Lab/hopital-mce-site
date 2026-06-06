@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-const API_BASE = "/api";
+const API_BASE = "https://hopital-mce-site.onrender.com";
 
 function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("rdv");
@@ -239,7 +239,7 @@ function AdminDashboard() {
     const deleteAppointment = async (id) => {
         if (!confirm("Supprimer ce rendez-vous ?")) return;
         try {
-            const res = await fetch(API_BASE + "/appointments/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/appointments/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Rendez-vous supprimé"); loadAppointments(); }
         } catch (err) { console.error(err); }
     };

@@ -18,7 +18,7 @@ function FloatingChat() {
     }
     setChatFeedback('<span style="color:blue;">Envoi en cours...</span>');
     try {
-      const res = await fetch('/api/messages', {
+      const res = await fetch('https://hopital-mce-site.onrender.com/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

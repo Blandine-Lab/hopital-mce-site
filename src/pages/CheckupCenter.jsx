@@ -1,7 +1,7 @@
 // src/pages/CheckupCenter.jsx
 import { useState, useEffect } from 'react';
 
-const API_BASE = '/api';
+const API_BASE = 'https://hopital-mce-site.onrender.com';
 
 function CheckupCenter() {
   const [footer, setFooter] = useState({});

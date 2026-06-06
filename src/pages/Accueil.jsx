@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import FloatingChat from '../components/FloatingChat';
 
-const API_BASE = '/api';
+const API_BASE = 'https://hopital-mce-site.onrender.com';
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -437,7 +437,7 @@ function Accueil() {
               adminClicks++;
               if (adminTimer) clearTimeout(adminTimer);
               adminTimer = setTimeout(() => adminClicks = 0, 2000);
-              if (adminClicks >= 5) { adminClicks = 0; window.location.href = '/admin/'; }
+              if (adminClicks >= 5) { adminClicks = 0; window.location.href = 'https://hopital-mce-site.onrender.com/admin/'; }
             }}><i className="fas fa-calendar-alt"></i> Prochaines actions</h3>
             <div id="eventsList" style={{ listStyle: 'none', padding: 0 }}>
               {events.length === 0 ? <p>Chargement des événements...</p> : events.map(e => (

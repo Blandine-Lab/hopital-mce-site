@@ -25,7 +25,7 @@ function App() {
           <Route path="/espace-patient" element={<EspacePatient />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/espace-medecin" element={<EspaceMedecin />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="https://hopital-mce-site.onrender.com/admin" element={<AdminDashboard />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/info-patients" element={<InfoPatients />} />
           <Route path="/trouver-professionnel" element={<TrouverProfessionnel />} />
