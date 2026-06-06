@@ -45,7 +45,6 @@ async function sendTelegramNotification(title, details, chatId = null) {
 }
 
 // ========== Configuration multer pour l'upload d'images et CV ==========
-// Choix du dossier selon l'environnement
 const uploadBaseDir = isProduction ? path.join(__dirname, '..', 'uploads') : path.join(__dirname, 'frontend', 'uploads');
 const uploadDir = path.join(uploadBaseDir);
 const cvUploadDir = path.join(uploadBaseDir, 'cv');
@@ -468,31 +467,7 @@ app.delete('/api/actualites/:id', (req, res) => {
 // Authentification admin (backend basique)
 app.use('/admin', basicAuth({ users: { 'admin': 'nexus2026' }, challenge: true, realm: 'Accès réservé à l\'administration' }));
 
-// ========== Fichiers statiques et fallback (version production / développement) ==========
-if (isProduction) {
-    // En production : servir le build du frontend (dossier dist à la racine)
-    const distPath = path.join(__dirname, '..', 'dist');
-    app.use(express.static(distPath));
-    // Toute route non-API renvoie index.html (pour React Router)
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(distPath, 'index.html'));
-    });
-} else {
-    // En développement : servir les dossiers frontend existants
-    const frontendPath = path.join(__dirname, 'frontend');
-    app.use(express.static(frontendPath));
-    app.use('/js', express.static(path.join(__dirname, 'frontend/js')));
-    app.use('/admin', express.static(path.join(__dirname, 'admin')));
-    app.use('/uploads', express.static(path.join(__dirname, 'frontend/uploads')));
-    app.get('/', (req, res) => res.sendFile(path.join(frontendPath, 'index.html')));
-
-    // Fallback 404 pour les requêtes non trouvées (API uniquement)
-    app.use((req, res) => {
-        res.status(404).json({ error: "Route non trouvée" });
-    });
-}
-
-// ========== Liste des médecins ==========
+// Liste des médecins
 app.get('/api/doctors', (req, res) => {
     db.all("SELECT id, full_name as name, specialty FROM staff WHERE profession = 'Médecin' AND is_active = 1", (err, rows) => {
         if (err) return res.status(500).json({ error: "Erreur interne" });
@@ -500,7 +475,7 @@ app.get('/api/doctors', (req, res) => {
     });
 });
 
-// ========== Disponibilités ==========
+// Disponibilités
 app.get('/api/availability/:doctorId/:date', (req, res) => {
     const { doctorId, date } = req.params;
     db.all(`SELECT time_slot FROM availabilities WHERE doctor_id = ? AND date = ? AND is_booked = 0`, [doctorId, date], (err, rows) => {
@@ -547,7 +522,7 @@ app.delete('/api/availabilities/:id', (req, res) => {
     });
 });
 
-// ========== Rendez-vous (public) ==========
+// Rendez-vous (public)
 app.post('/api/appointments',
     body('fullname').notEmpty().withMessage('Nom requis').trim().escape(),
     body('email').isEmail().withMessage('Email invalide').normalizeEmail(),
@@ -635,7 +610,7 @@ app.put('/api/admin/appointments/:id/view', (req, res) => {
     });
 });
 
-// ========== VALIDATION TÉLÉCONSULTATION (admin) ==========
+// VALIDATION TÉLÉCONSULTATION (admin)
 app.put('/api/admin/appointments/:id/validate-teleconsultation', (req, res) => {
     const { id } = req.params;
     db.run(`UPDATE appointments SET teleconsultation_validated = 1 WHERE id = ?`, [id], function(err) {
@@ -645,7 +620,7 @@ app.put('/api/admin/appointments/:id/validate-teleconsultation', (req, res) => {
     });
 });
 
-// ========== Espace Médecin ==========
+// Espace Médecin
 app.post('/api/doctor/login', (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
@@ -957,7 +932,7 @@ app.post('/api/messages/:id/reply', (req, res) => {
     });
 });
 
-// ========== ESPACE PATIENT ==========
+// ESPACE PATIENT
 app.get('/api/patients', (req, res) => {
     db.all(`SELECT id, first_name, last_name, email FROM patients WHERE is_active = 1 ORDER BY last_name`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -1356,6 +1331,26 @@ app.post('/api/checkup-requests', (req, res) => {
     console.log('Demande check-up reçue :', { fullname, email, phone, checkupType, date, timeSlot, message });
     res.json({ success: true, message: 'Demande enregistrée' });
 });
+
+// ========== Fichiers statiques et fallback (APRÈS toutes les routes API) ==========
+if (isProduction) {
+    const distPath = path.join(__dirname, '..', 'dist');
+    app.use(express.static(distPath));
+    // Toute route non-API renvoie index.html (pour React Router)
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+    });
+} else {
+    const frontendPath = path.join(__dirname, 'frontend');
+    app.use(express.static(frontendPath));
+    app.use('/js', express.static(path.join(__dirname, 'frontend/js')));
+    app.use('/admin', express.static(path.join(__dirname, 'admin')));
+    app.use('/uploads', express.static(path.join(__dirname, 'frontend/uploads')));
+    app.get('/', (req, res) => res.sendFile(path.join(frontendPath, 'index.html')));
+    app.use((req, res) => {
+        res.status(404).json({ error: "Route non trouvée" });
+    });
+}
 
 // ========== Démarrage ==========
 app.listen(PORT, () => {
