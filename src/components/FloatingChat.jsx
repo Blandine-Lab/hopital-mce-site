@@ -63,20 +63,22 @@ export default function FloatingChat() {
         }}
       >
         <i className="fas fa-comment-dots" style={{ fontSize: '24px' }}></i>
+        {/* Badge "chat en direct" */}
         <span style={{
           position: 'absolute',
-          bottom: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          marginBottom: '8px',
-          backgroundColor: '#333',
-          color: '#fff',
-          padding: '4px 8px',
-          borderRadius: '4px',
-          fontSize: '12px',
+          top: '-8px',
+          right: '-15px',
+          backgroundColor: '#ff9f1c',
+          color: '#1e2a3a',
+          padding: '2px 6px',
+          borderRadius: '20px',
+          fontSize: '10px',
+          fontWeight: 'bold',
           whiteSpace: 'nowrap',
-          display: 'none',
-        }} className="chat-tooltip">Discutez avec nous</span>
+          boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+        }}>
+          chat en direct
+        </span>
       </div>
       {isOpen && (
         <div style={{
