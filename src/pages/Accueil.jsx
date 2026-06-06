@@ -1,11 +1,10 @@
-import { API_BASE } from '../config';
 // src/pages/Accueil.jsx
 import { useState, useEffect } from 'react';
 import FloatingChat from '../components/FloatingChat';
-// src/pages/Accueil.jsx
 import { Link } from 'react-router-dom';
-// Gardez vos autres imports (useState, useEffect, etc.)
 
+// URL absolue de l'API en production (Render)
+const API_BASE = 'https://hopital-mce-site.onrender.com/api';
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -152,7 +151,7 @@ function Accueil() {
       });
       let html = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse;">';
       for (const [service, items] of Object.entries(grouped)) {
-        html += `<thead><tr style="background:#0b6e8f; color:white;"><th colspan="3">${escapeHtml(service)}</th></tr>
+        html += `<thead><tr style="background:#0b6e8f; color:white;"><th colspan="3">${escapeHtml(service)}</th><tr>
                  <tr style="background:#eef2f6;"><th>Prestation</th><th>Prix</th><th>Description</th></tr></thead><tbody>`;
         items.forEach(item => {
           html += `<tr>
@@ -440,7 +439,7 @@ function Accueil() {
               adminClicks++;
               if (adminTimer) clearTimeout(adminTimer);
               adminTimer = setTimeout(() => adminClicks = 0, 2000);
-              if (adminClicks >= 5) { adminClicks = 0; window.location.href = 'http://localhost:5173/admin'; }
+              if (adminClicks >= 5) { adminClicks = 0; window.location.href = '/admin'; }
             }}><i className="fas fa-calendar-alt"></i> Prochaines actions</h3>
             <div id="eventsList" style={{ listStyle: 'none', padding: 0 }}>
               {events.length === 0 ? <p>Chargement des événements...</p> : events.map(e => (
