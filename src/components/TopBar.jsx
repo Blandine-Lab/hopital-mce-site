@@ -3,9 +3,9 @@ function TopBar() {
   return (
     <div className="top-bar">
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-        <a href="/espace-patient.html"><i className="fas fa-user"></i> Portail patient</a>
+        <a href="https://hopital-mce-site.onrender.com/api/espace-patient.html"><i className="fas fa-user"></i> Portail patient</a>
         <a href="#"><i className="fas fa-language"></i> English version</a>
-        <a href="/support.html"><i className="fas fa-heart"></i> Je fais un don</a>
+        <a href="https://hopital-mce-site.onrender.com/api/support.html"><i className="fas fa-heart"></i> Je fais un don</a>
         <a href="#"><i className="fas fa-stethoscope"></i> Trouver un médecin</a>
       </div>
       <div style={{ fontSize: '0.75rem' }}>

@@ -358,10 +358,10 @@ function Accueil() {
       {/* Top bar */}
       <div className="top-bar">
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-          <a href="/espace-patient"><i className="fas fa-user"></i> Portail patient</a>
+          <a href="https://hopital-mce-site.onrender.com/api/espace-patient"><i className="fas fa-user"></i> Portail patient</a>
           <a href="#"><i className="fas fa-language"></i> English version</a>
-          <a href="/support"><i className="fas fa-heart"></i> Je fais un don</a>
-          <a href="/trouver-professionnel"><i className="fas fa-stethoscope"></i> Trouver un médecin</a>
+          <a href="https://hopital-mce-site.onrender.com/api/support"><i className="fas fa-heart"></i> Je fais un don</a>
+          <a href="https://hopital-mce-site.onrender.com/api/trouver-professionnel"><i className="fas fa-stethoscope"></i> Trouver un médecin</a>
         </div>
         <div style={{ fontSize: '0.75rem' }}><i className="fas fa-phone-alt"></i> Urgences 24/7 : +243 992 952 038</div>
       </div>
@@ -384,26 +384,26 @@ function Accueil() {
             <a href="#services">Services</a>
             <a href="#doctors">Médecins</a>
             <a href="#appointment">Rendez-vous</a>
-            <a href="/espace-medecin" className="btn-outline-light">Espace Médecin</a>
-            <a href="/jobs" className="job-link">💼 Offres d'emploi</a>
-            <a href="/contact">Contact</a>
-            <a href="/espace-patient" className="btn-outline-light">Espace Patient</a>
-            <a href="/trouver-professionnel">👨‍⚕️ Trouver un professionnel</a>
-            <a href="/messages-patient">💬 Espace Messagerie</a>
-            <a href="/connexion" className="btn-outline-light"><i className="fas fa-sign-in-alt"></i> Connexion</a>
+            <a href="https://hopital-mce-site.onrender.com/api/espace-medecin" className="btn-outline-light">Espace Médecin</a>
+            <a href="https://hopital-mce-site.onrender.com/api/jobs" className="job-link">💼 Offres d'emploi</a>
+            <a href="https://hopital-mce-site.onrender.com/api/contact">Contact</a>
+            <a href="https://hopital-mce-site.onrender.com/api/espace-patient" className="btn-outline-light">Espace Patient</a>
+            <a href="https://hopital-mce-site.onrender.com/api/trouver-professionnel">👨‍⚕️ Trouver un professionnel</a>
+            <a href="https://hopital-mce-site.onrender.com/api/messages-patient">💬 Espace Messagerie</a>
+            <a href="https://hopital-mce-site.onrender.com/api/connexion" className="btn-outline-light"><i className="fas fa-sign-in-alt"></i> Connexion</a>
           </div>
         </div>
       </nav>
 
       {/* Secondary navigation */}
       <div className="secondary-nav">
-        <a href="/info-patients">Informations patients & visiteurs</a>
-        <a href="/nos-specialites">Nos spécialités</a>
-        <a href="/checkup-center">Check-up Center</a>
-        <a href="/about">Nous connaître</a>
-        <a href="/support" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>Nous soutenir</a>
-        <a href="/jobs" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>💼 Offres d'emploi</a>
-        <a href="/trouver-professionnel" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>👨‍⚕️ Trouver un professionnel</a>
+        <a href="https://hopital-mce-site.onrender.com/api/info-patients">Informations patients & visiteurs</a>
+        <a href="https://hopital-mce-site.onrender.com/api/nos-specialites">Nos spécialités</a>
+        <a href="https://hopital-mce-site.onrender.com/api/checkup-center">Check-up Center</a>
+        <a href="https://hopital-mce-site.onrender.com/api/about">Nous connaître</a>
+        <a href="https://hopital-mce-site.onrender.com/api/support" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>Nous soutenir</a>
+        <a href="https://hopital-mce-site.onrender.com/api/jobs" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>💼 Offres d'emploi</a>
+        <a href="https://hopital-mce-site.onrender.com/api/trouver-professionnel" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>👨‍⚕️ Trouver un professionnel</a>
       </div>
 
       {/* Bandeau annonces */}
@@ -648,7 +648,7 @@ function Accueil() {
       </section>
 
       {/* NOUS SOUTENIR - redirige vers /support */}
-      <section style={{ background: 'url(/uploads/soutenir.jpg) center/cover no-repeat', padding: '5rem 0', position: 'relative', cursor: 'pointer' }} onClick={() => window.location.href = '/support'}>
+      <section style={{ background: 'url(/uploads/soutenir.jpg) center/cover no-repeat', padding: '5rem 0', position: 'relative', cursor: 'pointer' }} onClick={() => window.location.href = 'https://hopital-mce-site.onrender.com/api/support'}>
         <div className="container" style={{ textAlign: 'center', background: 'rgba(0,0,0,0.65)', color: 'white', borderRadius: '2rem', padding: '3rem 2rem', backdropFilter: 'blur(2px)' }}>
           <i className="fas fa-heart" style={{ fontSize: '3rem', color: '#ff9f1c', marginBottom: '1rem', display: 'inline-block' }}></i>
           <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem' }}>Soutenez Medical Center Elizabeth</h2>

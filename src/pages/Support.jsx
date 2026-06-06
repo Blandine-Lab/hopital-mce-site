@@ -202,7 +202,7 @@ function Support() {
                 <i className="fas fa-building" style={{ fontSize: '2.5rem', color: '#2ec4b6', marginBottom: '1rem' }}></i>
                 <h3 style={{ marginBottom: '1rem', color: '#0b6e8f' }}>Mécénat d’entreprise</h3>
                 <p style={{ color: '#4a6b80', lineHeight: '1.5', marginBottom: '1.5rem' }}>Devenez partenaire de l’hôpital et bénéficiez d’une visibilité auprès de nos équipes et patients.</p>
-                <a href="/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Nous contacter</a>
+                <a href="https://hopital-mce-site.onrender.com/api/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Nous contacter</a>
               </div>
               {/* Carte 3 - Bénévolat */}
               <div style={{
@@ -220,7 +220,7 @@ function Support() {
                 <i className="fas fa-users" style={{ fontSize: '2.5rem', color: '#2ec4b6', marginBottom: '1rem' }}></i>
                 <h3 style={{ marginBottom: '1rem', color: '#0b6e8f' }}>Bénévolat</h3>
                 <p style={{ color: '#4a6b80', lineHeight: '1.5', marginBottom: '1.5rem' }}>Rejoignez notre équipe de bénévoles pour accompagner les patients et animer la vie de l’hôpital.</p>
-                <a href="/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Devenir bénévole</a>
+                <a href="https://hopital-mce-site.onrender.com/api/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Devenir bénévole</a>
               </div>
             </div>
 

@@ -57,7 +57,7 @@ function TrouverProfessionnel() {
   };
 
   const handleTakeAppointment = (doctor) => {
-    window.location.href = '/#appointment';
+    window.location.href = 'https://hopital-mce-site.onrender.com/api/#appointment';
   };
 
   if (loading) {

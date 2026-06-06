@@ -21,19 +21,19 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Accueil />} />
-          <Route path="/espace-patient" element={<EspacePatient />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/espace-medecin" element={<EspaceMedecin />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/" element={<Accueil />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/espace-patient" element={<EspacePatient />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/jobs" element={<Jobs />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/espace-medecin" element={<EspaceMedecin />} />
           <Route path="https://hopital-mce-site.onrender.com/admin" element={<AdminDashboard />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/info-patients" element={<InfoPatients />} />
-          <Route path="/trouver-professionnel" element={<TrouverProfessionnel />} />
-          <Route path="/messages-patient" element={<MessagesPatient />} />
-          <Route path="/nos-specialites" element={<Specialties />} />
-          <Route path="/checkup-center" element={<CheckupCenter />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/support" element={<Support />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/contact" element={<Contact />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/info-patients" element={<InfoPatients />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/trouver-professionnel" element={<TrouverProfessionnel />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/messages-patient" element={<MessagesPatient />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/nos-specialites" element={<Specialties />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/checkup-center" element={<CheckupCenter />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/about" element={<About />} />
+          <Route path="https://hopital-mce-site.onrender.com/api/support" element={<Support />} />
         </Route>
       </Routes>
     </BrowserRouter>

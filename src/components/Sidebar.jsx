@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 
 function Sidebar() {
   const menuItems = [
-    { path: '/', label: '🏠 Accueil', icon: 'fas fa-home' },
-    { path: '/nos-specialites', label: '📋 Spécialités', icon: 'fas fa-stethoscope' },
-    { path: '/checkup-center', label: '🔬 Check-up', icon: 'fas fa-heartbeat' },
-    { path: '/about', label: '📖 Nous connaître', icon: 'fas fa-info-circle' },
-    { path: '/support', label: '🤝 Nous soutenir', icon: 'fas fa-hand-holding-heart' },
-    { path: '/contact', label: '📞 Contact', icon: 'fas fa-envelope' },
-    { path: '/jobs', label: '💼 Offres d\'emploi', icon: 'fas fa-briefcase' },
-    { path: '/trouver-professionnel', label: '👨‍⚕️ Trouver un médecin', icon: 'fas fa-user-md' },
-    { path: '/info-patients', label: '📋 Infos patients', icon: 'fas fa-notes-medical' },
-    { path: '/espace-patient', label: '👤 Espace Patient', icon: 'fas fa-user-circle' },
-    { path: '/espace-medecin', label: '⚕️ Espace Médecin', icon: 'fas fa-user-md' },
-    { path: '/messages-patient', label: '💬 Messagerie', icon: 'fas fa-comments' },
+    { path: 'https://hopital-mce-site.onrender.com/api/', label: '🏠 Accueil', icon: 'fas fa-home' },
+    { path: 'https://hopital-mce-site.onrender.com/api/nos-specialites', label: '📋 Spécialités', icon: 'fas fa-stethoscope' },
+    { path: 'https://hopital-mce-site.onrender.com/api/checkup-center', label: '🔬 Check-up', icon: 'fas fa-heartbeat' },
+    { path: 'https://hopital-mce-site.onrender.com/api/about', label: '📖 Nous connaître', icon: 'fas fa-info-circle' },
+    { path: 'https://hopital-mce-site.onrender.com/api/support', label: '🤝 Nous soutenir', icon: 'fas fa-hand-holding-heart' },
+    { path: 'https://hopital-mce-site.onrender.com/api/contact', label: '📞 Contact', icon: 'fas fa-envelope' },
+    { path: 'https://hopital-mce-site.onrender.com/api/jobs', label: '💼 Offres d\'emploi', icon: 'fas fa-briefcase' },
+    { path: 'https://hopital-mce-site.onrender.com/api/trouver-professionnel', label: '👨‍⚕️ Trouver un médecin', icon: 'fas fa-user-md' },
+    { path: 'https://hopital-mce-site.onrender.com/api/info-patients', label: '📋 Infos patients', icon: 'fas fa-notes-medical' },
+    { path: 'https://hopital-mce-site.onrender.com/api/espace-patient', label: '👤 Espace Patient', icon: 'fas fa-user-circle' },
+    { path: 'https://hopital-mce-site.onrender.com/api/espace-medecin', label: '⚕️ Espace Médecin', icon: 'fas fa-user-md' },
+    { path: 'https://hopital-mce-site.onrender.com/api/messages-patient', label: '💬 Messagerie', icon: 'fas fa-comments' },
     { path: 'https://hopital-mce-site.onrender.com/admin', label: '🔧 Administration', icon: 'fas fa-lock' },
   ];
 

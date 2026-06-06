@@ -92,7 +92,7 @@ function MessagesPatient() {
   };
 
   const goToLogin = () => {
-    window.location.href = '/espace-patient';
+    window.location.href = 'https://hopital-mce-site.onrender.com/api/espace-patient';
   };
 
   if (!token) {
