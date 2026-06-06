@@ -441,7 +441,44 @@ function authenticateToken(req, res, next) {
     }
 })();
 
-// ========== ROUTES API ==========
+// ========== NOUVELLE ROUTE : Disponibilités des médecins pour le chat ==========
+app.get('/api/chat/doctor-availability', async (req, res) => {
+    const { doctorName } = req.query;
+    if (!doctorName) return res.status(400).json({ error: 'Nom du médecin requis' });
+
+    try {
+        // Rechercher le médecin dans la table staff
+        const doctorQuery = await db.query(
+            `SELECT id, full_name FROM staff WHERE profession = 'Médecin' AND is_active = 1 AND (full_name ILIKE $1 OR specialty ILIKE $1)`,
+            [`%${doctorName}%`]
+        );
+        if (doctorQuery.rowCount === 0) {
+            return res.json({ reply: `Désolé, je n'ai pas trouvé de médecin correspondant à "${doctorName}".` });
+        }
+        const doctor = doctorQuery.rows[0];
+
+        // Récupérer les créneaux disponibles pour les 7 prochains jours
+        const today = new Date().toISOString().slice(0,10);
+        const availabilityQuery = await db.query(
+            `SELECT date, time_slot FROM availabilities WHERE doctor_id = $1 AND is_booked = 0 AND date >= $2 ORDER BY date, time_slot LIMIT 10`,
+            [doctor.id, today]
+        );
+
+        if (availabilityQuery.rowCount === 0) {
+            return res.json({ reply: `Le Dr ${doctor.full_name} n'a pas de créneaux disponibles pour le moment. Veuillez réessayer plus tard.` });
+        }
+
+        let slotsText = availabilityQuery.rows.map(s => `${s.date} à ${s.time_slot}`).join('\n- ');
+        const reply = `✅ Voici les prochains créneaux disponibles pour le Dr ${doctor.full_name} :\n- ${slotsText}\n\nPour prendre rendez-vous, utilisez notre formulaire en ligne (lien en bas de la page).`;
+        res.json({ reply });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erreur interne' });
+    }
+});
+
+// ========== ROUTES API (suite) ==========
+
 // Newsletter
 app.get('/api/newsletter/count', async (req, res) => {
     try {
@@ -558,8 +595,13 @@ app.delete('/api/actualites/:id', async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Admin basique
-app.use('/admin', basicAuth({ users: { 'admin': 'nexus2026' }, challenge: true, realm: 'Accès réservé à l\'administration' }));
+// ========== ADMIN : authentification personnalisée ==========
+// On remplace basicAuth par un simple basicAuth avec les identifiants fournis
+app.use('/admin', basicAuth({
+    users: { 'adminmpombo@gmail.com': '@M@thurkayo21262578@@@@1' },
+    challenge: true,
+    realm: 'Accès réservé à l\'administration'
+}));
 
 // Liste des médecins
 app.get('/api/doctors', async (req, res) => {
