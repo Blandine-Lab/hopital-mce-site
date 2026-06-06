@@ -1,8 +1,8 @@
+import { API_BASE } from '../config';
 // src/pages/Accueil.jsx
 import { useState, useEffect } from 'react';
 import FloatingChat from '../components/FloatingChat';
 
-const API_BASE = 'https://hopital-mce-site.onrender.com';
 
 function escapeHtml(str) {
   if (!str) return '';

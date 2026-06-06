@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import { API_BASE } from '../config';
 
-const API_BASE = 'https://hopital-mce-site.onrender.com';
+
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);

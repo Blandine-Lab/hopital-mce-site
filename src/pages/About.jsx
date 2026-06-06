@@ -1,7 +1,7 @@
+import { API_BASE } from '../config';
 // src/pages/About.jsx
 import { useState, useEffect } from 'react';
 
-const API_BASE = 'https://hopital-mce-site.onrender.com';
 
 function About() {
   const [footer, setFooter] = useState({});

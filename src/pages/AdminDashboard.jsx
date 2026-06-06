@@ -1,7 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { API_BASE } from '../config';
 
-const API_BASE = "https://hopital-mce-site.onrender.com";
+
 
 function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("rdv");
@@ -61,7 +62,7 @@ function AdminDashboard() {
     // ========== CHARGEMENT DES DONNÉES ==========
     const loadAppointments = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/appointments?_=" + Date.now());
+            const res = await fetch(API_BASE + "/appointments?_=" + Date.now());
             const data = await res.json();
             setAppointments(data);
         } catch (err) { console.error(err); }
@@ -69,7 +70,7 @@ function AdminDashboard() {
     
     const loadDoctors = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/staff");
+            const res = await fetch(API_BASE + "/staff");
             const data = await res.json();
             setDoctors(data);
         } catch (err) { console.error(err); }
@@ -77,7 +78,7 @@ function AdminDashboard() {
     
     const loadEvents = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/events");
+            const res = await fetch(API_BASE + "/events");
             const data = await res.json();
             setEvents(data);
         } catch (err) { console.error(err); }
@@ -85,7 +86,7 @@ function AdminDashboard() {
     
     const loadActualites = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/actualites");
+            const res = await fetch(API_BASE + "/actualites");
             const data = await res.json();
             setActualites(data);
         } catch (err) { console.error(err); }
@@ -93,7 +94,7 @@ function AdminDashboard() {
     
     const loadSpecialties = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/specialties");
+            const res = await fetch(API_BASE + "/specialties");
             const data = await res.json();
             setSpecialties(data);
         } catch (err) { console.error(err); }
@@ -101,7 +102,7 @@ function AdminDashboard() {
     
     const loadEtablissement = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/etablissement");
+            const res = await fetch(API_BASE + "/etablissement");
             const data = await res.json();
             setEtablissement(data);
         } catch (err) { console.error(err); }
@@ -109,7 +110,7 @@ function AdminDashboard() {
     
     const loadPartenaires = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/partenaires");
+            const res = await fetch(API_BASE + "/partenaires");
             const data = await res.json();
             setPartenaires(data);
         } catch (err) { console.error(err); }
@@ -117,7 +118,7 @@ function AdminDashboard() {
     
     const loadJobs = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/jobs");
+            const res = await fetch(API_BASE + "/admin/jobs");
             const data = await res.json();
             setJobs(data);
         } catch (err) { console.error(err); }
@@ -125,7 +126,7 @@ function AdminDashboard() {
     
     const loadApplications = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/applications");
+            const res = await fetch(API_BASE + "/admin/applications");
             const data = await res.json();
             setApplications(data);
         } catch (err) { console.error(err); }
@@ -133,7 +134,7 @@ function AdminDashboard() {
     
     const loadAvailabilities = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/availabilities/calendar?_=" + Date.now());
+            const res = await fetch(API_BASE + "/availabilities/calendar?_=" + Date.now());
             const data = await res.json();
             setAvailabilities(data);
             const grouped = {};
@@ -148,7 +149,7 @@ function AdminDashboard() {
     
     const loadTarifs = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/tarifs");
+            const res = await fetch(API_BASE + "/tarifs");
             const data = await res.json();
             setTarifs(data);
         } catch (err) { console.error(err); }
@@ -156,7 +157,7 @@ function AdminDashboard() {
     
     const loadPaiements = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/paiements");
+            const res = await fetch(API_BASE + "/paiements");
             const data = await res.json();
             setPaiements(data);
         } catch (err) { console.error(err); }
@@ -164,7 +165,7 @@ function AdminDashboard() {
     
     const loadPendingResults = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/results/pending");
+            const res = await fetch(API_BASE + "/admin/results/pending");
             const data = await res.json();
             setPendingResults(data);
         } catch (err) { console.error(err); }
@@ -172,7 +173,7 @@ function AdminDashboard() {
     
     const loadPatients = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/patients");
+            const res = await fetch(API_BASE + "/admin/patients");
             const data = await res.json();
             setPatients(data);
         } catch (err) { console.error(err); }
@@ -180,7 +181,7 @@ function AdminDashboard() {
     
     const loadNewsletterStats = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/newsletter/count");
+            const res = await fetch(API_BASE + "/newsletter/count");
             const data = await res.json();
             setNewsletterCount(data.count || 0);
         } catch (err) { console.error(err); }
@@ -188,7 +189,7 @@ function AdminDashboard() {
     
     const loadStats = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/stats");
+            const res = await fetch(API_BASE + "/stats");
             const data = await res.json();
             setStats(data);
         } catch (err) { console.error(err); }
@@ -196,7 +197,7 @@ function AdminDashboard() {
     
     const loadFooterContent = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/site-content/footer");
+            const res = await fetch(API_BASE + "/site-content/footer");
             const data = await res.json();
             setFooterContent(data);
         } catch (err) { console.error(err); }
@@ -204,7 +205,7 @@ function AdminDashboard() {
     
     const loadPaymentConfig = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/paiement/config");
+            const res = await fetch(API_BASE + "/paiement/config");
             const data = await res.json();
             setPaymentConfig(data);
         } catch (err) { console.error(err); }
@@ -212,7 +213,7 @@ function AdminDashboard() {
     
     const loadContent = async (page) => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/site-content/" + page);
+            const res = await fetch(API_BASE + "/site-content/" + page);
             const data = await res.json();
             setSiteContent(data);
         } catch (err) { console.error(err); }
@@ -220,7 +221,7 @@ function AdminDashboard() {
     
     const loadDoctorsForSelect = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/staff");
+            const res = await fetch(API_BASE + "/staff");
             const staff = await res.json();
             setDoctors(staff);
         } catch (err) { console.error(err); }
@@ -247,7 +248,7 @@ function AdminDashboard() {
     const deleteDoctor = async (id) => {
         if (!confirm("Supprimer ce médecin ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/staff/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/staff/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Médecin supprimé"); loadDoctors(); }
         } catch (err) { console.error(err); }
     };
@@ -255,7 +256,7 @@ function AdminDashboard() {
     const deleteEvent = async (id) => {
         if (!confirm("Supprimer cet événement ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/events/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/events/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Événement supprimé"); loadEvents(); }
         } catch (err) { console.error(err); }
     };
@@ -263,7 +264,7 @@ function AdminDashboard() {
     const deleteActualite = async (id) => {
         if (!confirm("Supprimer cette actualité ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/actualites/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/actualites/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Actualité supprimée"); loadActualites(); }
         } catch (err) { console.error(err); }
     };
@@ -271,7 +272,7 @@ function AdminDashboard() {
     const deleteSpecialty = async (id) => {
         if (!confirm("Supprimer cette spécialité ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/specialties/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/specialties/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Spécialité supprimée"); loadSpecialties(); }
         } catch (err) { console.error(err); }
     };
@@ -279,7 +280,7 @@ function AdminDashboard() {
     const deleteJob = async (id) => {
         if (!confirm("Supprimer cette offre ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/jobs/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/admin/jobs/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Offre supprimée"); loadJobs(); }
         } catch (err) { console.error(err); }
     };
@@ -287,7 +288,7 @@ function AdminDashboard() {
     const deleteTarif = async (id) => {
         if (!confirm("Supprimer ce tarif ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/tarifs/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/tarifs/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Tarif supprimé"); loadTarifs(); }
         } catch (err) { console.error(err); }
     };
@@ -295,7 +296,7 @@ function AdminDashboard() {
     const deleteAvailability = async (id) => {
         if (!confirm("Supprimer ce créneau ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/availabilities/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/availabilities/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Créneau supprimé"); loadAvailabilities(); }
         } catch (err) { console.error(err); }
     };
@@ -303,7 +304,7 @@ function AdminDashboard() {
     const deletePatient = async (id) => {
         if (!confirm("Supprimer ce patient ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/patients/" + id, { method: "DELETE" });
+            const res = await fetch(API_BASE + "/admin/patients/" + id, { method: "DELETE" });
             if (res.ok) { showSuccess("Patient supprimé"); loadPatients(); }
         } catch (err) { console.error(err); }
     };
@@ -312,7 +313,7 @@ function AdminDashboard() {
     const validateTeleconsultation = async (id) => {
         if (!confirm("Valider cette téléconsultation ? Le patient et le médecin pourront alors rejoindre la visio.")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/appointments/" + id + "https://hopital-mce-site.onrender.com/api/validate-teleconsultation", { method: "PUT" });
+            const res = await fetch(API_BASE + "/admin/appointments/" + id + "https://hopital-mce-site.onrender.com/api/validate-teleconsultation", { method: "PUT" });
             if (res.ok) {
                 showSuccess("Téléconsultation validée");
                 loadAppointments();
@@ -335,7 +336,7 @@ function AdminDashboard() {
             active: formData.get("active") === "on" ? 1 : 0
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            const res = await fetch(API_BASE + "/admin/jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
             if (res.ok) { showSuccess("Offre ajoutée"); loadJobs(); setShowJobForm(false); e.target.reset(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -350,7 +351,7 @@ function AdminDashboard() {
             active: formData.get("active") === "on" ? 1 : 0
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            const res = await fetch(API_BASE + "/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
             if (res.ok) { showSuccess("Événement ajouté"); loadEvents(); setShowEventForm(false); e.target.reset(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -366,7 +367,7 @@ function AdminDashboard() {
             active: formData.get("active") === "on" ? 1 : 0
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/specialties", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            const res = await fetch(API_BASE + "/specialties", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
             if (res.ok) { showSuccess("Spécialité ajoutée"); loadSpecialties(); setShowSpecialtyForm(false); e.target.reset(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -383,7 +384,7 @@ function AdminDashboard() {
             password: formData.get("password")
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            const res = await fetch(API_BASE + "/admin/patients", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
             if (res.ok) { showSuccess("Patient ajouté"); loadPatients(); setShowPatientForm(false); e.target.reset(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -402,7 +403,7 @@ function AdminDashboard() {
             const fd = new FormData();
             fd.append("image", imageFile);
             try {
-                const uploadRes = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/upload", { method: "POST", body: fd });
+                const uploadRes = await fetch(API_BASE + "/upload", { method: "POST", body: fd });
                 const uploadData = await uploadRes.json();
                 if (uploadData.imageUrl) image_url = uploadData.imageUrl;
                 else { alert("Erreur upload"); return; }
@@ -410,7 +411,7 @@ function AdminDashboard() {
         }
         const payload = { titre, description, image_url, ordre, active };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/actualites", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            const res = await fetch(API_BASE + "/actualites", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
             if (res.ok) { showSuccess("Actualité ajoutée"); loadActualites(); setShowActuForm(false); e.target.reset(); setImagePreview(""); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -423,7 +424,7 @@ function AdminDashboard() {
         const date = formData.get("date");
         const time_slot = formData.get("start_time") + "-" + formData.get("end_time");
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/availabilities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ doctor_id, date, time_slot }) });
+            const res = await fetch(API_BASE + "/availabilities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ doctor_id, date, time_slot }) });
             if (res.ok) { showSuccess("Créneau ajouté"); loadAvailabilities(); setShowAvailabilityForm(false); e.target.reset(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -441,7 +442,7 @@ function AdminDashboard() {
             active: formData.get("active") === "on" ? 1 : 0
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/tarifs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+            const res = await fetch(API_BASE + "/tarifs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
             if (res.ok) { showSuccess("Tarif ajouté"); loadTarifs(); e.target.reset(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -449,7 +450,7 @@ function AdminDashboard() {
     
     const saveContent = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/site-content/" + selectedPage, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(siteContent) });
+            const res = await fetch(API_BASE + "/site-content/" + selectedPage, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(siteContent) });
             if (res.ok) alert("Contenu mis à jour !");
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -475,7 +476,7 @@ function AdminDashboard() {
             copyright: formData.get("copyright")
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/site-content/footer", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) });
+            const res = await fetch(API_BASE + "/site-content/footer", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) });
             if (res.ok) { showSuccess("Footer mis à jour !"); loadFooterContent(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -492,7 +493,7 @@ function AdminDashboard() {
             carte_info: formData.get("carte_info")
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/paiement/config", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) });
+            const res = await fetch(API_BASE + "/paiement/config", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) });
             if (res.ok) { showSuccess("Configuration mise à jour"); loadPaymentConfig(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -504,7 +505,7 @@ function AdminDashboard() {
         const subject = formData.get("subject");
         const content = formData.get("content");
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/newsletter/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject, content }) });
+            const res = await fetch(API_BASE + "/newsletter/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject, content }) });
             const data = await res.json();
             if (res.ok) alert("Envoi terminé : " + data.successCount + " emails réussis.");
             else alert("Erreur");
@@ -513,7 +514,7 @@ function AdminDashboard() {
     
     const exportEmails = async () => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/newsletter/export");
+            const res = await fetch(API_BASE + "/newsletter/export");
             const data = await res.json();
             const blob = new Blob([data.emails.join("\n")], { type: "text/csv" });
             const url = URL.createObjectURL(blob);
@@ -528,7 +529,7 @@ function AdminDashboard() {
     const publishResult = async (id) => {
         if (!confirm("Publier ce résultat ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/results/" + id + "https://hopital-mce-site.onrender.com/api/publish", { method: "PUT" });
+            const res = await fetch(API_BASE + "/admin/results/" + id + "https://hopital-mce-site.onrender.com/api/publish", { method: "PUT" });
             if (res.ok) { showSuccess("Résultat publié"); loadPendingResults(); }
         } catch (err) { console.error(err); }
     };
@@ -542,7 +543,7 @@ function AdminDashboard() {
         const file_url = formData.get("file_url");
         if (!patient_id || !type) { alert("Veuillez remplir les champs requis"); return; }
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/results", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patient_id, type, description, file_url }) });
+            const res = await fetch(API_BASE + "/admin/results", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patient_id, type, description, file_url }) });
             if (res.ok) { showSuccess("Résultat ajouté"); e.target.reset(); loadPendingResults(); }
             else alert("Erreur");
         } catch (err) { console.error(err); }
@@ -550,7 +551,7 @@ function AdminDashboard() {
     
     const markAppointmentAsViewed = async (id) => {
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/appointments/" + id + "https://hopital-mce-site.onrender.com/api/view", { method: "PUT" });
+            const res = await fetch(API_BASE + "/admin/appointments/" + id + "https://hopital-mce-site.onrender.com/api/view", { method: "PUT" });
             if (res.ok) { showSuccess("Rendez-vous marqué comme vu"); loadAppointments(); }
         } catch (err) { console.error(err); }
     };
@@ -568,7 +569,7 @@ function AdminDashboard() {
             password: formData.get("password") || undefined
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/admin/patients/" + editingPatient.id, {
+            const res = await fetch(API_BASE + "/admin/patients/" + editingPatient.id, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
@@ -598,7 +599,7 @@ function AdminDashboard() {
             password: formData.get("password") || undefined
         };
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/staff/" + editingDoctor.id, {
+            const res = await fetch(API_BASE + "/staff/" + editingDoctor.id, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
@@ -881,13 +882,13 @@ function AdminDashboard() {
                 let photo_url = null;
                 if (photoFile && photoFile.size) {
                     const fd = new FormData(); fd.append("image", photoFile);
-                    const uploadRes = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/upload", { method: "POST", body: fd });
+                    const uploadRes = await fetch(API_BASE + "/upload", { method: "POST", body: fd });
                     const uploadData = await uploadRes.json();
                     if (uploadData.imageUrl) photo_url = uploadData.imageUrl;
                     else { alert("Erreur upload photo"); return; }
                 }
                 const payload = { full_name, profession, specialty, department, email, phone: "", photo_url, password, telegram_chat_id };
-                const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/staff", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                const res = await fetch(API_BASE + "/staff", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
                 if (res.ok) { showSuccess("Médecin ajouté"); loadDoctors(); e.target.reset(); }
                 else alert("Erreur");
             }, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
@@ -995,7 +996,7 @@ function AdminDashboard() {
             React.createElement("button", { onClick: () => {
                 const updates = {};
                 document.querySelectorAll("#contentEditor textarea").forEach(ta => updates[ta.getAttribute("data-key")] = ta.value);
-                fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/site-content/" + selectedPage, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) })
+                fetch(API_BASE + "/site-content/" + selectedPage, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(updates) })
                     .then(res => res.ok ? alert("✅ Contenu mis à jour !") : alert("❌ Erreur"));
             }, style: { background: "#0b6e8f", color: "white", border: "none", padding: "10px 20px", borderRadius: "25px", cursor: "pointer" } }, "Enregistrer")
         ),
@@ -1090,11 +1091,11 @@ function AdminDashboard() {
                 const file = fd.get("imageFile");
                 if (!file || file.size === 0) { alert("Image requise"); return; }
                 const uploadFd = new FormData(); uploadFd.append("image", file);
-                const uploadRes = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/upload", { method: "POST", body: uploadFd });
+                const uploadRes = await fetch(API_BASE + "/upload", { method: "POST", body: uploadFd });
                 const uploadData = await uploadRes.json();
                 if (!uploadData.imageUrl) { alert("Erreur upload"); return; }
                 const payload = { titre, description, image_url: uploadData.imageUrl, ordre, active };
-                const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/etablissement", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                const res = await fetch(API_BASE + "/etablissement", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
                 if (res.ok) { showSuccess("Photo ajoutée"); loadEtablissement(); e.target.reset(); }
                 else alert("Erreur");
             }, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
@@ -1122,7 +1123,7 @@ function AdminDashboard() {
                             React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, photo.active ? "Oui" : "Non"),
                             React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: async () => {
                                 if (confirm("Supprimer ?")) {
-                                    const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/etablissement/" + photo.id, { method: "DELETE" });
+                                    const res = await fetch(API_BASE + "/etablissement/" + photo.id, { method: "DELETE" });
                                     if (res.ok) loadEtablissement();
                                 }
                             }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️"))
@@ -1146,11 +1147,11 @@ function AdminDashboard() {
                 const file = fd.get("imageFile");
                 if (!file || file.size === 0) { alert("Logo requis"); return; }
                 const uploadFd = new FormData(); uploadFd.append("image", file);
-                const uploadRes = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/upload", { method: "POST", body: uploadFd });
+                const uploadRes = await fetch(API_BASE + "/upload", { method: "POST", body: uploadFd });
                 const uploadData = await uploadRes.json();
                 if (!uploadData.imageUrl) { alert("Erreur upload"); return; }
                 const payload = { nom, description, image_url: uploadData.imageUrl, commentaire, ordre, active };
-                const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/partenaires", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                const res = await fetch(API_BASE + "/partenaires", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
                 if (res.ok) { showSuccess("Partenaire ajouté"); loadPartenaires(); e.target.reset(); }
                 else alert("Erreur");
             }, style: { background: "#f1f9fe", padding: "15px", borderRadius: "12px", marginBottom: "20px" } },
@@ -1181,7 +1182,7 @@ function AdminDashboard() {
                             React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, p.active ? "Oui" : "Non"),
                             React.createElement("td", { style: { padding: "8px", borderBottom: "1px solid #ddd" } }, React.createElement("button", { onClick: async () => {
                                 if (confirm("Supprimer ?")) {
-                                    const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/api/partenaires/" + p.id, { method: "DELETE" });
+                                    const res = await fetch(API_BASE + "/partenaires/" + p.id, { method: "DELETE" });
                                     if (res.ok) loadPartenaires();
                                 }
                             }, style: { color: "#dc3545", background: "none", border: "none", cursor: "pointer" } }, "🗑️"))

@@ -1,0 +1,1 @@
+export const API_BASE = 'https://hopital-mce-site.onrender.com/api';

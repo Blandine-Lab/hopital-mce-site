@@ -1,7 +1,7 @@
+import { API_BASE } from '../config';
 // src/components/admin/ContentEditor.jsx
 import { useState, useEffect } from 'react';
 
-const API_BASE = 'https://mce-backend-fgpg.onrender.com/api';
 
 function ContentEditor({ pageType, onSave }) {
     const [content, setContent] = useState({});

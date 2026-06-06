@@ -1,7 +1,7 @@
+import { API_BASE } from '../config';
 // src/components/admin/FooterEditor.jsx
 import { useState, useEffect } from 'react';
 
-const API_BASE = 'https://mce-backend-fgpg.onrender.com/api';
 
 function FooterEditor() {
     const [footer, setFooter] = useState({

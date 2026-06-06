@@ -1,7 +1,7 @@
+import { API_BASE } from '../config';
 // src/pages/EspacePatient.jsx
 import { useState, useEffect } from 'react';
 
-const API_BASE = 'https://hopital-mce-site.onrender.com';
 
 function EspacePatient() {
   const [token, setToken] = useState(localStorage.getItem('patientToken'));
