@@ -9,23 +9,53 @@ export default function FloatingChat() {
   const [conversation, setConversation] = useState([]);
   const [isSending, setIsSending] = useState(false);
 
+  // Fonction pour extraire un nom de médecin à partir du message
+  const extractDoctorName = (text) => {
+    const lower = text.toLowerCase();
+    // Cherche "Dr X", "Docteur X", "Dr. X"
+    const patterns = [
+      /(dr|docteur|doctor|dr\.)\s+([a-zéèêëçïî\-]+)/i,
+      /médecin\s+([a-zéèêëçïî\-]+)/i,
+      /spécialiste\s+([a-zéèêëçïî\-]+)/i
+    ];
+    for (const pattern of patterns) {
+      const match = text.match(pattern);
+      if (match && match[2]) return match[2];
+    }
+    // mots-clés de spécialités (retourne le mot-clé lui-même)
+    const specialties = ['cardiologue', 'neurologue', 'pédiatre', 'orthopédiste', 'gynécologue', 'ophtalmologue'];
+    for (const spec of specialties) {
+      if (lower.includes(spec)) return spec;
+    }
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSending) return;
     setIsSending(true);
-    // Ajouter le message de l'utilisateur à la conversation
-    const userMessage = { id: Date.now(), type: 'user', text: message, sender: name };
+
+    // Ajouter le message de l'utilisateur
+    const userMessage = {
+      id: Date.now(),
+      type: 'user',
+      text: message,
+      sender: name || 'Visiteur'
+    };
     setConversation(prev => [...prev, userMessage]);
     const currentMessage = message;
+    const currentName = name;
     setMessage('');
+
     try {
+      // 1. Envoyer le message à l'API (stockage)
       const response = await fetch(`${API_BASE}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sender_type: 'patient',
           sender_id: 0,
-          sender_name: name,
+          sender_name: currentName || 'Anonyme',
           receiver_type: 'admin',
           receiver_id: 1,
           receiver_name: 'Administration',
@@ -33,21 +63,53 @@ export default function FloatingChat() {
           message: currentMessage
         })
       });
-      if (response.ok) {
-        // Réponse automatique (simulation)
-        const autoReply = {
-          id: Date.now() + 1,
-          type: 'system',
-          text: `✅ Merci ${name} pour votre message. Un conseiller vous répondra dans les meilleurs délais.`,
-          sender: 'MCE Assistant'
-        };
-        setConversation(prev => [...prev, autoReply]);
-      } else {
-        const errorMsg = { id: Date.now() + 1, type: 'error', text: '❌ Erreur lors de l\'envoi.', sender: 'Système' };
-        setConversation(prev => [...prev, errorMsg]);
+
+      if (!response.ok) throw new Error('Erreur envoi');
+
+      // 2. Déterminer si la question concerne les disponibilités
+      const lowerMsg = currentMessage.toLowerCase();
+      const keywords = ['disponibilité', 'disponible', 'créneau', 'rdv', 'rendez-vous', 'médecin', 'docteur', 'dr', 'quand puis-je voir', 'consulter'];
+      const isAvailabilityQuery = keywords.some(kw => lowerMsg.includes(kw));
+
+      let autoReplyText = `✅ Merci ${currentName || 'vous'} pour votre message. Un conseiller vous répondra dans les meilleurs délais.`;
+
+      if (isAvailabilityQuery) {
+        const doctorName = extractDoctorName(currentMessage);
+        if (doctorName) {
+          try {
+            const availRes = await fetch(`${API_BASE}/chat/doctor-availability?doctorName=${encodeURIComponent(doctorName)}`);
+            const availData = await availRes.json();
+            if (availData.reply) {
+              autoReplyText = availData.reply;
+            } else if (availData.error) {
+              autoReplyText = `❌ ${availData.error}`;
+            } else {
+              autoReplyText = `❌ Désolé, je n'ai pas trouvé de médecin correspondant à "${doctorName}".`;
+            }
+          } catch (err) {
+            console.error(err);
+            autoReplyText = `❌ Désolé, je n'ai pas pu vérifier les disponibilités. Veuillez réessayer.`;
+          }
+        } else {
+          autoReplyText = `📅 Pour connaître les disponibilités, veuillez indiquer le nom d’un médecin ou une spécialité (ex: "Disponibilité du Dr Dupont" ou "cardiologue").`;
+        }
       }
+
+      const autoReply = {
+        id: Date.now() + 1,
+        type: 'system',
+        text: autoReplyText,
+        sender: 'MCE Assistant'
+      };
+      setConversation(prev => [...prev, autoReply]);
     } catch (error) {
-      const errorMsg = { id: Date.now() + 1, type: 'error', text: '❌ Erreur réseau. Veuillez réessayer.', sender: 'Système' };
+      console.error(error);
+      const errorMsg = {
+        id: Date.now() + 1,
+        type: 'error',
+        text: '❌ Erreur réseau. Veuillez réessayer.',
+        sender: 'Système'
+      };
       setConversation(prev => [...prev, errorMsg]);
     } finally {
       setIsSending(false);
