@@ -2,6 +2,9 @@ import { API_BASE } from '../config';
 // src/pages/Accueil.jsx
 import { useState, useEffect } from 'react';
 import FloatingChat from '../components/FloatingChat';
+// src/pages/Accueil.jsx
+import { Link } from 'react-router-dom';
+// Gardez vos autres imports (useState, useEffect, etc.)
 
 
 function escapeHtml(str) {
@@ -358,10 +361,10 @@ function Accueil() {
       {/* Top bar */}
       <div className="top-bar">
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-          <a href="https://hopital-mce-site.onrender.com/api/espace-patient"><i className="fas fa-user"></i> Portail patient</a>
+          <Link to="/espace-patient"><i className="fas fa-user"></i> Portail patient</Link>
           <a href="#"><i className="fas fa-language"></i> English version</a>
-          <a href="https://hopital-mce-site.onrender.com/api/support"><i className="fas fa-heart"></i> Je fais un don</a>
-          <a href="https://hopital-mce-site.onrender.com/api/trouver-professionnel"><i className="fas fa-stethoscope"></i> Trouver un médecin</a>
+          <Link to="/support"><i className="fas fa-heart"></i> Je fais un don</Link>
+          <Link to="/trouver-professionnel"><i className="fas fa-stethoscope"></i> Trouver un médecin</Link>
         </div>
         <div style={{ fontSize: '0.75rem' }}><i className="fas fa-phone-alt"></i> Urgences 24/7 : +243 992 952 038</div>
       </div>
@@ -384,26 +387,26 @@ function Accueil() {
             <a href="#services">Services</a>
             <a href="#doctors">Médecins</a>
             <a href="#appointment">Rendez-vous</a>
-            <a href="https://hopital-mce-site.onrender.com/api/espace-medecin" className="btn-outline-light">Espace Médecin</a>
-            <a href="https://hopital-mce-site.onrender.com/api/jobs" className="job-link">💼 Offres d'emploi</a>
-            <a href="https://hopital-mce-site.onrender.com/api/contact">Contact</a>
-            <a href="https://hopital-mce-site.onrender.com/api/espace-patient" className="btn-outline-light">Espace Patient</a>
-            <a href="https://hopital-mce-site.onrender.com/api/trouver-professionnel">👨‍⚕️ Trouver un professionnel</a>
-            <a href="https://hopital-mce-site.onrender.com/api/messages-patient">💬 Espace Messagerie</a>
-            <a href="https://hopital-mce-site.onrender.com/api/connexion" className="btn-outline-light"><i className="fas fa-sign-in-alt"></i> Connexion</a>
+            <Link to="/espace-medecin" className="btn-outline-light">Espace Médecin</Link>
+            <Link to="/jobs" className="job-link">💼 Offres d'emploi</Link>
+            <Link to="/contact">Contact</Link>
+            <Link to="/espace-patient" className="btn-outline-light">Espace Patient</Link>
+            <Link to="/trouver-professionnel">👨‍⚕️ Trouver un professionnel</Link>
+            <Link to="/messages-patient">💬 Espace Messagerie</Link>
+            <Link to="/connexion" className="btn-outline-light"><i className="fas fa-sign-in-alt"></i> Connexion</Link>
           </div>
         </div>
       </nav>
 
       {/* Secondary navigation */}
       <div className="secondary-nav">
-        <a href="https://hopital-mce-site.onrender.com/api/info-patients">Informations patients & visiteurs</a>
-        <a href="https://hopital-mce-site.onrender.com/api/nos-specialites">Nos spécialités</a>
-        <a href="https://hopital-mce-site.onrender.com/api/checkup-center">Check-up Center</a>
-        <a href="https://hopital-mce-site.onrender.com/api/about">Nous connaître</a>
-        <a href="https://hopital-mce-site.onrender.com/api/support" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>Nous soutenir</a>
-        <a href="https://hopital-mce-site.onrender.com/api/jobs" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>💼 Offres d'emploi</a>
-        <a href="https://hopital-mce-site.onrender.com/api/trouver-professionnel" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>👨‍⚕️ Trouver un professionnel</a>
+        <Link to="/info-patients">Informations patients & visiteurs</Link>
+        <Link to="/nos-specialites">Nos spécialités</Link>
+        <Link to="/checkup-center">Check-up Center</Link>
+        <Link to="/about">Nous connaître</Link>
+        <Link to="/support" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>Nous soutenir</Link>
+        <Link to="/jobs" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>💼 Offres d'emploi</Link>
+        <Link to="/trouver-professionnel" style={{ color: '#2ec4b6', fontWeight: 'bold' }}>👨‍⚕️ Trouver un professionnel</Link>
       </div>
 
       {/* Bandeau annonces */}
@@ -437,7 +440,7 @@ function Accueil() {
               adminClicks++;
               if (adminTimer) clearTimeout(adminTimer);
               adminTimer = setTimeout(() => adminClicks = 0, 2000);
-              if (adminClicks >= 5) { adminClicks = 0; window.location.href = 'https://hopital-mce-site.onrender.com/admin/'; }
+              if (adminClicks >= 5) { adminClicks = 0; window.location.href = 'http://localhost:5173/admin'; }
             }}><i className="fas fa-calendar-alt"></i> Prochaines actions</h3>
             <div id="eventsList" style={{ listStyle: 'none', padding: 0 }}>
               {events.length === 0 ? <p>Chargement des événements...</p> : events.map(e => (
@@ -648,7 +651,7 @@ function Accueil() {
       </section>
 
       {/* NOUS SOUTENIR - redirige vers /support */}
-      <section style={{ background: 'url(/uploads/soutenir.jpg) center/cover no-repeat', padding: '5rem 0', position: 'relative', cursor: 'pointer' }} onClick={() => window.location.href = 'https://hopital-mce-site.onrender.com/api/support'}>
+      <section style={{ background: 'url(/uploads/soutenir.jpg) center/cover no-repeat', padding: '5rem 0', position: 'relative', cursor: 'pointer' }} onClick={() => window.location.href = '/support'}>
         <div className="container" style={{ textAlign: 'center', background: 'rgba(0,0,0,0.65)', color: 'white', borderRadius: '2rem', padding: '3rem 2rem', backdropFilter: 'blur(2px)' }}>
           <i className="fas fa-heart" style={{ fontSize: '3rem', color: '#ff9f1c', marginBottom: '1rem', display: 'inline-block' }}></i>
           <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem' }}>Soutenez Medical Center Elizabeth</h2>

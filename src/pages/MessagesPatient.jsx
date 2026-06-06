@@ -2,7 +2,6 @@ import { API_BASE } from '../config';
 // src/pages/MessagesPatient.jsx
 import { useState, useEffect } from 'react';
 
-
 function MessagesPatient() {
   const [token, setToken] = useState(localStorage.getItem('patientToken'));
   const [patient, setPatient] = useState(null);
@@ -92,7 +91,7 @@ function MessagesPatient() {
   };
 
   const goToLogin = () => {
-    window.location.href = 'https://hopital-mce-site.onrender.com/api/espace-patient';
+    window.location.href = '/espace-patient';
   };
 
   if (!token) {
@@ -109,21 +108,19 @@ function MessagesPatient() {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
-      {/* Image en arrière-plan */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundImage: 'url(/message.jpg)', // Assurez-vous que le fichier est dans public/message.jpg
+        backgroundImage: 'url(/message.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         zIndex: 0
       }}></div>
 
-      {/* Overlay semi-transparent */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -134,7 +131,6 @@ function MessagesPatient() {
         zIndex: 1
       }}></div>
 
-      {/* Contenu */}
       <div style={{
         position: 'relative',
         zIndex: 2,

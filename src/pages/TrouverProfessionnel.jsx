@@ -2,7 +2,6 @@ import { API_BASE } from '../config';
 // src/pages/TrouverProfessionnel.jsx
 import { useState, useEffect } from 'react';
 
-
 function TrouverProfessionnel() {
   const [staff, setStaff] = useState([]);
   const [filteredStaff, setFilteredStaff] = useState([]);
@@ -57,7 +56,7 @@ function TrouverProfessionnel() {
   };
 
   const handleTakeAppointment = (doctor) => {
-    window.location.href = 'https://hopital-mce-site.onrender.com/api/#appointment';
+    window.location.href = '/#appointment';
   };
 
   if (loading) {
@@ -93,14 +92,14 @@ function TrouverProfessionnel() {
         left: 0,
         width: '100%',
         height: '100%',
-        backgroundImage: 'url(/Prof.jpg)', // Assurez-vous que le fichier s'appelle Prof.jpg (ou Prof.png)
+        backgroundImage: 'url(/Prof.jpg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         zIndex: 0
       }}></div>
 
-      {/* Overlay semi-transparent pour la lisibilité */}
+      {/* Overlay semi-transparent */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -125,7 +124,7 @@ function TrouverProfessionnel() {
           Recherchez un médecin par nom, spécialité ou service, et prenez rendez-vous en ligne.
         </p>
 
-        {/* Barre de recherche et filtres (fond blanc semi-transparent) */}
+        {/* Barre de recherche et filtres */}
         <div style={{
           background: 'rgba(255,255,255,0.9)',
           borderRadius: '24px',

@@ -1,7 +1,7 @@
 import { API_BASE } from '../config';
 // src/pages/Support.jsx
 import { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 
 function Support() {
   const [footer, setFooter] = useState({});
@@ -48,7 +48,6 @@ function Support() {
     setStatus({ type: 'info', message: 'Initialisation du paiement...' });
     
     try {
-      // 1. Initier le paiement
       const initRes = await fetch(`${API_BASE}/paiement/initier`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +65,6 @@ function Support() {
       
       setStatus({ type: 'info', message: `Code de confirmation : ${initData.code}. Veuillez confirmer.` });
       
-      // 2. Demander confirmation (simulation)
       const confirmer = window.confirm(`Confirmer le don de ${montant}€ avec le code ${initData.code} ? (Simulation)`);
       if (!confirmer) {
         setStatus({ type: 'warning', message: 'Paiement annulé.' });
@@ -74,7 +72,6 @@ function Support() {
         return;
       }
       
-      // 3. Confirmer le paiement
       const confirmRes = await fetch(`${API_BASE}/paiement/confirmer/${initData.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -88,7 +85,6 @@ function Support() {
           message: `✅ Merci ${formData.nom} pour votre don de ${montant} € ! ${formData.recuFiscal ? 'Un reçu fiscal vous sera envoyé.' : ''}`,
           factureUrl: confirmData.facture_url
         });
-        // Réinitialiser le formulaire
         setFormData({
           nom: '',
           email: '',
@@ -118,34 +114,7 @@ function Support() {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
-      {/* Image en arrière-plan (optionnelle) – décommentez si vous avez support.jpg */}
-      {/* <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundImage: 'url(/support.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        zIndex: 0
-      }}></div> */}
-      
-      {/* Overlay (si image) */}
-      {/* <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        zIndex: 1
-      }}></div> */}
-      
-      {/* Contenu */}
       <div style={{ position: 'relative', zIndex: 2 }}>
-        {/* En-tête */}
         <div style={{
           background: 'linear-gradient(95deg, #e6f4ff 0%, #ffffff 70%)',
           padding: '4rem 0 2rem',
@@ -159,7 +128,6 @@ function Support() {
           </div>
         </div>
 
-        {/* Options de soutien */}
         <section style={{ padding: '3rem 0' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 2rem' }}>
             <div style={{
@@ -202,7 +170,7 @@ function Support() {
                 <i className="fas fa-building" style={{ fontSize: '2.5rem', color: '#2ec4b6', marginBottom: '1rem' }}></i>
                 <h3 style={{ marginBottom: '1rem', color: '#0b6e8f' }}>Mécénat d’entreprise</h3>
                 <p style={{ color: '#4a6b80', lineHeight: '1.5', marginBottom: '1.5rem' }}>Devenez partenaire de l’hôpital et bénéficiez d’une visibilité auprès de nos équipes et patients.</p>
-                <a href="https://hopital-mce-site.onrender.com/api/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Nous contacter</a>
+                <Link to="/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Nous contacter</Link>
               </div>
               {/* Carte 3 - Bénévolat */}
               <div style={{
@@ -220,7 +188,7 @@ function Support() {
                 <i className="fas fa-users" style={{ fontSize: '2.5rem', color: '#2ec4b6', marginBottom: '1rem' }}></i>
                 <h3 style={{ marginBottom: '1rem', color: '#0b6e8f' }}>Bénévolat</h3>
                 <p style={{ color: '#4a6b80', lineHeight: '1.5', marginBottom: '1.5rem' }}>Rejoignez notre équipe de bénévoles pour accompagner les patients et animer la vie de l’hôpital.</p>
-                <a href="https://hopital-mce-site.onrender.com/api/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Devenir bénévole</a>
+                <Link to="/contact" style={{ background: '#2ec4b6', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '2rem', textDecoration: 'none', fontWeight: '600', display: 'inline-block' }}>Devenir bénévole</Link>
               </div>
             </div>
 
@@ -281,7 +249,7 @@ function Support() {
           </div>
         </section>
 
-        {/* Footer (identique à l'accueil, dynamique) */}
+        {/* Footer */}
         <footer style={{ background: '#061e28', color: '#cfdfe9', padding: '3rem 0 1.5rem', marginTop: '2rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
             <div>

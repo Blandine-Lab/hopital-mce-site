@@ -1,5 +1,6 @@
 // backend/server.js
 require('dotenv').config();
+const isProduction = process.env.NODE_ENV === 'production';
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -44,9 +45,11 @@ async function sendTelegramNotification(title, details, chatId = null) {
 }
 
 // ========== Configuration multer pour l'upload d'images et CV ==========
-const uploadDir = path.join(__dirname, 'frontend', 'uploads');
+// Choix du dossier selon l'environnement
+const uploadBaseDir = isProduction ? path.join(__dirname, '..', 'uploads') : path.join(__dirname, 'frontend', 'uploads');
+const uploadDir = path.join(uploadBaseDir);
+const cvUploadDir = path.join(uploadBaseDir, 'cv');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-const cvUploadDir = path.join(__dirname, 'frontend', 'uploads', 'cv');
 if (!fs.existsSync(cvUploadDir)) fs.mkdirSync(cvUploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -462,18 +465,34 @@ app.delete('/api/actualites/:id', (req, res) => {
     });
 });
 
-// Authentification admin
-app.use('/admin', basicAuth({ users: { 'admin': 'nexus2026' }, challenge: true, realm: 'Acces reserve a l administration' }));
+// Authentification admin (backend basique)
+app.use('/admin', basicAuth({ users: { 'admin': 'nexus2026' }, challenge: true, realm: 'Accès réservé à l\'administration' }));
 
-// Fichiers statiques
-const frontendPath = path.join(__dirname, 'frontend');
-app.use(express.static(frontendPath));
-app.use('/js', express.static(path.join(__dirname, 'frontend/js')));
-app.use('/admin', express.static(path.join(__dirname, 'admin')));
-app.use('/uploads', express.static(path.join(__dirname, 'frontend/uploads')));
-app.get('/', (req, res) => res.sendFile(path.join(frontendPath, 'index.html')));
+// ========== Fichiers statiques et fallback (version production / développement) ==========
+if (isProduction) {
+    // En production : servir le build du frontend (dossier dist à la racine)
+    const distPath = path.join(__dirname, '..', 'dist');
+    app.use(express.static(distPath));
+    // Toute route non-API renvoie index.html (pour React Router)
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(distPath, 'index.html'));
+    });
+} else {
+    // En développement : servir les dossiers frontend existants
+    const frontendPath = path.join(__dirname, 'frontend');
+    app.use(express.static(frontendPath));
+    app.use('/js', express.static(path.join(__dirname, 'frontend/js')));
+    app.use('/admin', express.static(path.join(__dirname, 'admin')));
+    app.use('/uploads', express.static(path.join(__dirname, 'frontend/uploads')));
+    app.get('/', (req, res) => res.sendFile(path.join(frontendPath, 'index.html')));
 
-// Liste des médecins (depuis staff)
+    // Fallback 404 pour les requêtes non trouvées (API uniquement)
+    app.use((req, res) => {
+        res.status(404).json({ error: "Route non trouvée" });
+    });
+}
+
+// ========== Liste des médecins ==========
 app.get('/api/doctors', (req, res) => {
     db.all("SELECT id, full_name as name, specialty FROM staff WHERE profession = 'Médecin' AND is_active = 1", (err, rows) => {
         if (err) return res.status(500).json({ error: "Erreur interne" });
@@ -572,7 +591,6 @@ app.post('/api/appointments',
         });
     });
 
-// Récupération de tous les rendez-vous (admin)
 app.get('/api/appointments', (req, res) => {
     db.all(`
         SELECT a.*, s.full_name as doctor_name, a.admin_viewed, a.doctor_viewed, a.teleconsultation_validated
@@ -987,7 +1005,6 @@ app.post('/api/patient/register', async (req, res) => {
     });
 });
 
-// MODIFICATION : Ajout de is_paid et facture_url dans la sélection
 app.get('/api/patient/appointments', authenticateToken, (req, res) => {
     const patientId = req.user.id;
     db.all(`
@@ -1174,7 +1191,7 @@ app.delete('/api/partenaires/:id', (req, res) => {
     });
 });
 
-// API Paiements (simulation)
+// API Paiements
 app.get('/api/paiement/config', (req, res) => {
     db.all(`SELECT cle, valeur FROM config_paiement`, (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -1204,7 +1221,6 @@ app.post('/api/paiement/initier', async (req, res) => {
         });
 });
 
-// MODIFICATION : Lier le paiement au rendez-vous et mettre à jour la facture
 app.post('/api/paiement/confirmer/:id', (req, res) => {
     const { id } = req.params;
     const { code } = req.body;
@@ -1216,8 +1232,6 @@ app.post('/api/paiement/confirmer/:id', (req, res) => {
             const factureUrl = `/factures/${id}.pdf`;
             db.run(`UPDATE paiements SET facture_url = ? WHERE id = ?`, [factureUrl, id]);
             sendTelegramNotification('✅ Paiement confirmé', `ID: ${id}\nMontant: ${paiement.montant}€\nClient: ${paiement.nom_client || 'Anonyme'}\nCode: ${code}`);
-            
-            // Lier la facture au rendez-vous si un appointment_id existe
             if (paiement.appointment_id) {
                 db.run(`UPDATE appointments SET is_paid = 1, facture_url = ? WHERE id = ?`, [factureUrl, paiement.appointment_id]);
             }
@@ -1289,7 +1303,7 @@ app.delete('/api/tarifs/:id', (req, res) => {
     });
 });
 
-// ========== NOUVELLE ROUTE : Paiement patient pour un rendez-vous ==========
+// Paiement patient pour un rendez-vous
 app.post('/api/patient/appointments/:id/pay', authenticateToken, async (req, res) => {
     if (req.user.type !== 'patient') {
         return res.status(403).json({ error: 'Accès réservé aux patients' });
@@ -1305,7 +1319,6 @@ app.post('/api/patient/appointments/:id/pay', authenticateToken, async (req, res
             return res.status(400).json({ error: 'Ce rendez-vous est déjà payé' });
         }
 
-        // Montant fixe (vous pouvez adapter selon la spécialité ou les tarifs)
         const montant = 30.00;
         const methode = 'carte';
         const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -1323,7 +1336,7 @@ app.post('/api/patient/appointments/:id/pay', authenticateToken, async (req, res
     });
 });
 
-// ========== Route de test Telegram ==========
+// Route de test Telegram
 app.get('/api/test-telegram', async (req, res) => {
     try {
         await sendTelegramNotification('Test MCE', 'Ceci est un message de test depuis le backend.');
@@ -1333,21 +1346,15 @@ app.get('/api/test-telegram', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 // Enregistrement des demandes de check-up
 app.post('/api/checkup-requests', (req, res) => {
     const { fullname, email, phone, checkupType, date, timeSlot, message } = req.body;
     if (!fullname || !email || !phone || !date) {
         return res.status(400).json({ error: 'Champs obligatoires manquants' });
     }
-    // Ici vous pouvez stocker dans une table `checkup_requests` ou envoyer un email.
-    // Pour l'instant, on simule un succès.
     console.log('Demande check-up reçue :', { fullname, email, phone, checkupType, date, timeSlot, message });
     res.json({ success: true, message: 'Demande enregistrée' });
-});
-
-// ========== 404 ==========
-app.use((req, res) => {
-    res.status(404).json({ error: "Route non trouvée" });
 });
 
 // ========== Démarrage ==========

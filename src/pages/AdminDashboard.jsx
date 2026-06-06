@@ -2,8 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { API_BASE } from '../config';
 
-
-
 function AdminDashboard() {
     const [activeTab, setActiveTab] = useState("rdv");
     const [selectedPage, setSelectedPage] = useState("home");
@@ -240,7 +238,7 @@ function AdminDashboard() {
     const deleteAppointment = async (id) => {
         if (!confirm("Supprimer ce rendez-vous ?")) return;
         try {
-            const res = await fetch(API_BASE + "https://hopital-mce-site.onrender.com/appointments/" + id, { method: "DELETE" });
+            const res = await fetch(`${API_BASE}/appointments/${id}`, { method: "DELETE" });
             if (res.ok) { showSuccess("Rendez-vous supprimé"); loadAppointments(); }
         } catch (err) { console.error(err); }
     };
@@ -313,7 +311,7 @@ function AdminDashboard() {
     const validateTeleconsultation = async (id) => {
         if (!confirm("Valider cette téléconsultation ? Le patient et le médecin pourront alors rejoindre la visio.")) return;
         try {
-            const res = await fetch(API_BASE + "/admin/appointments/" + id + "https://hopital-mce-site.onrender.com/api/validate-teleconsultation", { method: "PUT" });
+            const res = await fetch(`${API_BASE}/admin/appointments/${id}/validate-teleconsultation`, { method: "PUT" });
             if (res.ok) {
                 showSuccess("Téléconsultation validée");
                 loadAppointments();
@@ -529,7 +527,7 @@ function AdminDashboard() {
     const publishResult = async (id) => {
         if (!confirm("Publier ce résultat ?")) return;
         try {
-            const res = await fetch(API_BASE + "/admin/results/" + id + "https://hopital-mce-site.onrender.com/api/publish", { method: "PUT" });
+            const res = await fetch(`${API_BASE}/admin/results/${id}/publish`, { method: "PUT" });
             if (res.ok) { showSuccess("Résultat publié"); loadPendingResults(); }
         } catch (err) { console.error(err); }
     };
@@ -551,7 +549,7 @@ function AdminDashboard() {
     
     const markAppointmentAsViewed = async (id) => {
         try {
-            const res = await fetch(API_BASE + "/admin/appointments/" + id + "https://hopital-mce-site.onrender.com/api/view", { method: "PUT" });
+            const res = await fetch(`${API_BASE}/admin/appointments/${id}/view`, { method: "PUT" });
             if (res.ok) { showSuccess("Rendez-vous marqué comme vu"); loadAppointments(); }
         } catch (err) { console.error(err); }
     };
